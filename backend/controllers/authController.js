@@ -49,6 +49,8 @@ export const registerUser = async (req, res) => {
   }
 };
 
+
+// try it//
 // @desc    Get user profile
 // @route   GET /api/auth/profile
 // @access  Private
