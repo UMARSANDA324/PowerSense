@@ -50,6 +50,7 @@ export const registerUser = async (req, res) => {
 };
 
 
+// that's right//
 // try it//
 // @desc    Get user profile
 // @route   GET /api/auth/profile
