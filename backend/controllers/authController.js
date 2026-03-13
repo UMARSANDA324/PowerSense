@@ -38,7 +38,12 @@ export const registerUser = async (req, res) => {
         _id: user._id,
         fullName: user.fullName,
         email: user.email,
+        phone: user.phone,
+        state: user.state,
+        lga: user.lga,
+        ward: user.ward,
         role: user.role,
+        notificationPreference: user.notificationPreference,
         token: generateToken(user._id),
       });
     } else {
@@ -64,9 +69,54 @@ export const getUserProfile = async (req, res) => {
       fullName: user.fullName,
       email: user.email,
       role: user.role,
+      phone: user.phone || "",
+      notificationPreference: user.notificationPreference,
     });
   } else {
     res.status(404).json({ message: "User not found" });
+  }
+};
+
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+export const updateUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      user.fullName = req.body.fullName || user.fullName;
+      user.email = req.body.email || user.email;
+
+      if (req.body.phone !== undefined) {
+        user.phone = req.body.phone;
+      }
+
+      if (req.body.password) {
+        // Password hashing is handled by pre-save hook in UserModel
+        user.password = req.body.password;
+      }
+
+      if (req.body.notificationPreference) {
+        user.notificationPreference = req.body.notificationPreference;
+      }
+
+      const updatedUser = await user.save();
+
+      res.json({
+        _id: updatedUser._id,
+        fullName: updatedUser.fullName,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        phone: updatedUser.phone || "",
+        notificationPreference: updatedUser.notificationPreference,
+        token: generateToken(updatedUser._id),
+      });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -91,7 +141,12 @@ export const loginUser = async (req, res) => {
         _id: user._id,
         fullName: user.fullName,
         email: user.email,
+        phone: user.phone,
+        state: user.state,
+        lga: user.lga,
+        ward: user.ward,
         role: user.role,
+        notificationPreference: user.notificationPreference,
         token: generateToken(user._id),
       });
     } else {
