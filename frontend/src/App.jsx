@@ -1,21 +1,16 @@
-import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Home from "./pages/Home";
+import BottomNav from "./components/BottomNav";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        {/* Redirect unknown routes to home */}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </>
+      <div className="flex-1 pb-20">
+        <AppRoutes />
+      </div>
+      <BottomNav />
+    </div>
   );
 }
 
