@@ -66,3 +66,23 @@ export const createFeeder = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// @desc    Get all locations hierarchy
+// @route   GET /api/location/all
+// @access  Private/Admin
+export const getAllLocations = async (req, res) => {
+  try {
+    const states = await State.find({});
+    const lgas = await LGA.find({}).populate("state");
+    const wards = await Ward.find({}).populate("lga");
+    const feeders = await Feeder.find({}).populate("ward");
+
+    res.json({
+      states,
+      lgas,
+      wards,
+      feeders
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

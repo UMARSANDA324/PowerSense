@@ -1,6 +1,17 @@
 
 import express from "express";
-import { adminTest, createAdmin } from "../controllers/adminController.js";
+import {
+    adminTest,
+    createAdmin,
+    getSystemStats,
+    getAllUsers,
+    updateUser,
+    deleteUser,
+    getAllAdmins,
+    getAllFeeders,
+    assignFeedersToAdmin,
+    getProfile
+} from "../controllers/adminController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { authorize } from "../middleware/rolemiddleware.js";
 import PowerStatus from "../models/PowerStatus.js";
@@ -11,6 +22,14 @@ const router = express.Router();
 router.use(protect);
 
 router.get("/test", authorize("super-admin", "admin"), adminTest);
+router.get("/profile", protect, getProfile);
+router.get("/stats", authorize("super-admin", "admin"), getSystemStats);
+router.get("/users", authorize("super-admin", "admin"), getAllUsers);
+router.get("/admins", authorize("super-admin"), getAllAdmins);
+router.get("/all-feeders", protect, getAllFeeders);
+router.put("/users/:id", authorize("super-admin"), updateUser);
+router.put("/assign-feeders/:id", authorize("super-admin"), assignFeedersToAdmin);
+router.delete("/users/:id", authorize("super-admin"), deleteUser);
 router.post("/create-admin", authorize("super-admin"), createAdmin);
 
 // Route for Admin Dashboard to toggle power status

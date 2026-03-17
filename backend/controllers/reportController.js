@@ -1,4 +1,7 @@
 import Report from "../models/Report.js";
+import Notification from "../models/Notification.js";
+import User from "../models/UserModel.js";
+import { hasFeederAccess, getAccessibleFeeders } from "../utils/feederAccess.js";
 
 // @desc    Submit a new report
 // @route   POST /api/reports
@@ -60,8 +63,29 @@ export const updateReportStatus = async (req, res) => {
         const report = await Report.findById(req.params.id);
         if (!report) return res.status(404).json({ message: "Report not found." });
 
+        // Verify admin has access to this feeder
+        const hasAccess = await hasFeederAccess(req.user, report.feeder);
+        if (!hasAccess) {
+            return res.status(403).json({ message: "You don't have access to this feeder." });
+        }
+
+        const oldStatus = report.status;
         report.status = status;
         await report.save();
+
+        // If status is changed to Resolved, notify the user
+        if (status === "Resolved" && oldStatus !== "Resolved" && report.user) {
+            const user = await User.findById(report.user);
+            if (user && user.notificationPreference !== "off") {
+                await Notification.create({
+                    user: user._id,
+                    title: "Issue Resolved ✅",
+                    message: `Your report regarding "${report.issueType}" in ${report.area} has been marked as resolved. Thank you for your patience!`,
+                    method: user.notificationPreference,
+                });
+            }
+        }
+
         res.json({ message: "Report status updated.", report });
     } catch (error) {
         res.status(500).json({ message: error.message });
