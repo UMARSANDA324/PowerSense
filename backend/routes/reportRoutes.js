@@ -1,6 +1,6 @@
 import express from "express";
 import { createReport, getAllReports, getMyReports, updateReportStatus } from "../controllers/reportController.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, softProtect } from "../middleware/authMiddleware.js";
 import { authorize } from "../middleware/rolemiddleware.js";
 import Report from "../models/Report.js";
 
@@ -16,14 +16,14 @@ router.get("/dev-list/all", async (req, res) => {
     }
 });
 
-// Public — anyone can submit a report
-router.post("/", createReport);
+// Public — anyone can submit a report (softProtect to catch user if logged in)
+router.post("/", softProtect, createReport);
 
 // Private — logged-in user's own reports
 router.get("/my", protect, getMyReports);
 
 // Admin — get all reports
-router.get("/", protect, authorize("admin", "super-admin"), getAllReports);
+router.get("/", protect, getAllReports);
 
 // Admin — update status
 router.put("/:id/status", protect, authorize("admin", "super-admin"), updateReportStatus);

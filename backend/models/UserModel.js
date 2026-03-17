@@ -38,12 +38,24 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
-        
+
         notificationPreference: {
             type: String,
             enum: ["email", "phone", "off"],
             default: "phone"
-        }
+        },
+
+        assignedFeeders: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Feeder"
+            }
+        ],
+
+        resetPasswordToken: String,
+        resetPasswordExpire: Date,
+        otpCode: String,
+        otpExpire: Date,
     },
     { timestamps: true }
 );

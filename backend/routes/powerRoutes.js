@@ -8,10 +8,10 @@ router.get("/status", async (req, res) => {
     try {
         const status = await PowerStatus.findOne();
         if (!status) {
-            return res.json({ 
-                isActive: true, 
-                lastUpdated: "Just Now", 
-                message: "System initialized" 
+            return res.json({
+                isActive: true,
+                lastUpdated: "Just Now",
+                message: "System initialized"
             });
         }
         res.json(status);

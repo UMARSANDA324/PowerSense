@@ -3,7 +3,8 @@ import {
   createState,
   createLGA,
   createWard,
-  createFeeder
+  createFeeder,
+  getAllLocations
 } from "../controllers/locationController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { authorize } from "../middleware/rolemiddleware.js";
@@ -15,6 +16,7 @@ const router = express.Router();
 // admin -> create feeder
 // user -> cannot create location
 
+router.get("/all", protect, authorize("super-admin", "admin"), getAllLocations);
 router.post("/state", protect, authorize("super-admin"), createState);
 router.post("/lga", protect, authorize("super-admin"), createLGA);
 router.post("/ward", protect, authorize("super-admin"), createWard);
