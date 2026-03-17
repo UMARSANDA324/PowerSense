@@ -1,32 +1,52 @@
-import { useState } from "react";
-import { FileText, User, Wrench, Clock, CheckCircle2, AlertCircle, Calendar } from "lucide-react";
-
-// Mock Data for demonstration
-const mockReports = [
-    { id: 1, user: "Abba Adamu", type: "Power Outage", area: "Sheka", status: "Pending", date: "2026-03-12", description: "Power has been out since 2AM." },
-    { id: 2, user: "CurrentUser", type: "Low Voltage", area: "Tudun Maliki", status: "Resolved", date: "2026-03-11", description: "Voltage is very low, cannot power appliances." },
-    { id: 3, user: "Sani Musa", type: "Transformer Fault", area: "Challawa", status: "Pending", date: "2026-03-12", description: "Sparks coming from the transformer near the mosque." },
-    { id: 4, user: "CurrentUser", type: "Cable Issue", area: "Sheka", status: "Pending", date: "2026-03-10", description: "Dangling cable on the main street." },
-];
-
-const mockMaintenance = [
-    { id: 1, title: "Planned Outage: Guringawa", message: "Maintenance work scheduled for Guringawa 11kV feeder on Saturday.", date: "2026-03-14", urgency: "High" },
-    { id: 2, title: "Transformer Repair", message: "Technical team currently repairing the Na'ibawa substation transformer.", date: "2026-03-12", urgency: "Medium" },
-];
+import { useState, useEffect } from "react";
+import { FileText, User, Wrench, Clock, CheckCircle2, AlertCircle, Calendar, Loader2 } from "lucide-react";
+import { getReports } from "../services/reportService";
+import { getCurrentUser } from "../services/authService";
 
 const ReportsHistory = () => {
     const [activeTab, setActiveTab] = useState("all");
+    const [reports, setReports] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
+    const currentUser = getCurrentUser();
+
+    useEffect(() => {
+        const fetchReports = async () => {
+            setIsLoading(true);
+            try {
+                const data = await getReports();
+                setReports(data);
+            } catch (err) {
+                setError("Failed to fetch incident reports. Please try again later.");
+                console.error(err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchReports();
+    }, []);
+
+    const maintenanceItems = [
+        { id: 1, title: "Planned Outage: Guringawa", message: "Maintenance work scheduled for Guringawa 11kV feeder on Saturday.", date: "2026-03-14", urgency: "High" },
+        { id: 2, title: "Transformer Repair", message: "Technical team currently repairing the Na'ibawa substation transformer.", date: "2026-03-12", urgency: "Medium" },
+    ];
 
     // Filter reports based on active tab
     const filteredReports = activeTab === "user"
-        ? mockReports.filter(r => r.user === "CurrentUser")
-        : mockReports;
+        ? reports.filter(r => r.user === currentUser?._id)
+        : reports;
 
     const tabs = [
         { id: "all", label: "All Reports", icon: <FileText size={18} /> },
-        { id: "user", label: "User Reports", icon: <User size={18} /> },
+        { id: "user", label: "My Reports", icon: <User size={18} /> },
         { id: "maintenance", label: "Maintenance", icon: <Wrench size={18} /> },
     ];
+
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20 scroll-smooth">
@@ -38,7 +58,7 @@ const ReportsHistory = () => {
                 </div>
             </div>
 
-            {/* Tab Switcher - Sticky below the main Navbar */}
+            {/* Tab Switcher - Sticky */}
             <div className="sticky top-[72px] z-40 bg-gray-50/95 backdrop-blur-md py-4 border-b border-gray-100/50">
                 <div className="max-w-2xl mx-auto px-4">
                     <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-gray-100">
@@ -64,32 +84,55 @@ const ReportsHistory = () => {
 
             {/* Content Area */}
             <main className="max-w-2xl mx-auto px-4 mt-8 pb-12 space-y-4">
-                {activeTab !== "maintenance" ? (
-                    filteredReports.map((report) => (
-                        <div key={report.id} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
-                                    <AlertCircle size={24} />
+                {isLoading ? (
+                    <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+                        <Loader2 size={40} className="animate-spin text-blue-600 mb-4" />
+                        <p className="font-bold uppercase tracking-widest text-xs">Loading Incidents...</p>
+                    </div>
+                ) : error ? (
+                    <div className="p-6 bg-red-50 border border-red-100 text-red-600 rounded-3xl text-center">
+                        <AlertCircle size={40} className="mx-auto mb-3" />
+                        <p className="font-bold">{error}</p>
+                    </div>
+                ) : activeTab !== "maintenance" ? (
+                    filteredReports.length > 0 ? (
+                        filteredReports.map((report) => (
+                            <div key={report._id} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow animate-in fade-in duration-500">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
+                                        <AlertCircle size={24} />
+                                    </div>
+                                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${report.status === "Resolved"
+                                        ? "bg-green-50 text-green-700 border-green-100"
+                                        : "bg-amber-50 text-amber-700 border-amber-100"
+                                        }`}>
+                                        {report.status}
+                                    </span>
                                 </div>
-                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${report.status === "Resolved"
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-amber-100 text-amber-700"
-                                    }`}>
-                                    {report.status}
-                                </span>
-                            </div>
 
-                            <h3 className="text-xl font-bold text-gray-800 mb-1">{report.type}</h3>
-                            <p className="text-gray-500 text-sm mb-4 leading-relaxed">{report.description}</p>
+                                <h3 className="text-xl font-bold text-gray-800 mb-1">{report.issueType}</h3>
+                                <div className="flex items-center gap-2 text-blue-600/70 font-bold text-[10px] uppercase tracking-tighter mb-2">
+                                    <span>{report.area}</span>
+                                    <span>•</span>
+                                    <span>{report.feeder}</span>
+                                </div>
+                                <p className="text-gray-500 text-sm mb-4 leading-relaxed">{report.description}</p>
 
-                            <div className="flex items-center gap-4 pt-4 border-t border-gray-50 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
-                                <span className="flex items-center gap-1"><User size={12} /> {report.user === "CurrentUser" ? "Me" : report.user}</span>
-                                <span className="flex items-center gap-1"><Calendar size={12} /> {report.date}</span>
+                                <div className="flex items-center gap-4 pt-4 border-t border-gray-50 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+                                    <span className="flex items-center gap-1"><User size={12} /> {report.fullName}</span>
+                                    <span className="flex items-center gap-1"><Calendar size={12} /> {formatDate(report.createdAt)}</span>
+                                </div>
                             </div>
+                        ))
+                    ) : (
+                        <div className="text-center py-20 text-gray-400">
+                            <FileText size={48} className="mx-auto mb-4 opacity-20" />
+                            <h3 className="text-xl font-bold text-gray-800">No Reports Found</h3>
+                            <p className="text-sm mt-1">There are no incidents recorded for this category yet.</p>
                         </div>
-                    ))
+                    )
                 ) : (
-                    mockMaintenance.map((msg) => (
+                    maintenanceItems.map((msg) => (
                         <div key={msg.id} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm border-l-4 border-l-blue-600">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
@@ -109,19 +152,6 @@ const ReportsHistory = () => {
                         </div>
                     ))
                 )}
-
-
-                {/* Empty State */}
-                {((activeTab !== "maintenance" && filteredReports.length === 0) ||
-                    (activeTab === "maintenance" && mockMaintenance.length === 0)) && (
-                        <div className="text-center py-20">
-                            <div className="inline-flex p-6 bg-gray-100 text-gray-400 rounded-full mb-4">
-                                <FileText size={48} />
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-800 underline">No records found</h3>
-                            <p className="text-gray-500 mt-2">Check back later for updates</p>
-                        </div>
-                    )}
             </main>
         </div>
     );

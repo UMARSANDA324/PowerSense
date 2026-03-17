@@ -214,7 +214,7 @@ const ReportIssue = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2"
+            className="w-full bg-black hover:bg-gray-900 disabled:bg-gray-400 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 submit-btn"
           >
             {isLoading ? (
               <>

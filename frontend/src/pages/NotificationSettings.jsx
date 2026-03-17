@@ -57,7 +57,7 @@ const NotificationSettings = () => {
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className="w-full bg-blue-600 text-white py-3 rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg text-base"
+          className="w-full bg-black text-white py-3 rounded-2xl font-bold hover:bg-gray-900 transition-all shadow-lg text-base submit-btn"
         >
           {isSaving ? "Saving..." : "Save Preference"}
         </button>

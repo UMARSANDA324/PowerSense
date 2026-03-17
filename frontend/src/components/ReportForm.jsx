@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Map, ChevronDown, Loader2, AlertCircle, AlertTriangle, Smartphone, X } from "lucide-react";
+import { Map, ChevronDown, Loader2, AlertCircle, AlertTriangle, Smartphone, X, CheckCircle2 } from "lucide-react";
 import { areaFeederMapping } from "../constants/areas";
+import { reportIssue } from "../services/reportService";
 
 const ReportForm = ({ onClose }) => {
     // State for Area/Feeder selection
@@ -17,6 +18,9 @@ const ReportForm = ({ onClose }) => {
         description: ""
     });
     const [phoneError, setPhoneError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState(false);
 
     // Update feeder name automatically when area changes
     useEffect(() => {
@@ -52,8 +56,10 @@ const ReportForm = ({ onClose }) => {
         }
     };
 
-    const handleFormSubmit = (e) => {
+    const handleFormSubmit = async (e) => {
         e.preventDefault();
+        setError("");
+        setSuccess(false);
 
         // Validate Area/Feeder
         if (!selectedArea || !feederName) {
@@ -67,20 +73,68 @@ const ReportForm = ({ onClose }) => {
             return;
         }
 
-        console.log("Submitting Report:", {
-            ...formData,
-            area: selectedArea,
-            feeder: feederName
-        });
+        setIsLoading(true);
 
-        alert("Success: Your report has been logged. Our technical team has been notified.");
-        
-        // Reset or close
-        if (onClose) onClose();
+        try {
+            await reportIssue({
+                ...formData,
+                area: selectedArea,
+                feeder: feederName
+            });
+
+            setSuccess(true);
+            setFormData({
+                fullName: "",
+                phone: "",
+                issueType: "",
+                description: ""
+            });
+            setSelectedArea("");
+            setFeederName("");
+
+            // Auto close after 3 seconds if inside a modal
+            if (onClose) {
+                setTimeout(onClose, 3000);
+            }
+        } catch (err) {
+            setError(err.message || "Failed to submit report. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
+
+    if (success) {
+        return (
+            <div className="w-full max-w-lg mx-auto p-12 rounded-[2.5rem] bg-white border border-gray-100 shadow-2xl flex flex-col items-center text-center space-y-6 animate-in zoom-in duration-300">
+                <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center">
+                    <CheckCircle2 size={48} />
+                </div>
+                <div>
+                    <h3 className="text-2xl font-black text-gray-800">Report Logged!</h3>
+                    <p className="text-gray-500 font-medium mt-2">Our technical team has been notified and is looking into it.</p>
+                </div>
+                {!onClose && (
+                    <button
+                        onClick={() => setSuccess(false)}
+                        className="px-8 py-3 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-all submit-btn"
+                    >
+                        Submit Another Report
+                    </button>
+                )}
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
+            {/* Error Banner */}
+            {error && (
+                <div className="max-w-lg mx-auto p-4 bg-red-50 border border-red-100 text-red-600 rounded-2xl flex items-center gap-3 animate-in slide-in-from-top-4">
+                    <AlertCircle size={20} />
+                    <p className="font-bold text-sm">{error}</p>
+                </div>
+            )}
+
             {/* Area and Feeder Selection Section */}
             <div className="w-full max-w-lg mx-auto p-6 sm:p-8 rounded-3xl sm:rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-blue-50 space-y-6 flex flex-col items-center">
                 <div className="flex flex-col items-center gap-3 mb-2 text-center">
@@ -92,12 +146,12 @@ const ReportForm = ({ onClose }) => {
 
                 <div className="w-full space-y-4">
                     <div className="text-center">
-                        <label className="block text-[10px] sm:text-sm font-semibold text-gray-500 mb-1.5 sm:mb-2">
+                        <label className="block text-[10px] sm:text-sm font-semibold text-gray-500 mb-1.5 sm:mb-2 text-center">
                             Select Ward (Unguwa)
                         </label>
                         <div className="relative">
                             <select
-                                className="w-full p-3 sm:p-4 bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl appearance-none focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer font-medium text-gray-700 text-sm sm:text-base"
+                                className="w-full p-3 sm:p-4 bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl appearance-none focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer font-medium text-gray-700 text-sm sm:text-base text-center pr-10"
                                 value={selectedArea}
                                 onChange={(e) => setSelectedArea(e.target.value)}
                             >
@@ -113,7 +167,7 @@ const ReportForm = ({ onClose }) => {
                     </div>
 
                     <div>
-                        <label className="block text-[10px] sm:text-sm font-semibold text-gray-500 mb-1.5 sm:mb-2 ml-1">
+                        <label className="block text-[10px] sm:text-sm font-semibold text-gray-500 mb-1.5 sm:mb-2 text-center">
                             Feeder Name (Auto-filled)
                         </label>
                         <div className="relative">
@@ -121,7 +175,7 @@ const ReportForm = ({ onClose }) => {
                                 type="text"
                                 readOnly
                                 placeholder={isFeederUpdating ? "Syncing..." : "Auto populates"}
-                                className={`w-full p-3 sm:p-4 border rounded-xl sm:rounded-2xl font-bold outline-none transition-all text-sm sm:text-base ${isFeederUpdating
+                                className={`w-full p-3 sm:p-4 border rounded-xl sm:rounded-2xl font-bold outline-none transition-all text-sm sm:text-base text-center ${isFeederUpdating
                                     ? "bg-gray-50 border-gray-100 text-gray-400 animate-pulse"
                                     : "bg-blue-50/50 border-blue-100 text-blue-700"
                                     }`}
@@ -158,7 +212,7 @@ const ReportForm = ({ onClose }) => {
                         <span className="w-1.5 sm:w-2 h-6 sm:h-8 bg-blue-600 rounded-full"></span>
                         Submit Incident Report
                     </h3>
-                    <p className="text-gray-500 text-xs sm:text-sm mt-1 ml-3 sm:ml-4">Fill in the details to notify technicians</p>
+                    <p className="text-gray-500 text-xs sm:text-sm mt-1 ml-3 sm:ml-4 font-medium">Fill in the details to notify technicians</p>
                 </div>
 
                 <form onSubmit={handleFormSubmit} className="space-y-4">
@@ -229,10 +283,23 @@ const ReportForm = ({ onClose }) => {
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 text-white p-4 sm:p-5 rounded-xl sm:rounded-2xl font-black text-base sm:text-lg hover:bg-blue-700 active:scale-[0.98] transition-all shadow-xl shadow-blue-200 mt-2 sm:mt-4"
+                        disabled={isLoading}
+                        className="w-full bg-black text-white p-4 sm:p-5 rounded-xl sm:rounded-2xl font-black text-base sm:text-lg hover:bg-gray-900 active:scale-[0.98] transition-all shadow-xl shadow-gray-300 mt-2 sm:mt-4 flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed submit-btn"
                     >
-                        Submit Incident Report
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="animate-spin" size={24} />
+                                Submitting...
+                            </>
+                        ) : (
+                            "Submit Incident Report"
+                        )}
                     </button>
+
+                    <div className="flex items-center gap-2 justify-center p-3 mt-4 text-amber-600 bg-amber-50 rounded-xl border border-amber-100">
+                        <AlertTriangle size={14} className="shrink-0" />
+                        <p className="text-[10px] font-bold uppercase tracking-tight">Technical teams will be alerted immediately</p>
+                    </div>
                 </form>
             </div>
         </div>

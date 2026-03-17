@@ -11,7 +11,7 @@ export const getPowerStatus = async () => {
         return response.data;
     } catch (error) {
         console.error("Error fetching power status from Admin system:", error);
-        
+
         // Fallback mock data for development
         return {
             isActive: true,

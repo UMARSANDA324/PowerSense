@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { User, Settings, Shield, Bell, HelpCircle, LogOut, ChevronRight, MapPin, Smartphone, Mail, Edit3, X, Loader2, CheckCircle2 } from "lucide-react";
+import { User, Settings, Shield, Bell, HelpCircle, LogOut, ChevronRight, MapPin, Smartphone, Mail, Edit3, X, Loader2, CheckCircle2, Zap } from "lucide-react";
 import { getCurrentUser, logout, updateProfile } from "../services/authService";
 import { useNavigate } from "react-router-dom";
+import { KANO_LGAS, AREAS } from "../constants/states";
+import { areaFeederMapping } from "../constants/areas";
 
 const Profile = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(getCurrentUser());
     const [isEditing, setIsEditing] = useState(false);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-    
+
     const normalizePhoneInput = (input) => {
         const digits = (input || "").toString().replace(/\D/g, "");
         if (!digits) return "";
@@ -28,10 +30,12 @@ const Profile = () => {
         fullName: user?.fullName || "",
         email: user?.email || "",
         phone: normalizePhoneInput(user?.phone || ""),
+        lga: user?.lga || "Kumbotso",
+        ward: user?.ward || "Sheka Gabas",
         password: "",
         notificationPreference: user?.notificationPreference || "phone"
     });
-    
+
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState({ text: "", type: "" });
     const [phoneError, setPhoneError] = useState("");
@@ -103,9 +107,24 @@ const Profile = () => {
 
         setIsLoading(true);
         setMessage({ text: "", type: "" });
+
+        // Auto-detect feeder based on ward/area
+        let detectedFeeder = user?.feeder || "Unknown Feeder";
+        if (formData.ward) {
+            for (const [area, feeder] of Object.entries(areaFeederMapping)) {
+                if (formData.ward.includes(area)) {
+                    detectedFeeder = feeder;
+                    break;
+                }
+            }
+        }
+
         try {
             // Remove password if it is empty so we don't accidentally update it to empty
-            const dataToUpdate = { ...formData };
+            const dataToUpdate = { 
+                ...formData,
+                feeder: detectedFeeder
+            };
             if (!dataToUpdate.password) {
                 delete dataToUpdate.password;
             }
@@ -138,6 +157,7 @@ const Profile = () => {
             category: "ACCOUNT",
             items: [
                 { icon: <Bell size={20} className="text-blue-600" />, label: "Notifications", desc: "Outage alerts, report updates" },
+                { icon: <Shield size={20} className="text-blue-600" />, label: "About Us", desc: "Information about PowerSense & T&C" },
             ]
         }
     ];
@@ -147,12 +167,12 @@ const Profile = () => {
             {/* Profile Header Card */}
             <div className="bg-white border-b border-gray-100 px-6 pt-16 pb-10">
                 <div className="max-w-2xl mx-auto flex flex-col items-center gap-5 text-center relative">
-                    <button 
+                    <button
                         onClick={() => setIsEditing(true)}
-                        className="absolute right-0 top-0 p-3 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition-colors"
-                        aria-label="Edit Profile"
+                        className="absolute right-0 top-0 flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl font-bold text-xs hover:bg-blue-100 transition-all active:scale-95"
                     >
-                        <Edit3 size={20} />
+                        <Edit3 size={16} />
+                        EDIT PROFILE
                     </button>
                     <div className="relative">
                         <div className="w-20 h-20 bg-blue-600 rounded-[2rem] flex items-center justify-center text-white text-3xl font-black shadow-xl shadow-blue-100">
@@ -185,7 +205,7 @@ const Profile = () => {
                         </div>
                     </div>
                     {user?.phone && (
-                       <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
+                        <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
                             <div className="p-3 bg-gray-50 rounded-2xl text-gray-400">
                                 <Smartphone size={20} />
                             </div>
@@ -193,7 +213,7 @@ const Profile = () => {
                                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Phone Number</p>
                                 <p className="text-sm font-bold text-gray-700">{user?.phone}</p>
                             </div>
-                        </div> 
+                        </div>
                     )}
                     <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
                         <div className="p-3 bg-gray-50 rounded-2xl text-gray-400">
@@ -201,9 +221,20 @@ const Profile = () => {
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Primary Area</p>
-                            <p className="text-sm font-bold text-gray-700">Sheka, Kumbotso LGA</p>
+                            <p className="text-sm font-bold text-gray-700">{user?.ward || "No area set"}, {user?.lga || "No LGA set"}</p>
                         </div>
                     </div>
+                    {user?.feeder && (
+                        <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
+                            <div className="p-3 bg-blue-50 rounded-2xl text-blue-600">
+                                <Zap size={20} />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Assigned Feeder</p>
+                                <p className="text-sm font-bold text-blue-700">{user.feeder}</p>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Settings Menu Sections */}
@@ -217,11 +248,10 @@ const Profile = () => {
                                 <button
                                     key={item.label}
                                     className={`w-full p-5 flex flex-col items-center gap-3 group active:bg-gray-50 transition-colors ${index !== section.items.length - 1 ? "border-b border-gray-50" : ""}`}
-                                    onClick={
-                                        item.label === "Notifications"
-                                            ? () => navigate("/notification-settings")
-                                            : undefined
-                                    }
+                                    onClick={() => {
+                                        if (item.label === "Notifications") navigate("/notification-settings");
+                                        if (item.label === "About Us") navigate("/about-us");
+                                    }}
                                 >
                                     <div className="p-3 bg-gray-50 rounded-2xl group-active:scale-95 transition-transform">
                                         {item.icon}
@@ -238,7 +268,7 @@ const Profile = () => {
                 ))}
 
                 {/* Logout Button */}
-                <button 
+                <button
                     onClick={handleLogout}
                     className="w-full flex items-center justify-center gap-3 p-5 rounded-[2rem] bg-red-50 text-red-600 font-black text-sm uppercase tracking-widest hover:bg-red-100 active:scale-[0.98] transition-all"
                 >
@@ -254,12 +284,12 @@ const Profile = () => {
             {/* Edit Profile Modal */}
             {isEditing && (
                 <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
-                    <div 
+                    <div
                         className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
                         onClick={() => setIsEditing(false)}
                     />
                     <div className="bg-white w-full sm:max-w-md rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 sm:p-8 relative z-10 shadow-2xl animate-in slide-in-from-bottom-full sm:zoom-in-95 duration-300">
-                        <button 
+                        <button
                             onClick={() => setIsEditing(false)}
                             className="absolute right-6 top-6 p-2 bg-gray-100 text-gray-500 hover:bg-gray-200 rounded-full transition-colors"
                         >
@@ -281,8 +311,8 @@ const Profile = () => {
                         <form onSubmit={handleSaveProfile} className="space-y-4">
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Full Name</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     name="fullName"
                                     value={formData.fullName}
                                     onChange={handleChange}
@@ -290,11 +320,11 @@ const Profile = () => {
                                     required
                                 />
                             </div>
-                            
+
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Email Address</label>
-                                <input 
-                                    type="email" 
+                                <input
+                                    type="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
@@ -305,8 +335,8 @@ const Profile = () => {
 
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Phone Number</label>
-                                <input 
-                                    type="tel" 
+                                <input
+                                    type="tel"
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
@@ -324,8 +354,8 @@ const Profile = () => {
 
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">New Password (optional)</label>
-                                <input 
-                                    type="password" 
+                                <input
+                                    type="password"
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
@@ -336,7 +366,7 @@ const Profile = () => {
 
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Notification Preference</label>
-                                <select 
+                                <select
                                     name="notificationPreference"
                                     value={formData.notificationPreference}
                                     onChange={handleChange}
@@ -349,10 +379,39 @@ const Profile = () => {
                                 </select>
                             </div>
 
-                            <button 
-                                type="submit" 
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">LGA</label>
+                                    <select
+                                        name="lga"
+                                        value={formData.lga}
+                                        onChange={handleChange}
+                                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm"
+                                    >
+                                        {KANO_LGAS.map(lga => (
+                                            <option key={lga} value={lga}>{lga}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Area</label>
+                                    <select
+                                        name="ward"
+                                        value={formData.ward}
+                                        onChange={handleChange}
+                                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm"
+                                    >
+                                        {AREAS.map(area => (
+                                            <option key={area} value={area}>{area}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
                                 disabled={isLoading || (formData.phone && normalizePhoneInput(formData.phone).length !== 11)}
-                                className="w-full py-4 mt-6 rounded-2xl font-black bg-blue-600 text-white shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all flex justify-center items-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed"
+                                className="w-full py-4 mt-6 rounded-2xl font-black bg-black text-white shadow-lg shadow-gray-400 hover:bg-gray-900 active:scale-[0.98] transition-all flex justify-center items-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed submit-btn"
                             >
                                 {isLoading ? <><Loader2 size={20} className="animate-spin" /> Saving...</> : "Save Changes"}
                             </button>
@@ -364,7 +423,7 @@ const Profile = () => {
             {/* Logout Confirmation Modal */}
             {showLogoutConfirm && (
                 <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
-                    <div 
+                    <div
                         className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
                         onClick={() => setShowLogoutConfirm(false)}
                     />
@@ -378,13 +437,13 @@ const Profile = () => {
                         </div>
 
                         <div className="space-y-3">
-                            <button 
+                            <button
                                 onClick={confirmLogout}
                                 className="w-full py-4 rounded-2xl font-black bg-red-600 text-white hover:bg-red-700 active:scale-[0.98] transition-all shadow-lg shadow-red-200"
                             >
                                 Yes, Sign Me Out
                             </button>
-                            <button 
+                            <button
                                 onClick={() => setShowLogoutConfirm(false)}
                                 className="w-full py-4 rounded-2xl font-black bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-[0.98] transition-all"
                             >

@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2, User, Mail, Lock, ShieldCheck, CheckCircle2, AlertCircle, MapPin } from "lucide-react";
 import { register } from "../services/authService";
 import { KANO_LGAS, AREAS } from "../constants/states";
+import { areaFeederMapping } from "../constants/areas";
+import { Zap } from "lucide-react";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -22,20 +24,28 @@ const Register = () => {
     const [success, setSuccess] = useState("");
 
     const normalizePhoneInput = (input) => {
-        const digits = (input || "").toString().replace(/\D/g, "");
+        let digits = (input || "").toString().replace(/\D/g, "");
         if (!digits) return "";
-        if (digits.startsWith("234") && digits.length >= 12) return "0" + digits.slice(3);
-        if (digits.length === 10) return "0" + digits;
-        if (digits.length === 11) return digits;
+        
+        // If it starts with 234, convert to local format (0...)
+        if (digits.startsWith("234")) {
+            digits = "0" + digits.slice(3);
+        }
+        
+        // If it's 10 digits and doesn't start with 0, add 0
+        if (digits.length === 10 && !digits.startsWith("0")) {
+            return "0" + digits;
+        }
+        
         return digits;
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // Phone number - only allow digits, max 11 (local format)
         if (name === "phone") {
             const onlyNumbers = value.replace(/\D/g, "");
+            // Allow up to 11 digits to handle users typing the full number
             const trimmed = onlyNumbers.slice(0, 11);
             setFormData(prev => ({ ...prev, [name]: trimmed }));
         } else if (name === "state") {
@@ -68,12 +78,14 @@ const Register = () => {
             setError("Email address is required.");
             return;
         }
+        
         // Normalize phone for submission
         const phoneToSend = normalizePhoneInput(formData.phone);
-        if (phoneToSend.length !== 11) {
-            setError("Phone number must be exactly 11 digits (local format, e.g., 08012345678).");
+        if (phoneToSend.length !== 11 || !phoneToSend.startsWith("0")) {
+            setError("Please enter a valid 10 or 11-digit phone number (e.g., 08012345678 or 8012345678).");
             return;
         }
+
         if (formData.state !== "Kano") {
             setError("⚠️ System currently supports Kano State only.");
             return;
@@ -96,6 +108,16 @@ const Register = () => {
         }
 
         setIsLoading(true);
+        
+        // Find feeder based on ward (Area)
+        let detectedFeeder = "Unknown Feeder";
+        for (const [area, feeder] of Object.entries(areaFeederMapping)) {
+            if (formData.ward.includes(area)) {
+                detectedFeeder = feeder;
+                break;
+            }
+        }
+
         try {
             await register({
                 fullName: formData.fullName,
@@ -104,11 +126,13 @@ const Register = () => {
                 state: formData.state,
                 lga: formData.lga,
                 ward: formData.ward,
+                feeder: detectedFeeder,
                 password: formData.password,
             });
 
-            setSuccess("Account created successfully! Redirecting to login...");
-            setTimeout(() => navigate("/login"), 1500);
+            setSuccess("Account created successfully! Redirecting...");
+            // Redirect to home page as the user is already logged in by the register service
+            setTimeout(() => navigate("/"), 1500);
         } catch (err) {
             const msg = err.response?.data?.message || "Registration failed. Please try again.";
             setError(msg);
@@ -196,14 +220,14 @@ const Register = () => {
                                 name="phone"
                                 required
                                 placeholder="8012345678"
-                                maxLength="10"
+                                maxLength="11"
                                 className="w-full pl-24 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                 value={formData.phone}
                                 onChange={handleChange}
                             />
                             {formData.phone && (
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-500">
-                                    {formData.phone.length}/10
+                                    {formData.phone.length}/11
                                 </span>
                             )}
                         </div>
@@ -271,6 +295,14 @@ const Register = () => {
                             </select>
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">▼</span>
                         </div>
+                        {formData.ward && (
+                            <p className="text-[10px] text-blue-600 font-bold mt-2 ml-1 flex items-center gap-1">
+                                <Zap size={10} />
+                                Auto-detected Feeder: {
+                                    Object.entries(areaFeederMapping).find(([area]) => formData.ward.includes(area))?.[1] || "Unknown Feeder"
+                                }
+                            </p>
+                        )}
                     </div>
 
                     {/* Password */}
@@ -322,7 +354,7 @@ const Register = () => {
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-blue-600 text-white p-4 rounded-xl font-semibold mt-6 hover:bg-blue-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-blue-200"
+                    className="w-full bg-black text-white p-4 rounded-xl font-semibold mt-6 hover:bg-gray-900 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-gray-400 submit-btn"
                 >
                     {isLoading ? (
                         <>

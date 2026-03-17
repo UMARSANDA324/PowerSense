@@ -44,7 +44,7 @@ const Home = () => {
 
                 {/* Power Status Card */}
                 <div className={`w-full max-w-lg p-8 sm:p-12 rounded-[2.5rem] shadow-2xl transition-all duration-700 relative overflow-hidden group ${isLoading ? "bg-white border-blue-50" :
-                        isPowerOn ? "bg-white border-blue-50 shadow-blue-100" : "bg-slate-900 border-slate-800 shadow-slate-200"
+                    isPowerOn ? "bg-white border-blue-50 shadow-blue-100" : "bg-slate-900 border-slate-800 shadow-slate-200"
                     } border`}>
 
                     {/* Background Glow Effect */}
@@ -57,20 +57,20 @@ const Home = () => {
                             <p className="text-gray-400 font-bold animate-pulse uppercase tracking-widest text-xs">Syncing status...</p>
                         </div>
                     ) : (
-                        <div className="relative z-10">
-                            {/* Icon */}
-                            <div className={`inline-flex p-5 sm:p-6 rounded-[2rem] mb-6 sm:mb-8 transition-all duration-700 ${isPowerOn ? "bg-blue-600 text-white shadow-xl shadow-blue-200" : "bg-slate-800 text-slate-400 shadow-none border border-slate-700"
+                        <div className="relative z-10 flex flex-col items-center">
+                            {/* Icon - Centered */}
+                            <div className={`flex p-5 sm:p-6 rounded-[2rem] mb-6 sm:mb-8 transition-all duration-700 ${isPowerOn ? "bg-blue-600 text-white shadow-xl shadow-blue-200" : "bg-slate-800 text-slate-400 shadow-none border border-slate-700"
                                 }`}>
                                 <Zap size={48} className="sm:w-12 sm:h-12" fill={isPowerOn ? "white" : "none"} />
                             </div>
 
                             {/* Status Text */}
-                            <h2 className={`text-4xl sm:text-5xl font-black mb-3 sm:mb-4 transition-colors duration-700 ${isPowerOn ? "text-gray-900" : "text-white"
+                            <h2 className={`text-4xl sm:text-5xl font-black mb-3 sm:mb-4 transition-colors duration-700 text-center ${isPowerOn ? "text-gray-900" : "text-white"
                                 }`}>
                                 {isPowerOn ? "Power On" : "Power Off"}
                             </h2>
 
-                            <p className={`text-base sm:text-lg font-medium px-2 transition-colors duration-700 ${isPowerOn ? "text-gray-500" : "text-slate-400"
+                            <p className={`text-base sm:text-lg font-medium px-2 transition-colors duration-700 text-center ${isPowerOn ? "text-gray-500" : "text-slate-400"
                                 }`}>
                                 {isPowerOn ? "Electricity is stable in your area" : "Outage detected by technical team"}
                             </p>
@@ -125,7 +125,7 @@ const Home = () => {
                     </div>
                     <button
                         onClick={() => navigate("/report")}
-                        className="w-full bg-white text-blue-600 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold hover:bg-blue-50 active:scale-[0.98] transition-all shadow-lg text-sm sm:text-base"
+                        className="w-full bg-black text-white py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold hover:bg-gray-900 active:scale-[0.98] transition-all shadow-lg text-sm sm:text-base submit-btn"
                     >
                         Submit a Report
                     </button>
