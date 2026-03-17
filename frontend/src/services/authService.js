@@ -14,8 +14,10 @@ export const login = async (email, password) => {
       state: response.data.state,
       lga: response.data.lga,
       ward: response.data.ward,
+      feeder: response.data.feeder,
       role: response.data.role,
       notificationPreference: response.data.notificationPreference || "phone",
+      assignedFeeders: response.data.assignedFeeders || [],
     };
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", response.data.token);
@@ -34,8 +36,10 @@ export const register = async (userData) => {
       state: response.data.state,
       lga: response.data.lga,
       ward: response.data.ward,
+      feeder: response.data.feeder,
       role: response.data.role,
       notificationPreference: response.data.notificationPreference || "phone",
+      assignedFeeders: response.data.assignedFeeders || [],
     };
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", response.data.token);
@@ -73,10 +77,27 @@ export const updateProfile = async (userData) => {
       state: response.data.state || "",
       lga: response.data.lga || "",
       ward: response.data.ward || "",
+      feeder: response.data.feeder || "",
       notificationPreference: response.data.notificationPreference || "phone",
+      assignedFeeders: response.data.assignedFeeders || [],
     };
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", response.data.token);
   }
+  return response.data;
+};
+
+export const forgotPassword = async (email) => {
+  const response = await api.post("/auth/forgot-password", { email });
+  return response.data;
+};
+
+export const verifyOTP = async (email, otp) => {
+  const response = await api.post("/auth/verify-otp", { email, otp });
+  return response.data;
+};
+
+export const resetPassword = async (email, otp, password) => {
+  const response = await api.post("/auth/reset-password", { email, otp, password });
   return response.data;
 };

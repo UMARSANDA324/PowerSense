@@ -1,11 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { MdHome, MdReportProblem, MdQueryStats, MdPerson } from "react-icons/md";
+import { Gauge } from "lucide-react";
 
 const BottomNav = () => {
   const navItems = [
     { path: "/", icon: <MdHome size={28} />, label: "Home" },
+    { path: "/all-status", icon: <Gauge size={24} />, label: "Status" },
     { path: "/report", icon: <MdReportProblem size={28} />, label: "Report" },
-    { path: "/status", icon: <MdQueryStats size={28} />, label: "Status" },
     { path: "/profile", icon: <MdPerson size={28} />, label: "Me" },
   ];
 
@@ -17,8 +18,7 @@ const BottomNav = () => {
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-1 transition-all duration-300 ${
-                isActive ? "text-blue-600 scale-110" : "text-gray-400 hover:text-gray-600"
+              `flex flex-col items-center gap-1 transition-all duration-300 ${isActive ? "text-blue-600 scale-110" : "text-gray-400 hover:text-gray-600"
               }`
             }
           >

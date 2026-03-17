@@ -1,132 +1,712 @@
-import { useState } from "react";
-import { Send, AlertTriangle, Info, ZapOff, Zap, CheckCircle2, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+    Send, AlertTriangle, Info, ZapOff, Zap, CheckCircle2,
+    Loader2, Users, FileText, Activity, Shield, Trash2,
+    Search, RefreshCw, ChevronRight, Menu, X, Clock, MapPin, Lock
+} from "lucide-react";
+import adminService from "../services/adminService";
 import notificationService from "../services/notificationService";
+import { getCurrentUser } from "../services/authService";
 
 const AdminDashboard = () => {
-  const [formData, setFormData] = useState({
-    title: "",
-    message: ""
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState({ text: "", type: "" });
+    const navigate = useNavigate();
+    const currentUser = getCurrentUser();
+    const [activeTab, setActiveTab] = useState("overview");
+    const [assignedFeeders, setAssignedFeeders] = useState([]);
+    const [selectedFeeder, setSelectedFeeder] = useState(null);
 
-  const predefinedTemplates = [
-    { title: "Power Outage Alert", desc: "Notify users of an active outage", icon: <ZapOff size={18} className="text-red-500" /> },
-    { title: "Maintenance Update", desc: "Scheduled maintenance work", icon: <AlertTriangle size={18} className="text-yellow-500" /> },
-    { title: "Power Restoration", desc: "Power has been restored", icon: <Zap size={18} className="text-green-500" /> },
-    { title: "General Announcement", desc: "Important information", icon: <Info size={18} className="text-blue-500" /> }
-  ];
+    // Auth Check
+    useEffect(() => {
+        if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "super-admin")) {
+            navigate("/");
+        } else {
+            // Load admin's assigned feeders on mount
+            loadAdminFeeders();
+        }
+    }, [currentUser, navigate]);
 
-  const handleTemplateSelect = (template) => {
-    setFormData({
-      ...formData,
-      title: template.title
-    });
-  };
+    const loadAdminFeeders = async () => {
+        try {
+            // Get fresh profile data from backend to get latest feeder assignments
+            const profileData = await adminService.getProfile();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setStatus({ text: "", type: "" });
+            // For Super Admin, get all feeders; for regular admin, use their assigned feeders
+            if (profileData.role === "super-admin") {
+                const feedersData = await adminService.getAllFeeders();
+                setAssignedFeeders(feedersData);
+                if (feedersData.length > 0) {
+                    setSelectedFeeder(feedersData[0]._id);
+                }
+            } else if (profileData.assignedFeeders && profileData.assignedFeeders.length > 0) {
+                // Regular admin - set their assigned feeders
+                setAssignedFeeders(profileData.assignedFeeders);
+                if (profileData.assignedFeeders.length > 0) {
+                    setSelectedFeeder(profileData.assignedFeeders[0]._id || profileData.assignedFeeders[0]);
+                }
+            }
+        } catch (err) {
+            console.error("Failed to load admin feeders", err);
+            // Fallback to currentUser data
+            if (currentUser?.assignedFeeders && currentUser.assignedFeeders.length > 0) {
+                setAssignedFeeders(currentUser.assignedFeeders);
+                if (currentUser.assignedFeeders.length > 0) {
+                    setSelectedFeeder(currentUser.assignedFeeders[0]._id || currentUser.assignedFeeders[0]);
+                }
+            }
+        }
+    };
+    const [stats, setStats] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [reports, setReports] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [actionLoading, setActionLoading] = useState(false);
+    const [message, setMessage] = useState({ text: "", type: "" });
+    const [searchQuery, setSearchQuery] = useState("");
 
-    try {
-      await notificationService.sendNotification(formData);
-      setStatus({ text: "Notification sent to users successfully!", type: "success" });
-      setFormData({ title: "", message: "" });
-      
-      setTimeout(() => setStatus({ text: "", type: "" }), 3000);
-    } catch (error) {
-      setStatus({ 
-        text: error.response?.data?.message || "Failed to send notification", 
-        type: "error" 
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    // Notification State
+    const [notifData, setNotifData] = useState({ title: "", message: "" });
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-3xl mx-auto space-y-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Admin Dashboard</h1>
-          <p className="text-gray-500 font-medium mt-2">Manage system announcements and alerts</p>
-        </header>
+    // Power Status State
+    const [powerForm, setPowerForm] = useState({ isActive: true, estimatedNextOutage: "" });
 
-        <section className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="p-4 bg-blue-50 rounded-2xl text-blue-600">
-              <Send size={24} />
+    useEffect(() => {
+        fetchDashboardData();
+    }, [activeTab]);
+
+    const fetchDashboardData = async (silent = false) => {
+        if (!silent) setIsLoading(true);
+        try {
+            const statsData = await adminService.getStats();
+            setStats(statsData);
+            setPowerForm({
+                isActive: statsData.powerStatus.isActive,
+                estimatedNextOutage: statsData.powerStatus.estimatedNextOutage || ""
+            });
+
+            if (activeTab === "users") {
+                const usersData = await adminService.getUsers();
+                setUsers(usersData);
+            } else if (activeTab === "reports") {
+                const reportsData = await adminService.getAllReports();
+                setReports(reportsData);
+            }
+        } catch (err) {
+            console.error("Failed to fetch admin data", err);
+            setMessage({ text: "Error loading dashboard data", type: "error" });
+        } finally {
+            if (!silent) setIsLoading(false);
+        }
+    };
+
+    const handleUpdatePower = async (e) => {
+        e.preventDefault();
+        setActionLoading(true);
+        try {
+            await adminService.updatePowerStatus(powerForm);
+            setMessage({ text: "Power status updated successfully!", type: "success" });
+            fetchDashboardData(true);
+        } catch (err) {
+            setMessage({ text: "Failed to update power status", type: "error" });
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const handleUpdateReportStatus = async (id, status) => {
+        setActionLoading(true);
+        try {
+            await adminService.updateReportStatus(id, status);
+            setMessage({ text: `Report marked as ${status}`, type: "success" });
+            fetchDashboardData(true);
+        } catch (err) {
+            setMessage({ text: "Failed to update report", type: "error" });
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const handleDeleteUser = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this user?")) return;
+        setActionLoading(true);
+        try {
+            await adminService.deleteUser(id);
+            setMessage({ text: "User deleted successfully", type: "success" });
+            fetchDashboardData(true);
+        } catch (err) {
+            setMessage({ text: err.response?.data?.message || "Failed to delete user", type: "error" });
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const handleSendNotif = async (e) => {
+        e.preventDefault();
+        setActionLoading(true);
+        try {
+            await notificationService.sendNotification(notifData);
+            setMessage({
+                text: `Success! "${notifData.title}" has been broadcasted to all active system users across Email, Phone, and In-App channels.`,
+                type: "success"
+            });
+            setNotifData({ title: "", message: "" });
+        } catch (err) {
+            setMessage({ text: "Critical: Failed to dispatch global alert. Check system logs.", type: "error" });
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const filteredUsers = users.filter(u =>
+        u.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        u.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const filteredReports = reports.filter(r =>
+        r.area.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.issueType.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    return (
+        <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+            {/* Sidebar - Desktop */}
+            <aside className="w-full md:w-64 bg-white border-r border-gray-100 p-6 space-y-8 md:sticky md:top-0 md:h-screen hidden md:block">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-600 rounded-xl text-white">
+                        <Shield size={24} />
+                    </div>
+                    <h2 className="font-black text-xl text-gray-900 tracking-tight">AdminPanel</h2>
+                </div>
+
+                <nav className="space-y-2">
+                    {[
+                        { id: "overview", icon: <Activity size={18} />, label: "Overview" },
+                        { id: "control", icon: <Zap size={18} />, label: "Power Control" },
+                        { id: "reports", icon: <FileText size={18} />, label: "Reports" },
+                        { id: "users", icon: <Users size={18} />, label: "User Management" },
+                        { id: "notifs", icon: <Send size={18} />, label: "Messaging" }
+                    ].map(item => (
+                        <button
+                            key={item.id}
+                            onClick={() => setActiveTab(item.id)}
+                            className={`w-full flex items-center gap-3 p-4 rounded-2xl font-bold transition-all ${activeTab === item.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'text-gray-500 hover:bg-gray-50'}`}
+                        >
+                            {item.icon}
+                            {item.label}
+                        </button>
+                    ))}
+                </nav>
+
+                {/* Assigned Feeders Section */}
+                {currentUser?.role === "admin" && assignedFeeders.length > 0 && (
+                    <div className="pt-8 border-t border-gray-100">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Assigned Feeders</p>
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                            {assignedFeeders.map((feeder) => (
+                                <div
+                                    key={typeof feeder === "string" ? feeder : feeder._id}
+                                    className="p-3 bg-blue-50 rounded-xl border border-blue-100 flex items-center gap-2"
+                                >
+                                    <MapPin size={14} className="text-blue-600 shrink-0" />
+                                    <span className="text-xs font-bold text-blue-800 truncate">
+                                        {typeof feeder === "string" ? feeder : feeder.name || feeder}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                <div className="pt-8 border-t border-gray-100">
+                    <div className="bg-blue-50 p-4 rounded-2xl">
+                        <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">Access Level</p>
+                        <div className="flex items-center gap-2">
+                            <Lock size={14} className="text-blue-600" />
+                            <span className="text-xs font-bold text-gray-700 font-mono">
+                                {currentUser?.role === "super-admin" ? "FULL ACCESS" : `${assignedFeeders.length} FEEDER${assignedFeeders.length !== 1 ? 'S' : ''}`}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            {/* Mobile Nav Top Bar */}
+            <div className="md:hidden bg-white p-4 border-b border-gray-100 flex items-center justify-between sticky top-0 z-20">
+                <div className="flex items-center gap-2">
+                    <Shield className="text-blue-600" size={24} />
+                    <span className="font-black">AdminPanel</span>
+                </div>
+                <div className="flex gap-2">
+                    <select
+                        value={activeTab}
+                        onChange={(e) => setActiveTab(e.target.value)}
+                        className="text-sm font-bold bg-gray-50 border-none rounded-lg p-2 outline-none"
+                    >
+                        <option value="overview">Overview</option>
+                        <option value="control">Power Control</option>
+                        <option value="reports">Reports</option>
+                        <option value="users">Users</option>
+                        <option value="notifs">Messaging</option>
+                    </select>
+                </div>
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Send Notification</h2>
-              <p className="text-sm text-gray-500">Dispatch an alert to all registered users based on their preference</p>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-             {predefinedTemplates.map((template, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => handleTemplateSelect(template)}
-                  className={`flex items-start gap-4 p-4 rounded-2xl border transition-all text-left ${formData.title === template.title ? 'border-blue-500 bg-blue-50/50' : 'border-gray-100 hover:border-gray-300 bg-white'}`}
-                >
-                  <div className="p-2 bg-white rounded-xl shadow-sm border border-gray-50 shrink-0">
-                    {template.icon}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-1">{template.title}</h3>
-                    <p className="text-xs text-gray-500">{template.desc}</p>
-                  </div>
-                </button>
-             ))}
-          </div>
+            {/* Main Content */}
+            <main className="flex-1 p-4 sm:p-8 md:p-12 max-w-6xl mx-auto w-full">
+                {/* Header Section */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+                    <div>
+                        <h1 className="text-3xl font-black text-gray-900 tracking-tight capitalize">
+                            {activeTab === 'overview' ? 'Dashboard Summary' : activeTab.replace('notifs', 'Messaging').replace('control', 'Power Control').replace('users', 'User Management').replace('reports', 'Community Reports')}
+                        </h1>
+                        <p className="text-gray-500 font-medium">Welcome back, {currentUser?.fullName}</p>
+                        {currentUser?.role === "admin" && assignedFeeders.length > 0 && (
+                            <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-2">
+                                <Lock size={12} className="inline mr-1" /> Managing {assignedFeeders.length} Feeder{assignedFeeders.length !== 1 ? 's' : ''}
+                            </p>
+                        )}
+                    </div>
+                    <button
+                        onClick={fetchDashboardData}
+                        disabled={isLoading}
+                        className="flex items-center justify-center gap-2 bg-black text-white p-3 px-6 rounded-2xl font-bold text-sm hover:bg-gray-900 active:scale-95 transition-all shadow-lg shadow-gray-200"
+                    >
+                        <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
+                        Sync Data
+                    </button>
+                </div>
 
-          {status.text && (
-             <div className={`mb-6 p-4 rounded-xl flex items-center gap-3 shadow-sm ${status.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-                {status.type === 'success' ? <CheckCircle2 size={24} /> : <AlertTriangle size={24} />}
-                <p className="font-bold text-sm">{status.text}</p>
-             </div>
-          )}
+                {/* Global Feedback Message */}
+                {message.text && (
+                    <div className={`mb-8 p-4 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300 shadow-sm border ${message.type === 'success' ? 'bg-green-50 border-green-100 text-green-700' : 'bg-red-50 border-red-100 text-red-700'}`}>
+                        {message.type === 'success' ? <CheckCircle2 size={20} /> : <AlertTriangle size={20} />}
+                        <p className="font-bold text-sm">{message.text}</p>
+                    </div>
+                )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Notification Title</label>
-              <input 
-                type="text" 
-                value={formData.title}
-                onChange={(e) => setFormData({...formData, title: e.target.value})}
-                placeholder="E.g., Emergency Outage Alert"
-                className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
-                required
-              />
-            </div>
+                {/* LOADING STATE Overlay */}
+                {isLoading && activeTab !== 'overview' && (
+                    <div className="h-64 flex flex-col items-center justify-center gap-4 text-gray-400">
+                        <Loader2 size={40} className="animate-spin text-blue-600" />
+                        <p className="font-bold uppercase tracking-widest text-xs">Accessing Database...</p>
+                    </div>
+                )}
 
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Message Content</label>
-              <textarea 
-                value={formData.message}
-                onChange={(e) => setFormData({...formData, message: e.target.value})}
-                placeholder="Enter the details of the announcement here..."
-                rows="4"
-                className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium resize-none"
-                required
-              ></textarea>
-            </div>
+                {/* TAB: OVERVIEW */}
+                {!isLoading && activeTab === "overview" && (
+                    <div className="space-y-8">
+                        {/* Feeder Access Info Card */}
+                        {currentUser?.role === "admin" && assignedFeeders.length > 0 && (
+                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-[2.5rem] p-8 border border-blue-100 shadow-sm">
+                                <div className="flex items-start justify-between mb-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 bg-white rounded-2xl border border-blue-200 flex items-center justify-center shadow-sm">
+                                            <MapPin className="text-blue-600" size={28} />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-black text-gray-900 tracking-tight">Assigned Feeders</h3>
+                                            <p className="text-sm text-gray-600 font-medium">You have access to {assignedFeeders.length} feeder{assignedFeeders.length !== 1 ? 's' : ''}</p>
+                                        </div>
+                                    </div>
+                                    <Shield className="text-blue-600 opacity-20" size={48} />
+                                </div>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                                    {assignedFeeders.map((feeder) => (
+                                        <div
+                                            key={typeof feeder === "string" ? feeder : feeder._id}
+                                            className="p-4 bg-white rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all"
+                                        >
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                                                <span className="text-xs font-black text-blue-600 uppercase tracking-tight">Active</span>
+                                            </div>
+                                            <p className="font-bold text-gray-900 text-sm truncate">
+                                                {typeof feeder === "string" ? feeder : feeder.name || feeder}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-gray-600 font-medium mt-6 pt-6 border-t border-blue-100">
+                                    💡 All data shown on this dashboard is filtered to only include reports and users from these feeders. For multi-feeder assignments, contact your Super Admin.
+                                </p>
+                            </div>
+                        )}
 
-            <button 
-                type="submit" 
-                disabled={isLoading}
-                className="w-full py-4 rounded-2xl font-black bg-blue-600 text-white shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all flex justify-center items-center gap-3 disabled:opacity-75 disabled:cursor-not-allowed"
-            >
-                {isLoading ? <><Loader2 size={20} className="animate-spin" /> Sending...</> : <><Send size={20} /> Dispatch Notification</>}
-            </button>
-          </form>
-        </section>
-      </div>
-    </div>
-  );
+                        {currentUser?.role === "super-admin" && (
+                            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-[2.5rem] p-8 border border-indigo-100 shadow-sm">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="w-14 h-14 bg-white rounded-2xl border border-indigo-200 flex items-center justify-center shadow-sm">
+                                        <Shield className="text-indigo-600" size={28} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-black text-gray-900 tracking-tight">Super Admin Access</h3>
+                                        <p className="text-sm text-gray-600 font-medium">You have access to all feeders and system features</p>
+                                    </div>
+                                </div>
+                                <p className="text-xs text-gray-600 font-medium">
+                                    Go to the <span className="font-black">Super Admin Dashboard</span> to manage admin assignments and system-wide configurations.
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Stat Cards */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {[
+                                { label: "Total Users", val: stats?.totalUsers || 0, icon: <Users className="text-blue-600" />, bg: "bg-blue-50" },
+                                { label: "Total Reports", val: stats?.totalReports || 0, icon: <FileText className="text-indigo-600" />, bg: "bg-indigo-50" },
+                                { label: "Pending Tasks", val: stats?.pendingReports || 0, icon: <AlertTriangle className="text-amber-600" />, bg: "bg-amber-50" },
+                                { label: "Live System", val: stats?.powerStatus?.isActive ? "ONLINE" : "OFFLINE", icon: <Zap className={stats?.powerStatus?.isActive ? "text-green-600" : "text-red-600"} />, bg: stats?.powerStatus?.isActive ? "bg-green-50" : "bg-red-50" },
+                            ].map((stat, i) => (
+                                <div key={i} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+                                    <div className={`w-12 h-12 ${stat.bg} rounded-2xl flex items-center justify-center mb-4`}>
+                                        {stat.icon}
+                                    </div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{stat.label}</p>
+                                    <h3 className="text-2xl font-black text-gray-900">{stat.val}</h3>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            {/* Recent Power Activity */}
+                            <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
+                                <h3 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-3">
+                                    <div className="w-1.5 h-6 bg-blue-600 rounded-full"></div>
+                                    Quick Power Control
+                                </h3>
+                                <div className="space-y-6">
+                                    <div className="flex items-center justify-between p-6 bg-gray-50 rounded-3xl border border-gray-100">
+                                        <div>
+                                            <p className="text-sm font-bold text-gray-900">Grid Status</p>
+                                            <p className="text-xs text-gray-500">Global system override for all users</p>
+                                        </div>
+                                        <div className={`px-4 py-2 rounded-xl text-xs font-black tracking-widest uppercase ${stats?.powerStatus?.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                            {stats?.powerStatus?.isActive ? 'ACTIVE' : 'OUTAGE'}
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => setActiveTab('control')}
+                                        className="w-full p-4 rounded-2xl bg-black text-white text-sm font-bold hover:bg-gray-900 transition-all flex items-center justify-center gap-2 shadow-lg shadow-gray-200"
+                                    >
+                                        Manage Power Rules <ChevronRight size={16} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Pending Reports Summary */}
+                            <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
+                                <h3 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-3">
+                                    <div className="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
+                                    Maintenance Summary
+                                </h3>
+                                {stats?.pendingReports > 0 ? (
+                                    <div className="space-y-4">
+                                        <div className="p-5 bg-amber-50 rounded-3xl border border-amber-100/50 flex items-center gap-4">
+                                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                                                <AlertTriangle size={20} className="text-amber-600" />
+                                            </div>
+                                            <p className="text-sm font-bold text-amber-900">You have {stats.pendingReports} community reports waiting for review.</p>
+                                        </div>
+                                        <button
+                                            onClick={() => setActiveTab('reports')}
+                                            className="w-full p-4 rounded-2xl bg-black text-white text-sm font-bold hover:bg-gray-900 transition-all flex items-center justify-center gap-2 shadow-lg shadow-gray-200"
+                                        >
+                                            Review All Reports <ChevronRight size={16} />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-10 text-gray-400">
+                                        <CheckCircle2 size={40} className="mx-auto mb-3 opacity-20" />
+                                        <p className="font-bold text-sm">No pending reports. Great job!</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* TAB: POWER CONTROL */}
+                {activeTab === "control" && (
+                    <div className="max-w-2xl bg-white rounded-[2.5rem] p-8 sm:p-12 border border-gray-100 shadow-sm">
+                        <header className="mb-10 text-center sm:text-left">
+                            <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3 justify-center sm:justify-start">
+                                <Zap className="text-blue-600" />
+                                Infrastructure Control
+                            </h2>
+                            <p className="text-gray-500 font-medium mt-2">Adjust live grid status and maintenance schedules</p>
+                            {currentUser?.role === "admin" && (
+                                <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-3">
+                                    Note: Power status updates affect your assigned feeders
+                                </p>
+                            )}
+                        </header>
+
+                        <form onSubmit={handleUpdatePower} className="space-y-8">
+                            <div className="p-6 bg-gray-50 rounded-[2rem] border border-gray-100 space-y-4">
+                                <p className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Grid Operational Status</p>
+                                <div className="flex gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setPowerForm({ ...powerForm, isActive: true })}
+                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.isActive ? 'bg-green-600 text-white border-green-700 shadow-lg shadow-green-100' : 'bg-white text-gray-400 border-gray-100'}`}
+                                    >
+                                        <Zap size={18} /> POWER ON
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setPowerForm({ ...powerForm, isActive: false })}
+                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${!powerForm.isActive ? 'bg-red-600 text-white border-red-700 shadow-lg shadow-red-100' : 'bg-white text-gray-400 border-gray-100'}`}
+                                    >
+                                        <ZapOff size={18} /> POWER OFF
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Estimated Change Time</label>
+                                <div className="relative">
+                                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                                    <input
+                                        type="text"
+                                        placeholder="E.g., 2:00 PM Today"
+                                        value={powerForm.estimatedNextOutage}
+                                        onChange={(e) => setPowerForm({ ...powerForm, estimatedNextOutage: e.target.value })}
+                                        className="w-full p-5 pl-12 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold placeholder:text-gray-300"
+                                    />
+                                </div>
+                                <p className="text-[10px] text-gray-400 mt-2 ml-1">Visible to all users on their main dashboard.</p>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={actionLoading}
+                                className="w-full py-5 rounded-[2rem] font-black bg-black text-white shadow-xl shadow-gray-400 hover:bg-gray-900 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-75 submit-btn"
+                            >
+                                {actionLoading ? <Loader2 className="animate-spin" size={20} /> : "APPLY STATUS CHANGE"}
+                            </button>
+                        </form>
+                    </div>
+                )}
+
+                {/* TAB: REPORTS */}
+                {activeTab === "reports" && !isLoading && (
+                    <div className="space-y-6">
+                        {currentUser?.role === "admin" && assignedFeeders.length > 0 && (
+                            <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-start gap-3">
+                                <Info size={18} className="text-blue-600 mt-0.5 shrink-0" />
+                                <p className="text-sm text-blue-800 font-medium">
+                                    Showing reports from your assigned feeders only. <span className="font-black">{assignedFeeders.map(f => typeof f === "string" ? f : f.name).join(', ')}</span>
+                                </p>
+                            </div>
+                        )}
+                        <div className="relative max-w-md mb-8">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <input
+                                type="text"
+                                placeholder="Filter reports by area or type..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full p-4 pl-12 bg-white border border-gray-200 rounded-2xl text-sm font-bold shadow-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            />
+                        </div>
+
+                        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden overflow-x-auto">
+                            <table className="w-full text-left border-collapse min-w-[700px]">
+                                <thead>
+                                    <tr className="bg-gray-50 border-b border-gray-100">
+                                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Reporter</th>
+                                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Type / Issue</th>
+                                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Location</th>
+                                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50">
+                                    {filteredReports.map((report) => (
+                                        <tr key={report._id} className="hover:bg-gray-50/50 transition-colors">
+                                            <td className="p-6">
+                                                <div className="font-bold text-gray-900 leading-tight">{report.fullName}</div>
+                                                <div className="text-xs text-gray-400 font-medium">{report.phone}</div>
+                                            </td>
+                                            <td className="p-6">
+                                                <div className="inline-block px-3 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-black mb-1">
+                                                    {report.issueType}
+                                                </div>
+                                                <div className="text-xs text-gray-500 font-medium line-clamp-1">{report.description}</div>
+                                            </td>
+                                            <td className="p-6">
+                                                <div className="font-bold text-gray-700 text-sm">{report.area}</div>
+                                                <div className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">{report.feeder}</div>
+                                            </td>
+                                            <td className="p-6">
+                                                <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border ${report.status === 'Resolved' ? 'bg-green-50 text-green-700 border-green-100' :
+                                                    report.status === 'Pending' ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-blue-50 text-blue-700 border-blue-100'
+                                                    }`}>
+                                                    {report.status}
+                                                </span>
+                                            </td>
+                                            <td className="p-6">
+                                                {report.status !== 'Resolved' && (
+                                                    <button
+                                                        onClick={() => handleUpdateReportStatus(report._id, "Resolved")}
+                                                        className="p-2 bg-black text-white rounded-xl hover:bg-gray-900 transition-all font-bold text-xs px-4 whitespace-nowrap submit-btn"
+                                                    >
+                                                        RESOLVE
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {filteredReports.length === 0 && (
+                                        <tr>
+                                            <td colSpan="5" className="p-20 text-center text-gray-400 font-bold">No reports found matching your criteria.</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+
+                {/* TAB: USERS */}
+                {activeTab === "users" && !isLoading && (
+                    <div className="space-y-6">
+                        {currentUser?.role === "admin" && assignedFeeders.length > 0 && (
+                            <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-start gap-3">
+                                <Info size={18} className="text-blue-600 mt-0.5 shrink-0" />
+                                <p className="text-sm text-blue-800 font-medium">
+                                    Showing users from your assigned feeders only. <span className="font-black">{assignedFeeders.map(f => typeof f === "string" ? f : f.name).join(', ')}</span>
+                                </p>
+                            </div>
+                        )}
+                        <div className="relative max-w-md mb-8">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <input
+                                type="text"
+                                placeholder="Search by name or email..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full p-4 pl-12 bg-white border border-gray-200 rounded-2xl text-sm font-bold shadow-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            />
+                        </div>
+
+                        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden overflow-x-auto">
+                            <table className="w-full text-left border-collapse min-w-[600px]">
+                                <thead>
+                                    <tr className="bg-gray-50 border-b border-gray-100">
+                                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">User Details</th>
+                                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Role</th>
+                                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Joining Date</th>
+                                        <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Protection</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50">
+                                    {filteredUsers.map((user) => (
+                                        <tr key={user._id} className="hover:bg-gray-50/50 transition-colors">
+                                            <td className="p-6">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center font-black text-gray-400 uppercase">
+                                                        {user.fullName[0]}
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-bold text-gray-900">{user.fullName}</div>
+                                                        <div className="text-xs text-gray-400 font-medium">{user.email}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="p-6">
+                                                <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${user.role.includes('admin') ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}`}>
+                                                    {user.role}
+                                                </span>
+                                            </td>
+                                            <td className="p-6 text-sm text-gray-500 font-medium">
+                                                {new Date(user.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                                            </td>
+                                            <td className="p-6 text-right">
+                                                {user.role !== "super-admin" && currentUser?._id !== user._id && (
+                                                    <button
+                                                        onClick={() => handleDeleteUser(user._id)}
+                                                        className="p-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm shadow-red-50"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                )}
+                                                {user.role === "super-admin" && (
+                                                    <Shield size={20} className="text-blue-600 inline-block mr-3 opacity-30" />
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+
+                {/* TAB: NOTIFICATIONS (MESSAGING) */}
+                {activeTab === "notifs" && (
+                    <div className="max-w-2xl bg-white rounded-[2.5rem] p-8 sm:p-12 border border-gray-100 shadow-sm">
+                        <header className="mb-10">
+                            <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3">
+                                <Send className="text-blue-600" />
+                                Global Messaging
+                            </h2>
+                            <p className="text-gray-500 font-medium mt-2">Send emergency alerts and updates to all system users</p>
+                            {currentUser?.role === "admin" && (
+                                <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-xl flex items-start gap-3">
+                                    <Info size={16} className="text-blue-600 mt-0.5 shrink-0" />
+                                    <p className="text-sm text-blue-800 font-medium">
+                                        Your messages will be visible to all users. However, you have management access for your assigned feeder areas only.
+                                    </p>
+                                </div>
+                            )}
+                        </header>
+
+                        <form onSubmit={handleSendNotif} className="space-y-8">
+                            <div>
+                                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Alert Title</label>
+                                <input
+                                    type="text"
+                                    value={notifData.title}
+                                    onChange={(e) => setNotifData({ ...notifData, title: e.target.value })}
+                                    placeholder="E.g., Emergency Grid Repair"
+                                    className="w-full p-5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Detailed Message</label>
+                                <textarea
+                                    value={notifData.message}
+                                    onChange={(e) => setNotifData({ ...notifData, message: e.target.value })}
+                                    placeholder="Explain the situation in details..."
+                                    rows="5"
+                                    className="w-full p-5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold resize-none"
+                                    required
+                                ></textarea>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={actionLoading}
+                                className="w-full py-5 rounded-[2rem] font-black bg-black text-white shadow-xl shadow-gray-400 hover:bg-gray-900 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-75 submit-btn"
+                            >
+                                {actionLoading ? <Loader2 className="animate-spin" size={20} /> : <><Send size={20} /> SEND GLOBAL ALERT NOW</>}
+                            </button>
+
+                            <div className="p-6 bg-blue-50 rounded-3xl flex items-start gap-4">
+                                <Info className="text-blue-600 mt-1 shrink-0" size={18} />
+                                <p className="text-xs text-blue-700 font-bold leading-relaxed">
+                                    Messages will be delivered via In-App notifications, SMS, or Email based on each user's individual settings.
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                )}
+            </main>
+        </div>
+    );
 };
 
 export default AdminDashboard;

@@ -98,13 +98,29 @@ const Login = () => {
               </button>
             </div>
           </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <label className="flex items-center gap-2 text-gray-600 cursor-pointer">
+              <input
+                type="checkbox"
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              Remember me
+            </label>
+            <Link
+              to="/forgot-password"
+              className="text-blue-600 font-semibold hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
         </div>
 
         <button
           type="submit"
           id="login-submit-btn"
           disabled={isLoading}
-          className="w-full bg-blue-600 text-white p-4 rounded-xl font-semibold mt-8 hover:bg-blue-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-blue-200"
+          className="w-full bg-black text-white p-4 rounded-xl font-semibold mt-8 hover:bg-gray-900 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-gray-400 submit-btn"
         >
           {isLoading ? (
             <>
