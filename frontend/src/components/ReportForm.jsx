@@ -1,50 +1,88 @@
 import { useState, useEffect } from "react";
-import { Map, ChevronDown, Loader2, AlertCircle, AlertTriangle, Smartphone, X, CheckCircle2 } from "lucide-react";
-import { areaFeederMapping } from "../constants/areas";
+import { Map, ChevronDown, Loader2, AlertCircle, AlertTriangle, Smartphone, X, CheckCircle2, Zap, Lock } from "lucide-react";
 import { reportIssue } from "../services/reportService";
+import locationService from "../services/locationService";
+import { useAuth } from "../context/AuthContext";
 
 const ReportForm = ({ onClose }) => {
+    const { user } = useAuth();
     // State for Area/Feeder selection
+    const [locations, setLocations] = useState({ wards: [], feeders: [] });
     const [selectedArea, setSelectedArea] = useState("");
     const [feederName, setFeederName] = useState("");
     const [isFeederUpdating, setIsFeederUpdating] = useState(false);
     const [areaError, setAreaError] = useState("");
+    const [isLocLoading, setIsLocLoading] = useState(true);
 
     // State for Report Form
     const [formData, setFormData] = useState({
-        fullName: "",
-        phone: "",
+        fullName: user?.fullName || "",
+        phone: user?.phone || "",
         issueType: "",
         description: ""
     });
+
+    // Auto-fill from user profile
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                fullName: user.fullName || prev.fullName,
+                phone: user.phone || prev.phone
+            }));
+            if (user.ward) {
+                setSelectedArea(user.ward);
+            }
+            if (user.feeder) {
+                setFeederName(user.feeder);
+            }
+        }
+    }, [user]);
     const [phoneError, setPhoneError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState(false);
+
+    // Fetch locations on mount
+    useEffect(() => {
+        const fetchLocs = async () => {
+            try {
+                const data = await locationService.getAll();
+                setLocations(data);
+            } catch (err) {
+                console.error("Failed to fetch locations", err);
+            } finally {
+                setIsLocLoading(false);
+            }
+        };
+        fetchLocs();
+    }, []);
 
     // Update feeder name automatically when area changes
     useEffect(() => {
         if (selectedArea) {
             setIsFeederUpdating(true);
             setAreaError("");
-            const timer = setTimeout(() => {
-                const mappedFeeder = areaFeederMapping[selectedArea];
-                if (mappedFeeder) {
-                    setFeederName(mappedFeeder);
+            
+            // Find the feeder linked to this ward name
+            const wardObj = locations.wards.find(w => w.name === selectedArea);
+            if (wardObj) {
+                const feederObj = locations.feeders.find(f => f.ward?._id === wardObj._id);
+                if (feederObj) {
+                    setFeederName(feederObj.name);
                 } else {
                     setFeederName("");
                     setAreaError("No feeder mapping found for this area.");
                 }
-                setIsFeederUpdating(false);
-            }, 600);
-
-            return () => clearTimeout(timer);
+            }
+            
+            setIsFeederUpdating(false);
         } else {
             setFeederName("");
             setAreaError("");
             setIsFeederUpdating(false);
         }
-    }, [selectedArea]);
+    }, [selectedArea, locations]);
 
     const handlePhoneChange = (e) => {
         const value = e.target.value.replace(/\D/g, ""); // Accept numbers only
@@ -146,18 +184,22 @@ const ReportForm = ({ onClose }) => {
 
                 <div className="w-full space-y-4">
                     <div className="text-center">
-                        <label className="block text-[10px] sm:text-sm font-semibold text-gray-500 mb-1.5 sm:mb-2 text-center">
+                        <label className="block text-[10px] sm:text-sm font-semibold text-gray-500 mb-1.5 sm:mb-2 text-center flex items-center justify-center gap-2">
                             Select Ward (Unguwa)
+                            {user && user.ward === selectedArea && <Lock size={12} className="text-gray-400" />}
                         </label>
                         <div className="relative">
                             <select
-                                className="w-full p-3 sm:p-4 bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl appearance-none focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer font-medium text-gray-700 text-sm sm:text-base text-center pr-10"
+                                className={`w-full p-3 sm:p-4 border rounded-xl sm:rounded-2xl appearance-none focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer font-medium text-sm sm:text-base text-center pr-10 ${user && user.ward === selectedArea ? "bg-gray-100 border-gray-100 text-gray-500" : "bg-gray-50 border-gray-200 text-gray-700"}`}
                                 value={selectedArea}
                                 onChange={(e) => setSelectedArea(e.target.value)}
+                                disabled={isLocLoading}
                             >
-                                <option value="">Select an area</option>
-                                {Object.keys(areaFeederMapping).sort().map(area => (
-                                    <option key={area} value={area}>{area}</option>
+                                <option value="">{isLocLoading ? "Loading areas..." : "Select an area"}</option>
+                                {locations.wards.sort((a, b) => a.name.localeCompare(b.name)).map(ward => (
+                                    <option key={ward._id} value={ward.name}>
+                                        {ward.name}
+                                    </option>
                                 ))}
                             </select>
                             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
@@ -167,8 +209,9 @@ const ReportForm = ({ onClose }) => {
                     </div>
 
                     <div>
-                        <label className="block text-[10px] sm:text-sm font-semibold text-gray-500 mb-1.5 sm:mb-2 text-center">
+                        <label className="block text-[10px] sm:text-sm font-semibold text-gray-500 mb-1.5 sm:mb-2 text-center flex items-center justify-center gap-2">
                             Feeder Name (Auto-filled)
+                            {user && user.feeder === feederName && <Lock size={12} className="text-gray-400" />}
                         </label>
                         <div className="relative">
                             <input
@@ -177,7 +220,9 @@ const ReportForm = ({ onClose }) => {
                                 placeholder={isFeederUpdating ? "Syncing..." : "Auto populates"}
                                 className={`w-full p-3 sm:p-4 border rounded-xl sm:rounded-2xl font-bold outline-none transition-all text-sm sm:text-base text-center ${isFeederUpdating
                                     ? "bg-gray-50 border-gray-100 text-gray-400 animate-pulse"
-                                    : "bg-blue-50/50 border-blue-100 text-blue-700"
+                                    : user && user.feeder === feederName 
+                                        ? "bg-gray-100 border-gray-100 text-gray-500 cursor-not-allowed" 
+                                        : "bg-blue-50/50 border-blue-100 text-blue-700"
                                     }`}
                                 value={feederName}
                             />
@@ -218,28 +263,34 @@ const ReportForm = ({ onClose }) => {
                 <form onSubmit={handleFormSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 gap-4">
                         <div>
-                            <label className="block text-xs sm:text-sm font-bold text-gray-600 mb-1 sm:mb-1.5 ml-1">Full Name</label>
+                            <label className="block text-xs sm:text-sm font-bold text-gray-600 mb-1 sm:mb-1.5 ml-1 flex items-center justify-between">
+                                Full Name
+                                {user && <Lock size={12} className="text-gray-400" />}
+                            </label>
                             <input
                                 type="text"
                                 required
-                                className="w-full p-3 sm:p-4 bg-gray-50 border border-gray-100 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm sm:text-base"
+                                readOnly={!!user}
+                                className={`w-full p-3 sm:p-4 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm sm:text-base ${user ? "bg-gray-100 border-gray-100 text-gray-500 cursor-not-allowed" : "bg-gray-50 border-gray-100"}`}
                                 placeholder="Enter your name"
                                 value={formData.fullName}
-                                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                                onChange={(e) => !user && setFormData({ ...formData, fullName: e.target.value })}
                             />
                         </div>
 
                         <div>
-                            <label className="block text-xs sm:text-sm font-bold text-gray-600 mb-1 sm:mb-1.5 ml-1 flex items-center gap-2">
-                                <Smartphone size={14} /> Phone Number
+                            <label className="block text-xs sm:text-sm font-bold text-gray-600 mb-1 sm:mb-1.5 ml-1 flex items-center justify-between">
+                                <span className="flex items-center gap-2"><Smartphone size={14} /> Phone Number</span>
+                                {user && <Lock size={12} className="text-gray-400" />}
                             </label>
                             <input
                                 type="tel"
                                 required
-                                className={`w-full p-3 sm:p-4 bg-gray-50 border ${phoneError ? 'border-red-300' : 'border-gray-100'} rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm sm:text-base`}
+                                readOnly={!!user}
+                                className={`w-full p-3 sm:p-4 border ${phoneError ? 'border-red-300' : 'border-gray-100'} rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm sm:text-base ${user ? "bg-gray-100 border-gray-100 text-gray-500 cursor-not-allowed" : "bg-gray-50"}`}
                                 placeholder="08012345678"
                                 value={formData.phone}
-                                onChange={handlePhoneChange}
+                                onChange={!user ? handlePhoneChange : undefined}
                             />
                             {phoneError && (
                                 <p className="text-red-500 text-[10px] sm:text-xs font-bold mt-1 ml-1 flex items-center gap-1">

@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Zap, Bell, MapPin, Menu, X, Home, FileText, Activity, AlertTriangle, User, LogOut, AlertCircle, Shield, Clock, CheckCircle2, Gauge } from "lucide-react";
 import { logout, getCurrentUser } from "../services/authService";
 import notificationService from "../services/notificationService";
+import socket from "../services/socket";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -19,8 +20,17 @@ const Navbar = () => {
     const user = getCurrentUser();
     if (user) {
       fetchNotifications();
-      const interval = setInterval(fetchNotifications, 60000); // 1 minute
-      return () => clearInterval(interval);
+      
+      // Listen for real-time notifications
+      const handleNewNotification = (notification) => {
+        setNotifications(prev => [notification, ...prev]);
+      };
+      
+      socket.on("newNotification", handleNewNotification);
+      
+      return () => {
+        socket.off("newNotification", handleNewNotification);
+      };
     }
   }, []);
 
@@ -76,8 +86,8 @@ const Navbar = () => {
 
   const navLinks = [
     { path: "/", icon: <Home size={20} />, label: "Home" },
-    { path: "/status", icon: <Activity size={20} />, label: "My Status" },
-    { path: "/all-status", icon: <Gauge size={20} />, label: "Feeder Status" },
+    { path: "/status", icon: <Activity size={20} />, label: "All Feeder Status" },
+    { path: "/all-status", icon: <Gauge size={20} />, label: "Grid Statistics" },
     { path: "/report", icon: <AlertTriangle size={20} />, label: "Report Issue" },
     { path: "/reports-history", icon: <FileText size={20} />, label: "Incident Reports" },
     { path: "/profile", icon: <User size={20} />, label: "Me" },
@@ -122,20 +132,32 @@ const Navbar = () => {
           {/* Right Side: Location, Notification & User */}
           <div className="flex items-center gap-2 sm:gap-4">
 
+            {user && (
+              <>
+                {/* Notification Icon */}
+                <button
+                  className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-all active:scale-90 relative"
+                  aria-label="Notifications"
+                  onClick={() => setShowNotifications(true)}
+                >
+                  <Bell size={22} />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white text-white text-[8px] font-bold flex items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+              </>
+            )}
 
-            {/* Notification Icon */}
-            <button
-              className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-all active:scale-90 relative"
-              aria-label="Notifications"
-              onClick={() => setShowNotifications(true)}
-            >
-              <Bell size={22} />
-              {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white text-white text-[8px] font-bold flex items-center justify-center">
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
-              )}
-            </button>
+            {!user && (
+              <Link 
+                to="/login" 
+                className="bg-blue-600 text-white px-5 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-100"
+              >
+                Login
+              </Link>
+            )}
 
             {/* Notification Drawer (OPay Style) */}
             <div
@@ -299,7 +321,10 @@ const Navbar = () => {
       >
         <div className="p-6 h-full flex flex-col">
           <div className="flex items-center justify-between mb-10">
-            <span className="text-xl font-black text-gray-800 uppercase tracking-widest">Navigation</span>
+            <div className="flex items-center gap-2">
+              <Zap size={24} className="text-blue-600 fill-blue-600" />
+              <span className="text-xl font-black text-blue-600 tracking-tight">PowerSense</span>
+            </div>
             <button
               onClick={toggleMenu}
               className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-all"

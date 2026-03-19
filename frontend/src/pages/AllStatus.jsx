@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Search, MapPin, Power, AlertCircle, CheckCircle, Clock, ChevronRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
-import adminService from "../services/adminService.js";
+import locationService from "../services/locationService.js";
 import { useNavigate } from "react-router-dom";
+import socket from "../services/socket";
+import api from "../services/api";
 
 const AllStatus = () => {
     const { user } = useAuth();
@@ -11,7 +13,6 @@ const AllStatus = () => {
     const [filteredFeeders, setFilteredFeeders] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(true);
-    const [powerStatus, setPowerStatus] = useState({ isActive: true });
     const [selectedFeederId, setSelectedFeederId] = useState(null);
     const [showReportWarning, setShowReportWarning] = useState(false);
 
@@ -21,16 +22,25 @@ const AllStatus = () => {
             try {
                 setLoading(true);
                 
-                // Fetch all feeders
-                const feedersData = await adminService.getAllFeeders();
-                const enrichedFeeders = feedersData.map((feeder) => ({
-                    ...feeder,
-                    status: powerStatus.isActive ? "On" : "Off",
-                    lastUpdated: new Date().toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                    })
-                }));
+                // Fetch all feeders and statuses in parallel
+                const [feedersData, statusesData] = await Promise.all([
+                    locationService.getFeeders(),
+                    api.get("/power/all-status")
+                ]);
+
+                const statuses = statusesData.data;
+                
+                const enrichedFeeders = feedersData.map((feeder) => {
+                    const feederStatus = statuses.find(s => s.feeder?._id === feeder._id || s.feeder === feeder._id);
+                    return {
+                        ...feeder,
+                        status: feederStatus ? (feederStatus.isActive ? "On" : "Off") : "On",
+                        lastUpdated: feederStatus ? new Date(feederStatus.lastUpdated).toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        }) : "Just Now"
+                    };
+                });
                 
                 setFeeders(enrichedFeeders);
                 setFilteredFeeders(enrichedFeeders);
@@ -42,6 +52,28 @@ const AllStatus = () => {
         };
 
         fetchData();
+
+        // Listen for real-time status updates
+        const handleStatusUpdate = (update) => {
+            setFeeders(prevFeeders => 
+                prevFeeders.map(feeder => {
+                    if (feeder._id === update.feederId) {
+                        return {
+                            ...feeder,
+                            status: update.isActive ? "On" : "Off",
+                            lastUpdated: "Just Now"
+                        };
+                    }
+                    return feeder;
+                })
+            );
+        };
+
+        socket.on("powerStatusUpdated", handleStatusUpdate);
+
+        return () => {
+            socket.off("powerStatusUpdated", handleStatusUpdate);
+        };
     }, []);
 
     // Handle search/filter
@@ -77,10 +109,10 @@ const AllStatus = () => {
                 };
             case "Off":
                 return {
-                    icon: <Power size={20} className="text-red-600" />,
-                    bgColor: "bg-red-50",
-                    textColor: "text-red-700",
-                    badge: "bg-red-100 text-red-700"
+                    icon: <Power size={20} className="text-white" />,
+                    bgColor: "bg-black",
+                    textColor: "text-white",
+                    badge: "bg-gray-800 text-white"
                 };
             case "Maintenance":
                 return {
@@ -118,7 +150,10 @@ const AllStatus = () => {
         navigate("/report-issue", { state: { feeder: feeder.name } });
     };
 
-    const statusInfo = getStatusIcon(powerStatus.isActive ? "On" : "Off");
+    // Calculate system status summary
+    const activeFeedersCount = feeders.filter(f => f.status === "On").length;
+    const isSystemMostlyOn = activeFeedersCount > feeders.length / 2;
+    const systemStatusInfo = getStatusIcon(activeFeedersCount > 0 ? "On" : "Off");
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
@@ -135,12 +170,12 @@ const AllStatus = () => {
                     {/* System Status Summary */}
                     <div className="flex items-center gap-3 mt-6 bg-blue-50 p-4 rounded-xl border border-blue-200">
                         <div className="bg-blue-100 p-3 rounded-lg">
-                            {statusInfo.icon}
+                            {systemStatusInfo.icon}
                         </div>
                         <div>
                             <p className="text-sm text-blue-600 font-semibold">System Status</p>
-                            <p className={`text-lg font-bold ${statusInfo.textColor}`}>
-                                {powerStatus.isActive ? "Power On" : "Power Off"}
+                            <p className={`text-lg font-bold ${systemStatusInfo.textColor}`}>
+                                {activeFeedersCount} / {feeders.length} Feeders Active
                             </p>
                         </div>
                     </div>

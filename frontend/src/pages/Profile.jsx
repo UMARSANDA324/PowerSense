@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, Settings, Shield, Bell, HelpCircle, LogOut, ChevronRight, MapPin, Smartphone, Mail, Edit3, X, Loader2, CheckCircle2, Zap } from "lucide-react";
 import { getCurrentUser, logout, updateProfile } from "../services/authService";
 import { useNavigate } from "react-router-dom";
-import { KANO_LGAS, AREAS } from "../constants/states";
-import { areaFeederMapping } from "../constants/areas";
+import locationService from "../services/locationService";
 
 const Profile = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(getCurrentUser());
     const [isEditing, setIsEditing] = useState(false);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const [locations, setLocations] = useState({ states: [], lgas: [], wards: [], feeders: [] });
+    const [isLocLoading, setIsLocLoading] = useState(true);
 
     const normalizePhoneInput = (input) => {
         const digits = (input || "").toString().replace(/\D/g, "");
@@ -30,11 +31,27 @@ const Profile = () => {
         fullName: user?.fullName || "",
         email: user?.email || "",
         phone: normalizePhoneInput(user?.phone || ""),
-        lga: user?.lga || "Kumbotso",
-        ward: user?.ward || "Sheka Gabas",
+        state: user?.state || "Kano",
+        lga: user?.lga || "",
+        ward: user?.ward || "",
         password: "",
-        notificationPreference: user?.notificationPreference || "phone"
+        notificationPreference: user?.notificationPreference || "in-app"
     });
+
+    // Fetch locations
+    useEffect(() => {
+        const fetchLocs = async () => {
+            try {
+                const data = await locationService.getAll();
+                setLocations(data);
+            } catch (err) {
+                console.error("Failed to fetch locations", err);
+            } finally {
+                setIsLocLoading(false);
+            }
+        };
+        fetchLocs();
+    }, []);
 
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState({ text: "", type: "" });
@@ -111,11 +128,10 @@ const Profile = () => {
         // Auto-detect feeder based on ward/area
         let detectedFeeder = user?.feeder || "Unknown Feeder";
         if (formData.ward) {
-            for (const [area, feeder] of Object.entries(areaFeederMapping)) {
-                if (formData.ward.includes(area)) {
-                    detectedFeeder = feeder;
-                    break;
-                }
+            const wardObj = locations.wards.find(w => w.name === formData.ward);
+            if (wardObj) {
+                const feederObj = locations.feeders.find(f => f.ward?._id === wardObj._id);
+                if (feederObj) detectedFeeder = feederObj.name;
             }
         }
 
@@ -243,17 +259,17 @@ const Profile = () => {
                         <h2 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">
                             {section.category}
                         </h2>
-                        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden px-2">
+                        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden px-2 flex flex-col gap-2 p-2">
                             {section.items.map((item, index) => (
                                 <button
                                     key={item.label}
-                                    className={`w-full p-5 flex flex-col items-center gap-3 group active:bg-gray-50 transition-colors ${index !== section.items.length - 1 ? "border-b border-gray-50" : ""}`}
+                                    className={`w-full p-5 flex flex-col items-center gap-3 group active:bg-gray-50 transition-colors bg-gray-50/30 rounded-3xl ${index !== section.items.length - 1 ? "" : ""}`}
                                     onClick={() => {
                                         if (item.label === "Notifications") navigate("/notification-settings");
                                         if (item.label === "About Us") navigate("/about-us");
                                     }}
                                 >
-                                    <div className="p-3 bg-gray-50 rounded-2xl group-active:scale-95 transition-transform">
+                                    <div className="p-3 bg-white rounded-2xl group-active:scale-95 transition-transform shadow-sm">
                                         {item.icon}
                                     </div>
                                     <div className="text-center">
@@ -288,18 +304,20 @@ const Profile = () => {
                         className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
                         onClick={() => setIsEditing(false)}
                     />
-                    <div className="bg-white w-full sm:max-w-md rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 sm:p-8 relative z-10 shadow-2xl animate-in slide-in-from-bottom-full sm:zoom-in-95 duration-300">
+                    <div className="bg-white w-full sm:max-w-md rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 sm:p-8 relative z-10 shadow-2xl animate-in slide-in-from-bottom-full sm:zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar">
                         <button
                             onClick={() => setIsEditing(false)}
-                            className="absolute right-6 top-6 p-2 bg-gray-100 text-gray-500 hover:bg-gray-200 rounded-full transition-colors"
+                            className="absolute right-6 top-6 p-2 bg-gray-100 text-gray-500 hover:bg-gray-200 rounded-full transition-colors z-20"
                         >
                             <X size={20} />
                         </button>
 
-                        <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
-                            <span className="w-2 h-8 bg-blue-600 rounded-full"></span>
-                            Edit Profile
-                        </h2>
+                        <div className="sticky top-0 bg-white pb-4 mb-2 z-10">
+                            <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3">
+                                <span className="w-2 h-8 bg-blue-600 rounded-full"></span>
+                                Edit Profile
+                            </h2>
+                        </div>
 
                         {message.text && (
                             <div className={`mb-6 p-4 rounded-xl flex items-center gap-3 shadow-sm ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
@@ -309,112 +327,131 @@ const Profile = () => {
                         )}
 
                         <form onSubmit={handleSaveProfile} className="space-y-4">
-                            <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Full Name</label>
-                                <input
-                                    type="text"
-                                    name="fullName"
-                                    value={formData.fullName}
-                                    onChange={handleChange}
-                                    className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
-                                    required
-                                />
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Full Name</label>
+                                    <input
+                                        type="text"
+                                        name="fullName"
+                                        value={formData.fullName}
+                                        onChange={handleChange}
+                                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Email Address</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Phone Number</label>
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        placeholder="e.g., 08012345678"
+                                        maxLength="11"
+                                        className={`w-full p-4 bg-gray-50 border rounded-2xl focus:ring-2 outline-none transition-all font-medium ${phoneError && formData.phone ? "border-red-300 focus:ring-red-500" : "border-gray-100 focus:ring-blue-500"}`}
+                                    />
+                                    {phoneError && formData.phone && (
+                                        <p className="text-xs text-red-500 font-bold mt-1 ml-1">{phoneError}</p>
+                                    )}
+                                    {formData.phone && formData.phone.length === 11 && !phoneError && (
+                                        <p className="text-xs text-green-500 font-bold mt-1 ml-1">✓ Valid phone number</p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">New Password (optional)</label>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        placeholder="Leave blank to keep unchanged"
+                                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Notification Preference</label>
+                                    <select
+                                        name="notificationPreference"
+                                        value={formData.notificationPreference === "phone" ? "in-app" : (formData.notificationPreference === "sms" ? "push" : formData.notificationPreference)}
+                                        onChange={handleChange}
+                                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
+                                    >
+                                        <option value="in-app">In-App Notification</option>
+                                        <option value="push">Push Notification (FCM)</option>
+                                        <option value="email">Email</option>
+                                        <option value="off">Off (Disable Notifications)</option>
+                                    </select>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">LGA</label>
+                                        <select
+                                            name="lga"
+                                            value={formData.lga}
+                                            onChange={handleChange}
+                                            disabled={isLocLoading}
+                                            className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm"
+                                        >
+                                            <option value="">Select LGA</option>
+                                            {locations.lgas
+                                                .filter(l => l.state?.name === formData.state)
+                                                .map(lga => (
+                                                    <option key={lga._id} value={lga.name}>{lga.name}</option>
+                                                ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Area</label>
+                                        <select
+                                            name="ward"
+                                            value={formData.ward}
+                                            onChange={handleChange}
+                                            disabled={isLocLoading || !formData.lga}
+                                            className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm"
+                                        >
+                                            <option value="">Select Area</option>
+                                            {locations.wards
+                                                .filter(w => w.lga?.name === formData.lga)
+                                                .map(area => (
+                                                    <option key={area._id} value={area.name}>{area.name}</option>
+                                                ))}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Email Address</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
-                                    required
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Phone Number</label>
-                                <input
-                                    type="tel"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    placeholder="e.g., 08012345678"
-                                    maxLength="11"
-                                    className={`w-full p-4 bg-gray-50 border rounded-2xl focus:ring-2 outline-none transition-all font-medium ${phoneError && formData.phone ? "border-red-300 focus:ring-red-500" : "border-gray-100 focus:ring-blue-500"}`}
-                                />
-                                {phoneError && formData.phone && (
-                                    <p className="text-xs text-red-500 font-bold mt-1 ml-1">{phoneError}</p>
-                                )}
-                                {formData.phone && formData.phone.length === 11 && !phoneError && (
-                                    <p className="text-xs text-green-500 font-bold mt-1 ml-1">✓ Valid phone number</p>
-                                )}
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">New Password (optional)</label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    placeholder="Leave blank to keep unchanged"
-                                    className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Notification Preference</label>
-                                <select
-                                    name="notificationPreference"
-                                    value={formData.notificationPreference}
-                                    onChange={handleChange}
-                                    className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
+                            <div className="sticky bottom-0 bg-white pt-4 mt-6 z-10">
+                                <button
+                                    type="submit"
+                                    disabled={isLoading || (formData.phone && normalizePhoneInput(formData.phone).length !== 11)}
+                                    className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed submit-btn"
                                 >
-                                    <option value="phone">Phone Notification (In-App)</option>
-                                    <option value="sms">SMS</option>
-                                    <option value="email">Email</option>
-                                    <option value="off">Off (Disable Notifications)</option>
-                                </select>
+                                    {isLoading ? (
+                                        <><Loader2 className="animate-spin" size={20} /> Saving...</>
+                                    ) : (
+                                        <>
+                                            <CheckCircle2 size={20} />
+                                            Save Changes
+                                        </>
+                                    )}
+                                </button>
                             </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">LGA</label>
-                                    <select
-                                        name="lga"
-                                        value={formData.lga}
-                                        onChange={handleChange}
-                                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm"
-                                    >
-                                        {KANO_LGAS.map(lga => (
-                                            <option key={lga} value={lga}>{lga}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Area</label>
-                                    <select
-                                        name="ward"
-                                        value={formData.ward}
-                                        onChange={handleChange}
-                                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm"
-                                    >
-                                        {AREAS.map(area => (
-                                            <option key={area} value={area}>{area}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <button
-                                type="submit"
-                                disabled={isLoading || (formData.phone && normalizePhoneInput(formData.phone).length !== 11)}
-                                className="w-full py-4 mt-6 rounded-2xl font-black bg-black text-white shadow-lg shadow-gray-400 hover:bg-gray-900 active:scale-[0.98] transition-all flex justify-center items-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed submit-btn"
-                            >
-                                {isLoading ? <><Loader2 size={20} className="animate-spin" /> Saving...</> : "Save Changes"}
-                            </button>
                         </form>
                     </div>
                 </div>

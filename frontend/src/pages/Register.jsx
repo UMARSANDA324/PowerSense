@@ -1,23 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Loader2, User, Mail, Lock, ShieldCheck, CheckCircle2, AlertCircle, MapPin } from "lucide-react";
+import { 
+    Eye, EyeOff, Loader2, User, Mail, Lock, ShieldCheck, 
+    CheckCircle2, AlertCircle, MapPin, Zap, Globe, Activity 
+} from "lucide-react";
 import { register } from "../services/authService";
-import { KANO_LGAS, AREAS } from "../constants/states";
-import { areaFeederMapping } from "../constants/areas";
-import { Zap } from "lucide-react";
+import locationService from "../services/locationService";
 
 const Register = () => {
     const navigate = useNavigate();
+    const [locations, setLocations] = useState({ states: [], lgas: [], wards: [], feeders: [] });
+    const [isLocLoading, setIsLocLoading] = useState(true);
+
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
         phone: "",
         state: "Kano",
-        lga: "Kumbotso",
-        ward: "Sheka Gabas",
+        lga: "",
+        ward: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
     });
+
+    // Fetch locations
+    useEffect(() => {
+        const fetchLocs = async () => {
+            try {
+                const data = await locationService.getAll();
+                setLocations(data);
+                
+                // Set default LGA if Kano is the default state
+                const kanoState = data.states.find(s => s.name === "Kano");
+                if (kanoState) {
+                    const firstLGA = data.lgas.find(l => l.state?._id === kanoState._id);
+                    if (firstLGA) {
+                        setFormData(prev => ({ ...prev, lga: firstLGA.name }));
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to fetch locations", err);
+            } finally {
+                setIsLocLoading(false);
+            }
+        };
+        fetchLocs();
+    }, []);
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
@@ -111,11 +139,10 @@ const Register = () => {
         
         // Find feeder based on ward (Area)
         let detectedFeeder = "Unknown Feeder";
-        for (const [area, feeder] of Object.entries(areaFeederMapping)) {
-            if (formData.ward.includes(area)) {
-                detectedFeeder = feeder;
-                break;
-            }
+        const wardObj = locations.wards.find(w => w.name === formData.ward);
+        if (wardObj) {
+            const feederObj = locations.feeders.find(f => f.ward?._id === wardObj._id);
+            if (feederObj) detectedFeeder = feederObj.name;
         }
 
         try {
@@ -253,23 +280,27 @@ const Register = () => {
                         </div>
                     </div>
 
+                <div className="grid grid-cols-2 gap-4">
                     {/* LGA Selection */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Local Government Area</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Local Govt (LGA)</label>
                         <div className="relative">
                             <select
                                 name="lga"
                                 required
                                 value={formData.lga}
                                 onChange={handleChange}
+                                disabled={isLocLoading}
                                 className="w-full px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none pr-10"
                             >
                                 <option value="">Select LGA</option>
-                                {KANO_LGAS.map((lga) => (
-                                    <option key={lga} value={lga}>
-                                        {lga}
-                                    </option>
-                                ))}
+                                {locations.lgas
+                                    .filter(l => l.state?.name === formData.state)
+                                    .map((lga) => (
+                                        <option key={lga._id} value={lga.name}>
+                                            {lga.name}
+                                        </option>
+                                    ))}
                             </select>
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">▼</span>
                         </div>
@@ -284,26 +315,35 @@ const Register = () => {
                                 required
                                 value={formData.ward}
                                 onChange={handleChange}
+                                disabled={isLocLoading || !formData.lga}
                                 className="w-full px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none pr-10"
                             >
                                 <option value="">Select Area</option>
-                                {AREAS.map((area) => (
-                                    <option key={area} value={area}>
-                                        {area}
-                                    </option>
-                                ))}
+                                {locations.wards
+                                    .filter(w => w.lga?.name === formData.lga)
+                                    .map((area) => (
+                                        <option key={area._id} value={area.name}>
+                                            {area.name}
+                                        </option>
+                                    ))}
                             </select>
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">▼</span>
                         </div>
                         {formData.ward && (
                             <p className="text-[10px] text-blue-600 font-bold mt-2 ml-1 flex items-center gap-1">
                                 <Zap size={10} />
-                                Auto-detected Feeder: {
-                                    Object.entries(areaFeederMapping).find(([area]) => formData.ward.includes(area))?.[1] || "Unknown Feeder"
-                                }
+                                Auto-detected Feeder: {(() => {
+                                    const wardObj = locations.wards.find(w => w.name === formData.ward);
+                                    if (wardObj) {
+                                        const feederObj = locations.feeders.find(f => f.ward?._id === wardObj._id);
+                                        return feederObj ? feederObj.name : "Unknown Feeder";
+                                    }
+                                    return "Unknown Feeder";
+                                })()}
                             </p>
                         )}
                     </div>
+                </div>
 
                     {/* Password */}
                     <div>

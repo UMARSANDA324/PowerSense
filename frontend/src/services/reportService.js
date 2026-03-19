@@ -15,11 +15,21 @@ export const reportIssue = async (issueData) => {
 
 export const getReports = async () => {
   try {
-    const response = await api.get("/reports");
+    const response = await api.get("/reports/my");
     return response.data;
   } catch (error) {
     console.error("Error fetching reports:", error);
     throw new Error(error.response?.data?.message || "Failed to fetch reports");
+  }
+};
+
+export const getAllReports = async () => {
+  try {
+    const response = await api.get("/reports");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all reports:", error);
+    throw new Error(error.response?.data?.message || "Failed to fetch all reports");
   }
 };
 
