@@ -1,5 +1,6 @@
 import Notification from "../models/Notification.js";
 import User from "../models/UserModel.js";
+import { sendBulkNotifications } from "../utils/notificationHelper.js";
 
 // @desc    Admin send notification
 // @route   POST /api/notifications/send
@@ -12,16 +13,19 @@ export const sendNotification = async (req, res) => {
             return res.status(400).json({ message: "Please provide title and message" });
         }
 
-        const users = await User.find({ notificationPreference: { $ne: "off" } });
+        const users = await User.find({ notificationPreference: { $ne: "off" } }).select("_id");
+        const userIds = users.map(u => u._id);
 
-        const notifications = users.map(user => ({
-            user: user._id,
-            title,
-            message,
-            method: user.notificationPreference,
-        }));
-
-        await Notification.insertMany(notifications);
+        if (userIds.length > 0) {
+            await sendBulkNotifications({
+                userIds,
+                title,
+                message,
+                io: req.io,
+                sender: req.user._id,
+                isCustom: true
+            });
+        }
 
         res.status(201).json({ message: "Notifications sent successfully" });
     } catch (error) {

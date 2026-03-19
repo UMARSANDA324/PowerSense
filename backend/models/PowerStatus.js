@@ -6,10 +6,11 @@ const powerStatusSchema = new mongoose.Schema({
         required: true,
         default: true
     },
-    location: {
-        type: String,
+    feeder: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Feeder',
         required: true,
-        default: "Kano Metro"
+        unique: true
     },
     lastUpdated: {
         type: Date,

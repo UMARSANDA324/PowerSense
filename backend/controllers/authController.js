@@ -55,6 +55,7 @@ export const registerUser = async (req, res) => {
       res.status(400).json({ message: "Invalid user data" });
     }
   } catch (error) {
+    console.error("updateUserProfile error:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -107,7 +108,11 @@ export const updateUserProfile = async (req, res) => {
       }
 
       if (req.body.notificationPreference) {
-        user.notificationPreference = req.body.notificationPreference;
+        let preference = req.body.notificationPreference;
+        // Map old preferences to new supported ones
+        if (preference === "phone") preference = "in-app";
+        if (preference === "sms") preference = "push";
+        user.notificationPreference = preference;
       }
 
       if (req.body.lga) {
@@ -120,6 +125,29 @@ export const updateUserProfile = async (req, res) => {
 
       if (req.body.feeder) {
         user.feeder = req.body.feeder;
+      }
+
+      if (req.body.state) {
+        user.state = req.body.state;
+      }
+
+      if (req.body.fcmToken) {
+        // Ensure deviceTokens array exists
+        if (!user.deviceTokens) {
+          user.deviceTokens = [];
+        }
+        
+        // Add new token if it doesn't exist
+        const tokenExists = user.deviceTokens.find(dt => dt.token === req.body.fcmToken);
+        if (!tokenExists) {
+          user.deviceTokens.push({
+            token: req.body.fcmToken,
+            deviceType: req.body.deviceType || "web",
+            lastUpdated: Date.now()
+          });
+        } else {
+          tokenExists.lastUpdated = Date.now();
+        }
       }
 
       const updatedUser = await user.save();
@@ -141,6 +169,7 @@ export const updateUserProfile = async (req, res) => {
       res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
+    console.error("updateUserProfile error:", error);
     res.status(500).json({ message: error.message });
   }
 };

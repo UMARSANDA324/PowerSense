@@ -1,11 +1,13 @@
 import Report from "../models/Report.js";
 import Notification from "../models/Notification.js";
 import User from "../models/UserModel.js";
-import { hasFeederAccess, getAccessibleFeeders } from "../utils/feederAccess.js";
+import Feeder from "../models/Location/Feeder.js";
+import { hasFeederAccess, getAccessibleFeeders, getFeederQuery } from "../utils/feederAccess.js";
+import { sendBulkNotifications } from "../utils/notificationHelper.js";
 
 // @desc    Submit a new report
 // @route   POST /api/reports
-// @access  Public
+// @access  Private
 export const createReport = async (req, res) => {
     const { fullName, phone, area, feeder, issueType, description } = req.body;
 
@@ -24,8 +26,40 @@ export const createReport = async (req, res) => {
             user: req.user?._id || null
         });
 
+        // --- REAL-TIME NOTIFICATIONS TO ADMIN & SUPER ADMIN ---
+        
+        // 1. Find the feeder object to get its ID if we only have the name
+        const feederObj = await Feeder.findOne({ name: feeder });
+        const feederId = feederObj ? feederObj._id : null;
+
+        // 2. Find the Admin(s) for this feeder and all Super Admins
+        const admins = await User.find({
+            $or: [
+                { role: "super-admin" },
+                { role: "admin", assignedFeeders: feederId }
+            ],
+            notificationPreference: { $ne: "off" }
+        }).select("_id notificationPreference email phone");
+
+        if (admins.length > 0) {
+            const adminIds = admins.map(a => a._id);
+            const title = "New Incident Report 🚨";
+            const message = `New report: ${issueType} in ${area} (${feeder}). Reported by ${fullName}.`;
+            
+            await sendBulkNotifications({
+                userIds: adminIds,
+                title,
+                message,
+                io: req.io,
+                sender: req.user._id,
+                targetArea: { feeder: feederId, ward: area },
+                isCustom: false
+            });
+        }
+
         res.status(201).json({ message: "Report submitted successfully.", report });
     } catch (error) {
+        console.error("Error in createReport:", error);
         res.status(500).json({ message: error.message });
     }
 };
@@ -35,7 +69,8 @@ export const createReport = async (req, res) => {
 // @access  Private/Admin
 export const getAllReports = async (req, res) => {
     try {
-        const reports = await Report.find().sort({ createdAt: -1 });
+        const feederQuery = await getFeederQuery(req.user);
+        const reports = await Report.find(feederQuery).sort({ createdAt: -1 });
         res.json(reports);
     } catch (error) {
         res.status(500).json({ message: error.message });
