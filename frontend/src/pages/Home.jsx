@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Zap, Clock, AlertTriangle, Loader2, RefreshCw } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { Zap, Clock, AlertTriangle, Loader2, RefreshCw, Lock } from "lucide-react";
 import { getPowerStatus } from "../services/powerService";
+import { getCurrentUser } from "../services/authService";
+import socket from "../services/socket";
 
 const Home = () => {
     const navigate = useNavigate();
+    const user = getCurrentUser();
 
     // State controlled by the Admin Dashboard via powerService
     const [powerStatus, setPowerStatus] = useState({
@@ -19,7 +22,8 @@ const Home = () => {
         const fetchStatus = async () => {
             setIsLoading(true);
             try {
-                const data = await getPowerStatus();
+                // Pass feeder name to getPowerStatus
+                const data = await getPowerStatus(user?.feeder);
                 setPowerStatus(data);
             } catch (error) {
                 console.error("Home: Failed to fetch power status:", error);
@@ -30,10 +34,30 @@ const Home = () => {
 
         fetchStatus();
 
-        // Setup polling to reflect Admin changes in real-time
-        const interval = setInterval(fetchStatus, 30000); // Check every 30s
-        return () => clearInterval(interval);
-    }, []);
+        // Listen for real-time updates
+        const handleStatusUpdate = (update) => {
+            // Super admins see all updates; regular users see only their feeder updates
+            const isSuperAdmin = user?.role === "super-admin";
+            const isTargetFeeder = !user?.feeder || update.feederId === user.feeder || update.feederName === user.feeder;
+
+            if (isSuperAdmin || isTargetFeeder) {
+                setPowerStatus(prev => ({
+                    ...prev,
+                    isActive: update.isActive,
+                    estimatedNextOutage: update.estimatedNextOutage || prev.estimatedNextOutage,
+                    lastUpdated: "Just Now",
+                    // For super admin, we might want to show which feeder was updated
+                    message: isSuperAdmin ? `Update for ${update.feederName}` : prev.message
+                }));
+            }
+        };
+
+        socket.on("powerStatusUpdated", handleStatusUpdate);
+
+        return () => {
+            socket.off("powerStatusUpdated", handleStatusUpdate);
+        };
+    }, [user?.feeder, user?.role]);
 
     const isPowerOn = powerStatus.isActive;
 
@@ -42,7 +66,22 @@ const Home = () => {
             {/* Main Content Area */}
             <main className="max-w-7xl mx-auto p-4 sm:p-6 flex flex-col items-center gap-6 sm:gap-8 pt-8 sm:pt-12">
 
-                {/* Power Status Card */}
+                {!user && (
+                    <div className="w-full max-w-lg bg-blue-600 text-white p-6 rounded-3xl shadow-xl shadow-blue-200 flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-white/20 p-2 rounded-xl">
+                                <Lock size={20} />
+                            </div>
+                            <div>
+                                <p className="font-black text-sm uppercase tracking-widest">Guest Mode</p>
+                                <p className="text-xs font-medium opacity-80">Login for localized grid updates</p>
+                            </div>
+                        </div>
+                        <Link to="/login" className="bg-white text-blue-600 px-5 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-50 transition-all">
+                            Login
+                        </Link>
+                    </div>
+                )}
                 <div className={`w-full max-w-lg p-8 sm:p-12 rounded-[2.5rem] shadow-2xl transition-all duration-700 relative overflow-hidden group ${isLoading ? "bg-white border-blue-50" :
                     isPowerOn ? "bg-white border-blue-50 shadow-blue-100" : "bg-slate-900 border-slate-800 shadow-slate-200"
                     } border`}>
@@ -59,27 +98,27 @@ const Home = () => {
                     ) : (
                         <div className="relative z-10 flex flex-col items-center">
                             {/* Icon - Centered */}
-                            <div className={`flex p-5 sm:p-6 rounded-[2rem] mb-6 sm:mb-8 transition-all duration-700 ${isPowerOn ? "bg-blue-600 text-white shadow-xl shadow-blue-200" : "bg-slate-800 text-slate-400 shadow-none border border-slate-700"
+                            <div className={`flex p-5 sm:p-6 rounded-[2rem] mb-6 sm:mb-8 transition-all duration-700 ${isPowerOn ? "bg-green-600 text-white shadow-xl shadow-green-200" : "bg-black text-white shadow-xl shadow-gray-400"
                                 }`}>
-                                <Zap size={48} className="sm:w-12 sm:h-12" fill={isPowerOn ? "white" : "none"} />
+                                <Zap size={48} className="sm:w-12 sm:h-12" fill={isPowerOn ? "white" : "white"} />
                             </div>
 
                             {/* Status Text */}
-                            <h2 className={`text-4xl sm:text-5xl font-black mb-3 sm:mb-4 transition-colors duration-700 text-center ${isPowerOn ? "text-gray-900" : "text-white"
+                            <h2 className={`text-4xl sm:text-5xl font-black mb-3 sm:mb-4 transition-colors duration-700 text-center ${isPowerOn ? "text-gray-900" : "text-black"
                                 }`}>
                                 {isPowerOn ? "Power On" : "Power Off"}
                             </h2>
 
-                            <p className={`text-base sm:text-lg font-medium px-2 transition-colors duration-700 text-center ${isPowerOn ? "text-gray-500" : "text-slate-400"
+                            <p className={`text-base sm:text-lg font-medium px-2 transition-colors duration-700 text-center ${isPowerOn ? "text-gray-500" : "text-gray-600"
                                 }`}>
                                 {isPowerOn ? "Electricity is stable in your area" : "Outage detected by technical team"}
                             </p>
 
                             {/* Indicators & Refresh */}
                             <div className="mt-8 sm:mt-10 flex flex-col items-center gap-4">
-                                <span className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-black uppercase tracking-widest transition-all duration-700 ${isPowerOn ? "bg-green-100 text-green-700" : "bg-red-500/10 text-red-500 border border-red-500/20"
+                                <span className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-black uppercase tracking-widest transition-all duration-700 ${isPowerOn ? "bg-green-100 text-green-700" : "bg-gray-100 text-black border border-gray-200"
                                     }`}>
-                                    <span className={`w-2.5 h-2.5 rounded-full ${isPowerOn ? "bg-green-500 animate-pulse" : "bg-red-500"}`}></span>
+                                    <span className={`w-2.5 h-2.5 rounded-full ${isPowerOn ? "bg-green-500 animate-pulse" : "bg-black"}`}></span>
                                     {isPowerOn ? "Active" : "Inactive"}
                                 </span>
 
@@ -99,27 +138,25 @@ const Home = () => {
                     </div>
                     <div>
                         <p className="text-gray-900 font-bold text-lg sm:text-xl leading-tight">
-                            Est. next outage approx {powerStatus.estimatedNextOutage || "TBD"}
+                            {isPowerOn 
+                                ? `Next outage expected: ${powerStatus.estimatedNextOutage || "TBD"}`
+                                : `Power restoration expected: ${powerStatus.estimatedNextOutage || "TBD"}`
+                            }
                         </p>
                         <p className="text-blue-600 text-xs sm:text-sm font-semibold mt-1">
-                            Schedule based on recent area data
+                            Schedule updated by area administrators
                         </p>
                     </div>
                 </div>
 
                 {/* Report Issue Card - Updated from Indigo to Blue */}
-                <div className="w-full max-w-lg p-6 sm:p-8 rounded-3xl sm:rounded-[2rem] bg-blue-600 text-white shadow-xl shadow-blue-200 flex flex-col items-center text-center gap-5 sm:gap-6 transition-all hover:translate-y-[-4px]">
-                    <div className="w-full flex items-center justify-between">
-                        <div className="p-3 bg-white/20 rounded-xl sm:rounded-2xl">
-                            <AlertTriangle className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-                        </div>
-                        <span className="bg-white/20 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest">
-                            Quick Action
-                        </span>
+                <div className="w-full max-w-lg p-8 sm:p-10 rounded-3xl sm:rounded-[2.5rem] bg-white border border-blue-100 shadow-xl shadow-blue-50/50 flex flex-col items-center text-center gap-6 sm:gap-8 transition-all hover:scale-[1.02]">
+                    <div className="bg-blue-600 text-white p-5 sm:p-6 rounded-[2rem] shadow-xl shadow-blue-200 shrink-0">
+                        <AlertTriangle size={48} className="sm:w-12 sm:h-12 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-xl sm:text-2xl font-bold mb-2">Report an Issue</h3>
-                        <p className="text-blue-50 text-xs sm:text-sm leading-relaxed opacity-90">
+                        <h3 className="text-2xl sm:text-3xl font-black text-gray-900 mb-3">Report an Issue</h3>
+                        <p className="text-gray-500 text-sm sm:text-base leading-relaxed font-medium px-4">
                             Spotted a fallen pole, transformer sparks, or an illegal connection? Help us keep the community safe.
                         </p>
                     </div>

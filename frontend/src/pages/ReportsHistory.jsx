@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { FileText, User, Wrench, Clock, CheckCircle2, AlertCircle, Calendar, Loader2 } from "lucide-react";
-import { getReports } from "../services/reportService";
+import { getReports, getAllReports } from "../services/reportService";
 import { getCurrentUser } from "../services/authService";
 
 const ReportsHistory = () => {
     const [activeTab, setActiveTab] = useState("all");
     const [reports, setReports] = useState([]);
+    const [myReports, setMyReports] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
     const currentUser = getCurrentUser();
@@ -14,8 +15,12 @@ const ReportsHistory = () => {
         const fetchReports = async () => {
             setIsLoading(true);
             try {
-                const data = await getReports();
-                setReports(data);
+                const [allData, myData] = await Promise.all([
+                    getAllReports(),
+                    getReports()
+                ]);
+                setReports(allData);
+                setMyReports(myData);
             } catch (err) {
                 setError("Failed to fetch incident reports. Please try again later.");
                 console.error(err);
@@ -34,7 +39,7 @@ const ReportsHistory = () => {
 
     // Filter reports based on active tab
     const filteredReports = activeTab === "user"
-        ? reports.filter(r => r.user === currentUser?._id)
+        ? myReports
         : reports;
 
     const tabs = [

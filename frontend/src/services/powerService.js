@@ -3,23 +3,14 @@ import api from "./api";
 /**
  * Service to handle Power Status data controlled by the Admin Dashboard.
  */
-export const getPowerStatus = async () => {
+export const getPowerStatus = async (feederName) => {
     try {
-        // In a real scenario, this endpoint will be updated by the Admin Dashboard.
-        // For now, we return a mock that's ready to be replaced by the API call.
-        const response = await api.get("/power/status");
+        const url = feederName ? `/power/status?feeder=${encodeURIComponent(feederName)}` : "/power/status";
+        const response = await api.get(url);
         return response.data;
     } catch (error) {
-        console.error("Error fetching power status from Admin system:", error);
-
-        // Fallback mock data for development
-        return {
-            isActive: true,
-            lastUpdated: "Just Now",
-            estimatedNextOutage: "3PM",
-            message: "Power status is currently synced with Admin Dashboard",
-            location: "Kano Metro"
-        };
+        console.error("Error fetching power status:", error);
+        throw error;
     }
 };
 

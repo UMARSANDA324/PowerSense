@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Activity, Clock, CheckCircle2, AlertCircle, ChevronRight, MapPin, ReceiptText, Bell, Zap, TrendingDown, TrendingUp } from "lucide-react";
+import { Activity, Clock, CheckCircle2, AlertCircle, ChevronRight, MapPin, ReceiptText, Bell, Zap, TrendingDown, TrendingUp, Lock } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
+import { Link } from "react-router-dom";
 import notificationService from "../services/notificationService.js";
 import { getReports } from "../services/reportService.js";
 
@@ -9,27 +10,41 @@ const Status = () => {
     const [activeRequests, setActiveRequests] = useState([]);
     const [monthlyHistory, setMonthlyHistory] = useState([]);
     const [reportHistory, setReportHistory] = useState([]);
+    const [allReports, setAllReports] = useState([]);
     const [notificationHistory, setNotificationHistory] = useState([]);
     const [loading, setLoading] = useState(true);
 
     // Fetch data on component mount
     useEffect(() => {
         const fetchData = async () => {
+            if (!user) {
+                setLoading(false);
+                return;
+            }
+
             try {
                 setLoading(true);
 
                 // Fetch user reports
                 const reportsData = await getReports();
-                setActiveRequests(reportsData.filter(r => r.status !== "Resolved").slice(0, 1));
+                
+                // Active = everything not Resolved
+                const active = reportsData.filter(r => r.status !== "Resolved");
+                setActiveRequests(active.slice(0, 1)); // Show most recent active for tracking
 
                 // Filter reports from current month
-                const currentMonth = new Date().getMonth();
-                const currentYear = new Date().getFullYear();
+                const now = new Date();
+                const currentMonth = now.getMonth();
+                const currentYear = now.getFullYear();
+                
                 const currentMonthReports = reportsData.filter(r => {
                     const reportDate = new Date(r.createdAt);
                     return reportDate.getMonth() === currentMonth && reportDate.getFullYear() === currentYear;
                 });
                 setReportHistory(currentMonthReports);
+
+                // For the cards at the top
+                setAllReports(reportsData); 
 
                 // Fetch notifications
                 const notificationsData = await notificationService.getUserNotifications();
@@ -49,7 +64,7 @@ const Status = () => {
         };
 
         fetchData();
-    }, []);
+    }, [user]);
 
     // Generate mock electricity history for demonstration
     const generateMonthlyHistory = () => {
@@ -69,9 +84,9 @@ const Status = () => {
         setMonthlyHistory(history);
     };
 
-    const activeCount = activeRequests.length;
-    const resolvedCount = reportHistory.filter(r => r.status === "Resolved").length;
-    const pendingCount = reportHistory.filter(r => r.status === "Pending").length;
+    const activeCount = allReports.filter(r => r.status !== "Resolved").length;
+    const resolvedCount = allReports.filter(r => r.status === "Resolved").length;
+    const pendingCount = allReports.filter(r => r.status === "Pending").length;
 
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString('en-US', {
@@ -97,30 +112,57 @@ const Status = () => {
             <div className="bg-white border-b border-gray-100">
                 <div className="max-w-7xl mx-auto p-6 pt-12">
                     <div>
-                        <h1 className="text-3xl font-black text-gray-800">My Status & History</h1>
+                        <h1 className="text-3xl font-black text-gray-800">All Feeder Status</h1>
                         <p className="text-gray-500 mt-2 font-medium">Track your requests, reports, and notifications</p>
                     </div>
 
                     {/* Quick Stats */}
-                    <div className="grid grid-cols-3 gap-3 mt-6">
-                        <div className="bg-blue-50 p-4 rounded-2xl text-center border border-blue-100">
-                            <p className="text-blue-600 text-2xl font-black">{activeCount}</p>
-                            <p className="text-blue-400 text-xs font-bold uppercase tracking-wider">Active</p>
+                    {user ? (
+                        <div className="grid grid-cols-3 gap-3 mt-6">
+                            <div className="bg-blue-50 p-4 rounded-2xl text-center border border-blue-100">
+                                <p className="text-blue-600 text-2xl font-black">{activeCount}</p>
+                                <p className="text-blue-400 text-xs font-bold uppercase tracking-wider">Active</p>
+                            </div>
+                            <div className="bg-yellow-50 p-4 rounded-2xl text-center border border-yellow-100">
+                                <p className="text-yellow-600 text-2xl font-black">{pendingCount}</p>
+                                <p className="text-yellow-400 text-xs font-bold uppercase tracking-wider">Pending</p>
+                            </div>
+                            <div className="bg-green-50 p-4 rounded-2xl text-center border border-green-100">
+                                <p className="text-green-600 text-2xl font-black">{resolvedCount}</p>
+                                <p className="text-green-400 text-xs font-bold uppercase tracking-wider">Resolved</p>
+                            </div>
                         </div>
-                        <div className="bg-yellow-50 p-4 rounded-2xl text-center border border-yellow-100">
-                            <p className="text-yellow-600 text-2xl font-black">{pendingCount}</p>
-                            <p className="text-yellow-400 text-xs font-bold uppercase tracking-wider">Pending</p>
+                    ) : (
+                        <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-center gap-3">
+                            <Lock size={18} className="text-blue-600" />
+                            <p className="text-sm text-blue-800 font-bold">Please <Link to="/login" className="underline">login</Link> to view your report statistics.</p>
                         </div>
-                        <div className="bg-green-50 p-4 rounded-2xl text-center border border-green-100">
-                            <p className="text-green-600 text-2xl font-black">{resolvedCount}</p>
-                            <p className="text-green-400 text-xs font-bold uppercase tracking-wider">Resolved</p>
-                        </div>
-                    </div>
+                    )}
                 </div>
             </div>
 
             <main className="max-w-7xl mx-auto p-4 sm:p-6 space-y-8">
-                {/* Active Requests Section */}
+                {!user ? (
+                    <div className="bg-white p-12 rounded-[2.5rem] border border-gray-100 shadow-2xl text-center space-y-6 max-w-lg mx-auto mt-12">
+                        <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto">
+                            <Lock size={40} />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-black text-gray-800">Access Restricted</h2>
+                            <p className="text-gray-500 font-medium mt-2">
+                                You must be logged in to track your reports, view history, and receive notifications.
+                            </p>
+                        </div>
+                        <Link 
+                            to="/login" 
+                            className="inline-block bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all"
+                        >
+                            Login to Continue
+                        </Link>
+                    </div>
+                ) : (
+                    <>
+                        {/* Active Requests Section */}
                 {activeRequests.length > 0 && (
                     <section>
                         <div className="flex items-center gap-2 mb-4">
@@ -327,6 +369,8 @@ const Status = () => {
                         </div>
                     )}
                 </section>
+            </>
+        )}
             </main>
         </div>
     );

@@ -4,15 +4,16 @@ import { getCurrentUser, updateProfile } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 
 const notificationOptions = [
+  { value: "in-app", label: "In-App Notification", icon: <Bell className="text-blue-600" /> },
   { value: "email", label: "Email (Gmail)", icon: <Mail className="text-blue-600" /> },
-  { value: "phone", label: "In-App / Phone notification", icon: <Bell className="text-blue-600" /> },
+  { value: "push", label: "Push Notification", icon: <Smartphone className="text-blue-600" /> },
   { value: "off", label: "Off (disable notifications)", icon: <X className="text-red-500" /> },
 ];
 
 const NotificationSettings = () => {
   const navigate = useNavigate();
   const user = getCurrentUser();
-  const [selected, setSelected] = useState(user?.notificationPreference || "phone");
+  const [selected, setSelected] = useState(user?.notificationPreference || "in-app");
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
 
