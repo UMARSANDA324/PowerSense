@@ -41,9 +41,24 @@ const userSchema = new mongoose.Schema(
 
         notificationPreference: {
             type: String,
-            enum: ["email", "phone", "off"],
-            default: "phone"
+            enum: ["email", "push", "in-app", "off"],
+            default: "in-app"
         },
+
+        deviceTokens: [
+            {
+                token: String,
+                deviceType: {
+                    type: String,
+                    enum: ["web", "mobile", "other"],
+                    default: "web"
+                },
+                lastUpdated: {
+                    type: Date,
+                    default: Date.now
+                }
+            }
+        ],
 
         assignedFeeders: [
             {

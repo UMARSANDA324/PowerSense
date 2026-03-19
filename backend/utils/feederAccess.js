@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
+import Feeder from "../models/Location/Feeder.js";
 
 /**
  * Check if an admin has access to a specific feeder
  * @param {Object} user - The authenticated user object
- * @param {String} feederName - The name of the feeder (as stored in reports)
+ * @param {String} feederIdentifier - The name or ID of the feeder
  * @returns {Promise<boolean>} - True if user has access, false otherwise
  */
-export const hasFeederAccess = async (user, feederName) => {
+export const hasFeederAccess = async (user, feederIdentifier) => {
   // Super admin has access to all feeders
   if (user.role === "super-admin") {
     return true;
@@ -18,9 +19,14 @@ export const hasFeederAccess = async (user, feederName) => {
       return false;
     }
 
-    const feeders = await mongoose.model("Feeder").find({
+    const isObjectId = mongoose.Types.ObjectId.isValid(feederIdentifier);
+    const query = isObjectId 
+      ? { _id: feederIdentifier } 
+      : { name: feederIdentifier };
+
+    const feeders = await Feeder.find({
       _id: { $in: user.assignedFeeders },
-      name: feederName
+      ...query
     });
 
     return feeders.length > 0;
@@ -38,7 +44,7 @@ export const hasFeederAccess = async (user, feederName) => {
 export const getAccessibleFeeders = async (user) => {
   // Super admin has access to all feeders
   if (user.role === "super-admin") {
-    const allFeeders = await mongoose.model("Feeder").find();
+    const allFeeders = await Feeder.find();
     return allFeeders.map(f => f.name);
   }
 
@@ -48,7 +54,7 @@ export const getAccessibleFeeders = async (user) => {
       return [];
     }
 
-    const feeders = await mongoose.model("Feeder").find({
+    const feeders = await Feeder.find({
       _id: { $in: user.assignedFeeders }
     });
 

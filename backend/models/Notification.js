@@ -17,8 +17,22 @@ const notificationSchema = new mongoose.Schema(
         },
         method: {
             type: String,
-            enum: ["email", "phone", "off"],
+            enum: ["email", "push", "in-app", "off"],
             required: true,
+        },
+        sender: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        },
+        targetArea: {
+            state: String,
+            lga: String,
+            ward: String,
+            feeder: String,
+        },
+        isCustom: {
+            type: Boolean,
+            default: false,
         },
         read: {
             type: Boolean,
