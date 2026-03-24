@@ -439,8 +439,8 @@ const AdminDashboard = () => {
                                 { 
                                     label: selectedFeeder ? `Feeder: ${assignedFeeders.find(f => (f._id || f) === selectedFeeder)?.name || 'Selected'}` : "Global Grid", 
                                     val: powerForm.isActive ? "ONLINE" : "OFFLINE", 
-                                    icon: <Zap className={powerForm.isActive ? "text-green-600" : "text-red-600"} />, 
-                                    bg: powerForm.isActive ? "bg-green-50" : "bg-red-50" 
+                                    icon: <Zap className={powerForm.isActive ? "text-green-600" : "text-black"} />, 
+                                    bg: powerForm.isActive ? "bg-green-50" : "bg-gray-100" 
                                 },
                             ].map((stat, i) => (
                                 <div key={i} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
@@ -470,9 +470,10 @@ const AdminDashboard = () => {
                                                 {selectedFeeder ? 'Currently managing this feeder' : 'Global system override for all users'}
                                             </p>
                                         </div>
-                                        <div className={`px-4 py-2 rounded-xl text-xs font-black tracking-widest uppercase ${powerForm.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                        <div className={`px-4 py-2 rounded-xl text-xs font-black tracking-widest uppercase ${powerForm.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-900 border border-gray-200'}`}>
                                             {powerForm.isActive ? 'ACTIVE' : 'OUTAGE'}
                                         </div>
+
                                     </div>
                                     <button
                                         onClick={() => setActiveTab('control')}
@@ -574,14 +575,14 @@ const AdminDashboard = () => {
                                     <button
                                         type="button"
                                         onClick={() => setPowerForm({ ...powerForm, isActive: true })}
-                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.isActive ? 'bg-green-600 text-white border-green-700 shadow-xl shadow-green-200' : 'bg-white text-gray-400 border-gray-100 hover:border-gray-200'}`}
+                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.isActive ? 'bg-green-600 text-white border-green-700 shadow-xl shadow-green-200' : 'bg-green-50 text-green-600 border-green-100'}`}
                                     >
                                         <Zap size={18} /> POWER ON
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setPowerForm({ ...powerForm, isActive: false })}
-                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${!powerForm.isActive ? 'bg-black text-white border-black shadow-xl shadow-gray-400' : 'bg-white text-gray-400 border-gray-100 hover:border-gray-200'}`}
+                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${!powerForm.isActive ? 'bg-black text-white border-black shadow-xl shadow-gray-400' : 'bg-gray-100 text-gray-400 border-gray-100 hover:border-gray-200'}`}
                                     >
                                         <ZapOff size={18} /> POWER OFF
                                     </button>

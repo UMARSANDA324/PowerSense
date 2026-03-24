@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Mail, Lock, AlertCircle } from "lucide-react";
 import { login } from "../services/authService";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -18,8 +21,8 @@ const Login = () => {
 
     try {
       await login(email, password);
-      // Redirect to Home after successful login
-      navigate("/", { replace: true });
+      // Redirect to the intended page or Home
+      navigate(redirect, { replace: true });
     } catch (err) {
       const msg = err.response?.data?.message || "Login failed. Please check your credentials.";
       setError(msg);
@@ -27,6 +30,7 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-72px)] bg-gradient-to-br from-blue-50 to-indigo-100 p-4">

@@ -47,7 +47,7 @@ const SuperAdminDashboard = () => {
     const [showAssetExplorer, setShowAssetExplorer] = useState(false);
     const [explorerType, setExplorerType] = useState("state");
     const [locModalType, setLocModalType] = useState("state"); // state, lga, ward, feeder
-    const [locFormData, setLocFormData] = useState({ name: "", stateId: "", lgaId: "", wardId: "" });
+    const [locFormData, setLocFormData] = useState({ name: "", stateId: "", lgaId: "", wardId: "", wardIds: [] });
 
     // Admin Creation State
     const [newAdmin, setNewAdmin] = useState({
@@ -163,7 +163,7 @@ const SuperAdminDashboard = () => {
         // Basic validation
         if (locModalType === "lga" && !locFormData.stateId) return setMessage({ text: "Please select a parent state", type: "error" });
         if (locModalType === "ward" && !locFormData.lgaId) return setMessage({ text: "Please select a parent LGA", type: "error" });
-        if (locModalType === "feeder" && !locFormData.wardId) return setMessage({ text: "Please select a parent ward", type: "error" });
+        if (locModalType === "feeder" && (!locFormData.wardIds || locFormData.wardIds.length === 0)) return setMessage({ text: "Please select at least one parent ward", type: "error" });
 
         setActionLoading(true);
         try {
@@ -171,11 +171,11 @@ const SuperAdminDashboard = () => {
             if (locModalType === "state") res = await adminService.createState(locFormData.name);
             else if (locModalType === "lga") res = await adminService.createLGA({ name: locFormData.name, stateId: locFormData.stateId });
             else if (locModalType === "ward") res = await adminService.createWard({ name: locFormData.name, lgaId: locFormData.lgaId });
-            else if (locModalType === "feeder") res = await adminService.createFeeder({ name: locFormData.name, wardId: locFormData.wardId });
+            else if (locModalType === "feeder") res = await adminService.createFeeder({ name: locFormData.name, wardIds: locFormData.wardIds });
 
             setMessage({ text: `${locModalType.toUpperCase()} "${locFormData.name}" created successfully`, type: "success" });
             setShowLocModal(false);
-            setLocFormData({ name: "", stateId: "", lgaId: "", wardId: "" });
+            setLocFormData({ name: "", stateId: "", lgaId: "", wardId: "", wardIds: [] });
             fetchSuperData(true);
         } catch (err) {
             console.error(`Creation error [${locModalType}]:`, err);
@@ -709,76 +709,61 @@ const SuperAdminDashboard = () => {
                                                 </div>
 
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                                                    {locations.wards
-                                                        .filter(w => w.name.toLowerCase().includes(feederSearch.toLowerCase()))
-                                                        .filter(w => {
+                                                    {allFeeders
+                                                        .filter(f => 
+                                                            f.name.toLowerCase().includes(feederSearch.toLowerCase()) ||
+                                                            (f.wards && f.wards.some(w => w.name.toLowerCase().includes(feederSearch.toLowerCase())))
+                                                        )
+                                                        .filter(f => {
                                                             if (!showUnassignedOnly) return true;
-                                                            // Find the feeder linked to this ward
-                                                            const linkedFeeder = locations.feeders.find(f => f.ward?._id === w._id);
-                                                            if (!linkedFeeder) return true;
-
                                                             const isAssignedToOthers = admins.some(a => 
                                                                 a._id !== selectedAdmin._id && 
-                                                                a.assignedFeeders?.some(af => (typeof af === 'string' ? af : af._id) === linkedFeeder._id)
+                                                                a.assignedFeeders?.some(af => (typeof af === 'string' ? af : af._id) === f._id)
                                                             );
                                                             return !isAssignedToOthers;
                                                         })
-                                                        .map(ward => {
-                                                            // Find the feeder for this ward
-                                                            const feederObj = locations.feeders.find(f => f.ward?._id === ward._id);
-                                                            const feederId = feederObj?._id;
-                                                            const feederName = feederObj?.name || "No Feeder Linked";
-                                                            
-                                                            const isSelected = feederId ? selectedFeeders.includes(feederId) : false;
-                                                            const assignedTo = feederId ? admins.find(a => 
+                                                        .map(feeder => {
+                                                            const isSelected = selectedFeeders.includes(feeder._id);
+                                                            const assignedTo = admins.find(a => 
                                                                 a._id !== selectedAdmin._id && 
-                                                                a.assignedFeeders?.some(af => (typeof af === 'string' ? af : af._id) === feederId)
-                                                            ) : null;
+                                                                a.assignedFeeders?.some(af => (typeof af === 'string' ? af : af._id) === feeder._id)
+                                                            );
                                                             const isAssignedElsewhere = !!assignedTo;
 
                                                             return (
                                                                 <button
-                                                                    key={ward._id}
-                                                                    disabled={!feederId}
-                                                                    onClick={() => {
-                                                                        if (feederId) {
-                                                                            toggleFeederSelection(feederId);
-                                                                        }
-                                                                    }}
-                                                                    className={`flex items-center gap-4 p-5 rounded-3xl border-2 transition-all text-left group relative ${isSelected ? 'border-blue-600 bg-blue-50/30' : 'border-gray-50 hover:border-gray-200'} ${isAssignedElsewhere ? 'opacity-80' : ''} ${!feederId ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                                    key={feeder._id}
+                                                                    disabled={isAssignedElsewhere}
+                                                                    onClick={() => !isAssignedElsewhere && toggleFeederSelection(feeder._id)}
+                                                                    className={`flex items-center gap-4 p-5 rounded-3xl border-2 transition-all text-left group relative ${isSelected ? 'border-blue-600 bg-blue-50/30' : 'border-gray-50 hover:border-gray-200'} ${isAssignedElsewhere ? 'opacity-60 cursor-not-allowed grayscale' : ''}`}
                                                                 >
                                                                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${isSelected ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'bg-gray-50 text-gray-400 group-hover:bg-white'}`}>
-                                                                        <MapPin size={20} />
+                                                                        <Zap size={20} />
                                                                     </div>
                                                                     <div className="flex-1 overflow-hidden">
                                                                         <div className="flex items-center gap-2 mb-0.5">
-                                                                            <p className="font-black text-gray-900 text-sm truncate">{ward.name}</p>
+                                                                            <p className="font-black text-gray-900 text-sm truncate">{feeder.name}</p>
                                                                             {isAssignedElsewhere ? (
                                                                                 <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[8px] font-black rounded-full uppercase tracking-widest whitespace-nowrap">
-                                                                                    Assigned: {assignedTo.fullName.split(' ')[0]}
-                                                                                </span>
-                                                                            ) : feederId ? (
-                                                                                <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[8px] font-black rounded-full uppercase tracking-widest whitespace-nowrap">
-                                                                                    Available
+                                                                                    ALREADY ASSIGNED: {assignedTo.fullName.split(' ')[0]}
                                                                                 </span>
                                                                             ) : (
-                                                                                <span className="px-2 py-0.5 bg-red-100 text-red-700 text-[8px] font-black rounded-full uppercase tracking-widest whitespace-nowrap">
-                                                                                    Missing Feeder
+                                                                                <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[8px] font-black rounded-full uppercase tracking-widest whitespace-nowrap">
+                                                                                    Available
                                                                                 </span>
                                                                             )}
                                                                         </div>
                                                                         <div className="flex items-center gap-1">
-                                                                            <Zap size={10} className="text-blue-500" />
-                                                                            <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest truncate">
-                                                                                {feederName}
+                                                                            <MapPin size={10} className="text-gray-400" />
+                                                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest truncate">
+                                                                                {feeder.wards?.map(w => w.name).join(', ') || 'Global Distribution'}
                                                                             </p>
                                                                         </div>
                                                                     </div>
-                                                                    {feederId && (
-                                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0 ${isSelected ? 'bg-blue-600 border-blue-600' : 'border-gray-200'}`}>
-                                                                            {isSelected && <CheckCircle2 size={14} className="text-white" />}
-                                                                        </div>
-                                                                    )}
+                                                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0 ${isSelected ? 'bg-blue-600 border-blue-600' : 'border-gray-200'}`}>
+                                                                        {isSelected && <CheckCircle2 size={14} className="text-white" />}
+                                                                        {isAssignedElsewhere && <Shield size={14} className="text-amber-600" />}
+                                                                    </div>
                                                                 </button>
                                                             );
                                                         })}
@@ -1000,7 +985,13 @@ const SuperAdminDashboard = () => {
                                                             <div key={f._id} className="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-50 group">
                                                                 <div className="overflow-hidden">
                                                                     <p className="text-sm font-bold text-gray-700 truncate">{f.name}</p>
-                                                                    <p className="text-[8px] font-black text-amber-500 uppercase tracking-tighter">{f.ward?.name || 'Main Grid'}</p>
+                                                                    <p className="text-[8px] font-black text-amber-500 uppercase tracking-tighter">
+                                                                        {f.wards && f.wards.length > 0 
+                                                                            ? (f.wards.length > 2 
+                                                                                ? `${f.wards.slice(0, 2).map(w => w.name).join(', ')} +${f.wards.length - 2}` 
+                                                                                : f.wards.map(w => w.name).join(', ')) 
+                                                                            : 'Main Grid'}
+                                                                    </p>
                                                                 </div>
                                                                 <button 
                                                                     onClick={() => handleDeleteLocation("feeder", f._id, f.name)}
@@ -1060,7 +1051,7 @@ const SuperAdminDashboard = () => {
                                                     </div>
                                                     <div>
                                                         <p className="font-black text-sm text-gray-800 leading-tight mb-1">Hierarchy Rule</p>
-                                                        <p className="text-xs text-gray-400 font-medium tracking-tight">States contain LGAs, which contain Wards, which link to Feeders.</p>
+                                                        <p className="text-xs text-gray-400 font-medium tracking-tight">States contain LGAs, which contain Wards. Feeders cover one or more Wards.</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex gap-4">
@@ -1235,16 +1226,20 @@ const SuperAdminDashboard = () => {
 
                             {locModalType === "feeder" && (
                                 <div>
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-2">Parent Ward</label>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-2">Parent Wards (Select multiple)</label>
                                     <select 
                                         required
-                                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 font-bold text-sm"
-                                        value={locFormData.wardId}
-                                        onChange={(e) => setLocFormData({ ...locFormData, wardId: e.target.value })}
+                                        multiple
+                                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 font-bold text-sm min-h-[120px]"
+                                        value={locFormData.wardIds || []}
+                                        onChange={(e) => {
+                                            const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                                            setLocFormData({ ...locFormData, wardIds: selectedOptions });
+                                        }}
                                     >
-                                        <option value="">Select Ward</option>
                                         {locations.wards.map(w => <option key={w._id} value={w._id}>{w.name} ({w.lga?.name})</option>)}
                                     </select>
+                                    <p className="text-[10px] text-gray-400 mt-2 ml-2">Hold Ctrl (Windows) or Cmd (Mac) to select multiple wards.</p>
                                 </div>
                             )}
 

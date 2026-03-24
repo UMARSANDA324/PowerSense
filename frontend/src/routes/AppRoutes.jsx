@@ -5,7 +5,6 @@ import NotificationSettings from "../pages/NotificationSettings.jsx";
 import AdminDashboard from "../pages/AdminDashboard.jsx";
 import Status from "../pages/Status.jsx";
 import AllStatus from "../pages/AllStatus.jsx";
-import ReportsHistory from "../pages/ReportsHistory.jsx";
 import ReportIssue from "../pages/ReportIssue.jsx";
 import Report from "../pages/Report.jsx";
 import Register from "../pages/Register.jsx";
@@ -24,10 +23,9 @@ const AppRoutes = () => (
 		<Route path="/super-admin-dashboard" element={<SuperAdminDashboard />} />
 		<Route path="/status" element={<Status />} />
 		<Route path="/all-status" element={<AllStatus />} />
-		<Route path="/reports-history" element={<ReportsHistory />} />
 		<Route path="/report-issue" element={<ReportIssue />} />
-		<Route path="/report" element={<Report />} />
 		<Route path="/register" element={<Register />} />
+
 		<Route path="/login" element={<Login />} />
 		<Route path="/forgot-password" element={<ForgotPassword />} />
 		<Route path="/dashboard" element={<Dashboard />} />

@@ -88,8 +88,7 @@ const Navbar = () => {
     { path: "/", icon: <Home size={20} />, label: "Home" },
     { path: "/status", icon: <Activity size={20} />, label: "All Feeder Status" },
     { path: "/all-status", icon: <Gauge size={20} />, label: "Grid Statistics" },
-    { path: "/report", icon: <AlertTriangle size={20} />, label: "Report Issue" },
-    { path: "/reports-history", icon: <FileText size={20} />, label: "Incident Reports" },
+    { path: "/report-issue", icon: <AlertTriangle size={20} />, label: "Report Issue" },
     { path: "/profile", icon: <User size={20} />, label: "Me" },
   ];
 
@@ -280,7 +279,7 @@ const Navbar = () => {
               <div className="w-full space-y-4 mb-8 text-left">
                 <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">State</p>
-                  <p className="text-gray-900 font-bold">{user.state || "Not set"}</p>
+                  <p className="text-gray-900 font-bold">{user.state || "State not set"}</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Local Government</p>
@@ -298,7 +297,7 @@ const Navbar = () => {
 
               <button
                 onClick={() => setShowLocationModal(false)}
-                className="w-full py-4 rounded-2xl font-bold bg-gray-900 text-white shadow-xl hover:bg-black transition-all active:scale-95"
+                className="w-full py-4 rounded-2xl font-bold bg-black text-white shadow-xl hover:bg-gray-900 transition-all active:scale-95"
               >
                 Close
               </button>
@@ -382,13 +381,13 @@ const Navbar = () => {
               <div className="grid grid-cols-2 gap-4 w-full">
                 <button
                   onClick={() => setShowLogoutConfirm(false)}
-                  className="py-4 rounded-2xl font-bold text-gray-400 hover:bg-gray-50 transition-all border border-gray-100"
+                  className="py-4 rounded-2xl font-black bg-black text-white shadow-lg shadow-gray-200 hover:bg-gray-900 transition-all active:scale-95"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="py-4 rounded-2xl font-bold bg-red-500 text-white shadow-lg shadow-red-100 hover:bg-red-600 transition-all active:scale-95"
+                  className="py-4 rounded-2xl font-black bg-red-600 text-white shadow-lg shadow-red-200 hover:bg-red-700 transition-all active:scale-95"
                 >
                   Yes, Logout
                 </button>

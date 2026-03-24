@@ -35,8 +35,24 @@ const Profile = () => {
         lga: user?.lga || "",
         ward: user?.ward || "",
         password: "",
-        notificationPreference: user?.notificationPreference || "in-app"
+        notificationPreference: user?.notificationPreference || "push"
     });
+
+    // Update formData if user object changes (e.g. after profile edit)
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                fullName: user.fullName || "",
+                email: user.email || "",
+                phone: normalizePhoneInput(user.phone || ""),
+                state: user.state || "Kano",
+                lga: user.lga || "",
+                ward: user.ward || "",
+                notificationPreference: user.notificationPreference || "push"
+            }));
+        }
+    }, [user]);
 
     // Fetch locations
     useEffect(() => {
@@ -130,9 +146,12 @@ const Profile = () => {
         if (formData.ward) {
             const wardObj = locations.wards.find(w => w.name === formData.ward);
             if (wardObj) {
-                const feederObj = locations.feeders.find(f => f.ward?._id === wardObj._id);
+                const feederObj = locations.feeders.find(f => 
+                    f.wards && Array.isArray(f.wards) && f.wards.some(w => (w._id || w) === wardObj._id)
+                );
                 if (feederObj) detectedFeeder = feederObj.name;
             }
+
         }
 
         try {
@@ -237,7 +256,7 @@ const Profile = () => {
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Primary Area</p>
-                            <p className="text-sm font-bold text-gray-700">{user?.ward || "No area set"}, {user?.lga || "No LGA set"}</p>
+                             <p className="text-sm font-bold text-gray-700">{user?.ward || "No area set"}, {user?.lga || "No LGA set"}, {user?.state || "State not set"}</p>
                         </div>
                     </div>
                     {user?.feeder && (
@@ -307,7 +326,7 @@ const Profile = () => {
                     <div className="bg-white w-full sm:max-w-md rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 sm:p-8 relative z-10 shadow-2xl animate-in slide-in-from-bottom-full sm:zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar">
                         <button
                             onClick={() => setIsEditing(false)}
-                            className="absolute right-6 top-6 p-2 bg-gray-100 text-gray-500 hover:bg-gray-200 rounded-full transition-colors z-20"
+                            className="absolute right-6 top-6 p-2 bg-black text-white hover:bg-gray-900 rounded-full transition-colors z-20"
                         >
                             <X size={20} />
                         </button>
@@ -482,7 +501,7 @@ const Profile = () => {
                             </button>
                             <button
                                 onClick={() => setShowLogoutConfirm(false)}
-                                className="w-full py-4 rounded-2xl font-black bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-[0.98] transition-all"
+                                className="w-full py-4 rounded-2xl font-black bg-black text-white hover:bg-gray-900 active:scale-[0.98] transition-all shadow-lg shadow-gray-200"
                             >
                                 No, Stay Logged In
                             </button>

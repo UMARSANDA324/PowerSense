@@ -4,6 +4,8 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { Link } from "react-router-dom";
 import notificationService from "../services/notificationService.js";
 import { getReports } from "../services/reportService.js";
+import api from "../services/api";
+import socket from "../services/socket";
 
 const Status = () => {
     const { user } = useAuth();
@@ -54,8 +56,16 @@ const Status = () => {
                 }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 setNotificationHistory(currentMonthNotifications);
 
-                // Generate mock electricity history
-                generateMonthlyHistory();
+                // Fetch real power history
+                const historyResponse = await api.get("/power/history");
+                const formattedHistory = historyResponse.data.map(log => ({
+                    date: new Date(log.timestamp),
+                    event: log.status ? "Restored" : "Disconnected",
+                    time: new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    feeder: log.feederName
+                }));
+                setMonthlyHistory(formattedHistory);
+                
                 setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch data:", error);
@@ -64,25 +74,18 @@ const Status = () => {
         };
 
         fetchData();
+
+        // Listen for power status updates to refresh history
+        const handlePowerUpdate = () => {
+            fetchData();
+        };
+        socket.on("powerStatusUpdated", handlePowerUpdate);
+
+        return () => {
+            socket.off("powerStatusUpdated", handlePowerUpdate);
+        };
     }, [user]);
 
-    // Generate mock electricity history for demonstration
-    const generateMonthlyHistory = () => {
-        const history = [];
-        const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-
-        for (let i = 1; i <= daysInMonth; i++) {
-            if (Math.random() > 0.7) { // 30% chance of outage
-                history.push({
-                    date: new Date(new Date().getFullYear(), new Date().getMonth(), i),
-                    event: Math.random() > 0.5 ? "Restored" : "Disconnected",
-                    time: `${Math.floor(Math.random() * 24)}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`
-                });
-            }
-        }
-
-        setMonthlyHistory(history);
-    };
 
     const activeCount = allReports.filter(r => r.status !== "Resolved").length;
     const resolvedCount = allReports.filter(r => r.status === "Resolved").length;
@@ -250,7 +253,7 @@ const Status = () => {
                                                     {item.event === "Restored" ? "Power Restored" : "Power Disconnected"}
                                                 </p>
                                                 <p className="text-xs text-gray-500">
-                                                    {item.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at {item.time}
+                                                    {item.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at {item.time} {item.feeder ? `• ${item.feeder}` : ''}
                                                 </p>
                                             </div>
                                         </div>
