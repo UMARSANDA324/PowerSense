@@ -117,8 +117,15 @@ export const deleteUser = async (req, res) => {
             if (user.role === "super-admin") {
                 return res.status(400).json({ message: "Cannot delete super-admin" });
             }
+            // Clear assigned status on feeders if they exist
+            if (user.assignedFeeders && user.assignedFeeders.length > 0) {
+                await Feeder.updateMany(
+                    { _id: { $in: user.assignedFeeders } },
+                    { isAssigned: false }
+                );
+            }
             await user.deleteOne();
-            res.json({ message: "User removed" });
+            res.json({ message: "User removed and associated grid permissions released" });
         } else {
             res.status(404).json({ message: "User not found" });
         }
@@ -171,8 +178,9 @@ export const getAllAdmins = async (req, res) => {
             .select("-password")
             .populate({
                 path: 'assignedFeeders',
+                match: { isActive: { $ne: false } }, // Only populate active feeders
                 populate: {
-                    path: 'ward',
+                    path: 'wards',
                     populate: {
                         path: 'lga',
                         populate: { path: 'state' }
@@ -181,7 +189,14 @@ export const getAllAdmins = async (req, res) => {
             })
             .sort({ createdAt: -1 });
 
-        res.json(admins);
+        // Filter out null entries from assignedFeeders after population
+        const cleanedAdmins = admins.map(admin => {
+            const adminObj = admin.toObject();
+            adminObj.assignedFeeders = adminObj.assignedFeeders.filter(f => f !== null);
+            return adminObj;
+        });
+
+        res.json(cleanedAdmins);
     } catch (error) {
         console.error("Error in getAllAdmins:", error);
         res.status(500).json({ message: error.message });
@@ -194,9 +209,9 @@ export const getAllAdmins = async (req, res) => {
 export const getAllFeeders = async (req, res) => {
     try {
         console.log("Fetching all feeders...");
-        const feeders = await Feeder.find({})
+        const feeders = await Feeder.find({ isActive: { $ne: false } })
             .populate({
-                path: 'ward',
+                path: 'wards',
                 populate: {
                     path: 'lga',
                     populate: { path: 'state' }
@@ -229,41 +244,55 @@ export const assignFeedersToAdmin = async (req, res) => {
             return res.status(404).json({ message: "Admin not found" });
         }
 
-        // Production-level validation: Check if any of these feeders are already assigned to OTHER admins
-        if (!allowDuplicates) {
-            const alreadyAssigned = await User.find({
-                _id: { $ne: adminId },
-                assignedFeeders: { $in: feederIds }
-            }).select("fullName assignedFeeders");
+        // Strict validation: Check if any of these feeders are already assigned to OTHER admins
+        const conflictingUsers = await User.find({
+            _id: { $ne: adminId },
+            assignedFeeders: { $in: feederIds }
+        }).select("fullName assignedFeeders");
 
-            if (alreadyAssigned.length > 0) {
-                // Find specifically which feeders are conflicting
-                const conflictingFeeders = [];
-                for (const otherAdmin of alreadyAssigned) {
-                    const overlaps = otherAdmin.assignedFeeders.filter(f => feederIds.includes(f.toString()));
-                    if (overlaps.length > 0) {
-                        conflictingFeeders.push({
-                            admin: otherAdmin.fullName,
-                            feeders: overlaps
-                        });
-                    }
-                }
-                
-                return res.status(400).json({ 
-                    message: "Duplicate assignment detected", 
-                    conflicts: conflictingFeeders 
-                });
-            }
+        if (conflictingUsers.length > 0) {
+            const conflictDetails = conflictingUsers.map(u => ({
+                admin: u.fullName,
+                feederIds: u.assignedFeeders.filter(f => feederIds.includes(f.toString()))
+            }));
+            
+            return res.status(400).json({ 
+                message: "One or more feeders are already assigned to other administrators.", 
+                conflicts: conflictDetails 
+            });
         }
 
+        // Get the current feeders of this admin to handle cleanup
+        const previousFeeders = admin.assignedFeeders || [];
+
+        // Apply new assignments
         admin.assignedFeeders = feederIds;
         await admin.save();
+
+        // Sync with Feeder model: Update isAssigned status
+        // 1. Mark feeders being REMOVED as not assigned
+        const removedFeeders = previousFeeders.filter(f => !feederIds.includes(f.toString()));
+        if (removedFeeders.length > 0) {
+            await Feeder.updateMany(
+                { _id: { $in: removedFeeders } },
+                { isAssigned: false }
+            );
+        }
+
+        // 2. Mark feeders being ADDED as assigned
+        if (feederIds.length > 0) {
+            await Feeder.updateMany(
+                { _id: { $in: feederIds } },
+                { isAssigned: true }
+            );
+        }
 
         const updatedAdmin = await User.findById(adminId)
             .populate({
                 path: 'assignedFeeders',
+                match: { isActive: { $ne: false } },
                 populate: {
-                    path: 'ward',
+                    path: 'wards',
                     populate: {
                         path: 'lga',
                         populate: { path: 'state' }
@@ -272,9 +301,12 @@ export const assignFeedersToAdmin = async (req, res) => {
             })
             .select("-password");
 
+        const adminObj = updatedAdmin.toObject();
+        adminObj.assignedFeeders = adminObj.assignedFeeders.filter(f => f !== null);
+
         res.json({
             message: "Grid permissions propagated successfully",
-            admin: updatedAdmin
+            admin: adminObj
         });
     } catch (error) {
         console.error("Error in assignFeedersToAdmin:", error);
@@ -291,8 +323,9 @@ export const getProfile = async (req, res) => {
         const user = await User.findById(req.user._id)
             .populate({
                 path: 'assignedFeeders',
+                match: { isActive: { $ne: false } }, // Only populate active feeders
                 populate: {
-                    path: 'ward',
+                    path: 'wards',
                     populate: {
                         path: 'lga',
                         populate: { path: 'state' }
@@ -306,8 +339,11 @@ export const getProfile = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
+        const userObj = user.toObject();
+        userObj.assignedFeeders = userObj.assignedFeeders.filter(f => f !== null);
+
         console.log(`Successfully fetched profile for: ${user.fullName}`);
-        res.json(user);
+        res.json(userObj);
     } catch (error) {
         console.error("Error in getProfile:", error);
         res.status(500).json({ 

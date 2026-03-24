@@ -19,6 +19,7 @@ import PowerStatus from "../models/PowerStatus.js";
 import { hasFeederAccess } from "../utils/feederAccess.js";
 import Feeder from "../models/Location/Feeder.js";
 import { notifyArea } from "../utils/notificationHelper.js";
+import PowerLog from "../models/PowerLog.js";
 
 const router = express.Router();
 
@@ -88,6 +89,15 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
                 status.updatedBy = req.user._id;
             }
             await status.save();
+
+            // Record this status change in the power log for history
+            const log = new PowerLog({
+                feeder: id,
+                feederName: feeder.name,
+                status: isActive,
+                updatedBy: req.user._id
+            });
+            await log.save();
 
             // Emit real-time update to all connected clients
             if (req.io) {

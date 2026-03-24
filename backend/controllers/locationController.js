@@ -57,8 +57,31 @@ export const createWard = async (req, res) => {
 // @access  Private/Admin
 export const createFeeder = async (req, res) => {
   try {
-    const { name, wardId } = req.body;
-    const feeder = await Feeder.create({ name, ward: wardId });
+    const { name, wardId, wardIds } = req.body;
+    
+    const targetWardIds = wardIds || (wardId ? [wardId] : []);
+    
+    if (targetWardIds.length === 0) {
+        return res.status(400).json({ message: "At least one Ward ID is required" });
+    }
+
+    // Check for existing feeder name (case-insensitive and trimmed)
+    let feeder = await Feeder.findOne({ 
+        name: { $regex: new RegExp(`^${name.trim()}$`, "i") } 
+    });
+    
+    if (feeder) {
+        if (feeder.isActive !== false) {
+            return res.status(400).json({ message: "Feeder with this name already exists and is active" });
+        }
+        // Reactivate and update
+        feeder.isActive = true;
+        feeder.wards = targetWardIds;
+        await feeder.save();
+        return res.json({ message: "Feeder reactivated successfully", feeder });
+    }
+
+    feeder = await Feeder.create({ name, wards: targetWardIds });
     res.status(201).json({
       message: "Feeder created successfully",
       feeder
@@ -72,14 +95,14 @@ export const createFeeder = async (req, res) => {
 // @access  Public
 export const getAllLocations = async (req, res) => {
   try {
-    const states = await State.find({});
-    const lgas = await LGA.find({}).populate("state");
-    const wards = await Ward.find({}).populate({
+    const states = await State.find({ isActive: { $ne: false } });
+    const lgas = await LGA.find({ isActive: { $ne: false } }).populate("state");
+    const wards = await Ward.find({ isActive: { $ne: false } }).populate({
         path: 'lga',
         populate: { path: 'state' }
     });
-    const feeders = await Feeder.find({}).populate({
-        path: 'ward',
+    const feeders = await Feeder.find({ isActive: { $ne: false } }).populate({
+        path: 'wards',
         populate: {
             path: 'lga',
             populate: { path: 'state' }
@@ -87,10 +110,10 @@ export const getAllLocations = async (req, res) => {
     });
 
     res.json({
-      states,
-      lgas,
-      wards,
-      feeders
+      states: states.filter(s => s.isActive !== false),
+      lgas: lgas.filter(l => l.isActive !== false && (!l.state || l.state.isActive !== false)),
+      wards: wards.filter(w => w.isActive !== false && (!w.lga || w.lga.isActive !== false)),
+      feeders: feeders.filter(f => f.isActive !== false)
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -111,7 +134,8 @@ export const deleteState = async (req, res) => {
       return res.status(400).json({ message: "Cannot delete state with linked LGAs" });
     }
 
-    await state.deleteOne();
+    state.isActive = false;
+    await state.save();
     res.json({ message: "State removed successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -132,7 +156,8 @@ export const deleteLGA = async (req, res) => {
       return res.status(400).json({ message: "Cannot delete LGA with linked Wards" });
     }
 
-    await lga.deleteOne();
+    lga.isActive = false;
+    await lga.save();
     res.json({ message: "LGA removed successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -148,12 +173,14 @@ export const deleteWard = async (req, res) => {
     if (!ward) return res.status(404).json({ message: "Ward not found" });
 
     // Check if Feeders are linked to this Ward
-    const linkedFeeders = await Feeder.countDocuments({ ward: req.params.id });
+    const linkedFeeders = await Feeder.countDocuments({ wards: req.params.id });
+
     if (linkedFeeders > 0) {
       return res.status(400).json({ message: "Cannot delete ward with linked Feeders" });
     }
 
-    await ward.deleteOne();
+    ward.isActive = false;
+    await ward.save();
     res.json({ message: "Ward removed successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -175,7 +202,8 @@ export const deleteFeeder = async (req, res) => {
       return res.status(400).json({ message: "Cannot delete feeder with assigned administrators" });
     }
 
-    await feeder.deleteOne();
+    feeder.isActive = false;
+    await feeder.save();
     res.json({ message: "Feeder removed successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });

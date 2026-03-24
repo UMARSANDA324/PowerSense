@@ -10,6 +10,10 @@ const wardSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "LGA",
         required: true
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     }
 }, { timestamps: true });
 
