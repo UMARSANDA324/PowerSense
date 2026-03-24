@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema(
         notificationPreference: {
             type: String,
             enum: ["email", "push", "in-app", "off"],
-            default: "in-app"
+            default: "push"
         },
 
         deviceTokens: [

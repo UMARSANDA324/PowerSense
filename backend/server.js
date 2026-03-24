@@ -1,6 +1,8 @@
 
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
 import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -12,7 +14,6 @@ import powerRoutes from "./routes/powerRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 
-dotenv.config();
 connectDB();
 
 const app = express();

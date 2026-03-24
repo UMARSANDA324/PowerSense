@@ -4,6 +4,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
+import Ward from "../models/Location/Ward.js";
+import Feeder from "../models/Location/Feeder.js";
+
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -118,18 +121,29 @@ export const updateUserProfile = async (req, res) => {
       if (req.body.lga) {
         user.lga = req.body.lga;
       }
-
+      
       if (req.body.ward) {
         user.ward = req.body.ward;
-      }
-
-      if (req.body.feeder) {
-        user.feeder = req.body.feeder;
+        
+        // --- Automatically Update Feeder based on new Ward ---
+        try {
+          const wardObj = await Ward.findOne({ name: req.body.ward });
+          if (wardObj) {
+            const feederObj = await Feeder.findOne({ wards: wardObj._id });
+            if (feederObj) {
+              user.feeder = feederObj.name;
+              console.log(`Auto-updated feeder to: ${feederObj.name} for ward: ${req.body.ward}`);
+            }
+          }
+        } catch (error) {
+          console.error("Auto-feeder update error:", error);
+        }
       }
 
       if (req.body.state) {
         user.state = req.body.state;
       }
+
 
       if (req.body.fcmToken) {
         // Ensure deviceTokens array exists

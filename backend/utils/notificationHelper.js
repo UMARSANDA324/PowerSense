@@ -155,7 +155,7 @@ export const notifyArea = async ({
         if (feeder) {
             if (isValidObjectId(feeder)) {
                 const feederDoc = await Feeder.findById(feeder).populate({
-                    path: 'ward',
+                    path: 'wards',
                     populate: {
                         path: 'lga',
                         populate: { path: 'state' }
@@ -163,15 +163,9 @@ export const notifyArea = async ({
                 });
                 if (feederDoc) {
                     query.feeder = feederDoc.name;
-                    if (feederDoc.ward) {
-                        query.ward = feederDoc.ward.name;
-                        if (feederDoc.ward.lga) {
-                            query.lga = feederDoc.ward.lga.name;
-                            if (feederDoc.ward.lga.state) {
-                                query.state = feederDoc.ward.lga.state.name;
-                            }
-                        }
-                    }
+                    // Note: We don't restrict query.ward here because a feeder can cover multiple wards.
+                    // If we set query.ward = name, it would only find users in ONE of the wards.
+                    // By only setting query.feeder, we find all users linked to this feeder name.
                 }
             } else {
                 query.feeder = feeder;

@@ -1,7 +1,4 @@
 import admin from "firebase-admin";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 // Initialize Firebase Admin SDK
 // Note: In production, you should use a service account key JSON file

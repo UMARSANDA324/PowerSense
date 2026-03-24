@@ -88,16 +88,24 @@ const seed = async () => {
                 console.log(`Created Ward: ${wardName} in ${targetLGA.name}`);
             }
 
-            // Create Feeder
-            let feeder = await Feeder.findOne({ name: feederName, ward: ward._id });
+            // Create or Update Feeder
+            let feeder = await Feeder.findOne({ name: feederName });
             if (!feeder) {
-                feeder = await Feeder.create({ name: feederName, ward: ward._id });
+                feeder = await Feeder.create({ name: feederName, wards: [ward._id] });
                 console.log(`Created Feeder: ${feederName} linked to ${wardName}`);
+            } else {
+                // If feeder exists, add this ward if not already present
+                if (!feeder.wards.includes(ward._id)) {
+                    feeder.wards.push(ward._id);
+                    await feeder.save();
+                    console.log(`Updated Feeder: ${feederName} added ${wardName}`);
+                }
             }
         }
 
         console.log("Seeding completed successfully!");
         process.exit();
+
     } catch (error) {
         console.error("Seeding failed:", error);
         process.exit(1);

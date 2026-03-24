@@ -4,13 +4,23 @@ const feederSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        unique: true
     },
-    ward: {
+    wards: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Ward",
         required: true
+    }],
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    isAssigned: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
+
 
 export default mongoose.model("Feeder", feederSchema);
