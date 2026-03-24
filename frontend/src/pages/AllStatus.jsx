@@ -83,14 +83,15 @@ const AllStatus = () => {
         } else {
             const searchLower = searchTerm.toLowerCase();
             const filtered = feeders.filter((feeder) => {
-                const wardName = feeder.ward?.name?.toLowerCase() || "";
+                // Support multiple wards per feeder
+                const wardNames = feeder.wards?.map(w => w.name?.toLowerCase() || "") || [];
                 const feederName = feeder.name?.toLowerCase() || "";
-                const lgaName = feeder.ward?.lga?.name?.toLowerCase() || "";
+                const lgaNames = feeder.wards?.map(w => w.lga?.name?.toLowerCase() || "") || [];
                 
                 return (
-                    wardName.includes(searchLower) ||
+                    wardNames.some(name => name.includes(searchLower)) ||
                     feederName.includes(searchLower) ||
-                    lgaName.includes(searchLower)
+                    lgaNames.some(name => name.includes(searchLower))
                 );
             });
             setFilteredFeeders(filtered);
@@ -134,9 +135,10 @@ const AllStatus = () => {
     // Check if user can report for this feeder
     const canReportForFeeder = (feeder) => {
         if (!user) return false;
-        const feederWard = feeder.ward?.name?.toLowerCase().trim();
         const userArea = user.ward?.toLowerCase().trim() || user.area?.toLowerCase().trim();
-        return feederWard === userArea;
+        // Support multiple wards per feeder
+        const wardNames = feeder.wards?.map(w => w.name?.toLowerCase().trim() || "") || [];
+        return wardNames.includes(userArea);
     };
 
     // Handle report click

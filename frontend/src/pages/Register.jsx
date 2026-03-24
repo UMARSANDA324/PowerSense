@@ -141,7 +141,9 @@ const Register = () => {
         let detectedFeeder = "Unknown Feeder";
         const wardObj = locations.wards.find(w => w.name === formData.ward);
         if (wardObj) {
-            const feederObj = locations.feeders.find(f => f.ward?._id === wardObj._id);
+            const feederObj = locations.feeders.find(f => 
+                f.wards?.some(w => (typeof w === 'string' ? w : w._id) === wardObj._id)
+            );
             if (feederObj) detectedFeeder = feederObj.name;
         }
 
@@ -335,7 +337,9 @@ const Register = () => {
                                 Auto-detected Feeder: {(() => {
                                     const wardObj = locations.wards.find(w => w.name === formData.ward);
                                     if (wardObj) {
-                                        const feederObj = locations.feeders.find(f => f.ward?._id === wardObj._id);
+                                        const feederObj = locations.feeders.find(f => 
+                                            f.wards?.some(w => (typeof w === 'string' ? w : w._id) === wardObj._id)
+                                        );
                                         return feederObj ? feederObj.name : "Unknown Feeder";
                                     }
                                     return "Unknown Feeder";

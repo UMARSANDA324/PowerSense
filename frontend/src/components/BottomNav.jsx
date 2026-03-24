@@ -6,8 +6,9 @@ const BottomNav = () => {
   const navItems = [
     { path: "/", icon: <MdHome size={28} />, label: "Home" },
     { path: "/all-status", icon: <Gauge size={24} />, label: "Status" },
-    { path: "/report", icon: <MdReportProblem size={28} />, label: "Report" },
+    { path: "/report-issue", icon: <MdReportProblem size={28} />, label: "Report" },
     { path: "/profile", icon: <MdPerson size={28} />, label: "Me" },
+
   ];
 
   return (

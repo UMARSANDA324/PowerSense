@@ -16,7 +16,7 @@ export const login = async (email, password) => {
       ward: response.data.ward,
       feeder: response.data.feeder,
       role: response.data.role,
-      notificationPreference: response.data.notificationPreference || "phone",
+      notificationPreference: response.data.notificationPreference || "push",
       assignedFeeders: response.data.assignedFeeders || [],
     };
     localStorage.setItem("user", JSON.stringify(user));
@@ -38,7 +38,7 @@ export const register = async (userData) => {
       ward: response.data.ward,
       feeder: response.data.feeder,
       role: response.data.role,
-      notificationPreference: response.data.notificationPreference || "phone",
+      notificationPreference: response.data.notificationPreference || "push",
       assignedFeeders: response.data.assignedFeeders || [],
     };
     localStorage.setItem("user", JSON.stringify(user));
@@ -78,7 +78,7 @@ export const updateProfile = async (userData) => {
       lga: response.data.lga || "",
       ward: response.data.ward || "",
       feeder: response.data.feeder || "",
-      notificationPreference: response.data.notificationPreference || "phone",
+      notificationPreference: response.data.notificationPreference || "push",
       assignedFeeders: response.data.assignedFeeders || [],
     };
     localStorage.setItem("user", JSON.stringify(user));

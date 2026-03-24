@@ -68,7 +68,7 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      
+
       {/* Notifications overlay */}
       <div className="fixed top-0 right-0 p-4 z-50 pointer-events-none space-y-2">
         {notifications.map((n) => (
