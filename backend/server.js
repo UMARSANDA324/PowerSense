@@ -54,7 +54,7 @@ app.use(cors(corsOptions));
 
 // Global Rate Limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
+  windowMs: 15 * 60 * 1000,
   max: 1000, // Limit each IP to 1k requests per window
   message: "Too many requests from this IP, please try again after 15 minutes",
 });
@@ -76,16 +76,16 @@ app.use("/api/notifications", notificationRoutes);
 
 // --- Production: Serving SPA Frontend Build ---
 if (process.env.NODE_ENV === "production") {
-    // Serve frontend build from backend directly (Path for Render mostly)
-    app.use(express.static(path.join(__dirname, "../frontend/dist")));
-    
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"));
-    });
+  // Serve frontend build from backend directly (Path for Render mostly)
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"));
+  });
 } else {
-    app.get("/", (req, res) => {
-        res.send("PowerSense API Running (Development)...");
-    });
+  app.get("/", (req, res) => {
+    res.send("PowerSense API Running (Development)...");
+  });
 }
 
 // Error Management
