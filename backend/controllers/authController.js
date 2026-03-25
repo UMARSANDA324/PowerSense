@@ -33,7 +33,7 @@ export const registerUser = async (req, res) => {
       email,
       password,
       phone,
-      role,
+      role: "user", // Enforce user role for public registration
       state,
       lga,
       ward,

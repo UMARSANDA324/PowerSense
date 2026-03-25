@@ -60,6 +60,10 @@ const SuperAdminDashboard = () => {
     });
     const [showPassword, setShowPassword] = useState(false);
 
+    // Feeder Editing State
+    const [editingFeeder, setEditingFeeder] = useState(null);
+    const [showEditFeederModal, setShowEditFeederModal] = useState(false);
+
     useEffect(() => {
         fetchSuperData();
     }, []);
@@ -198,6 +202,50 @@ const SuperAdminDashboard = () => {
             fetchSuperData(true);
         } catch (err) {
             setMessage({ text: err.response?.data?.message || `Failed to remove ${type}`, type: "error" });
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const handleUpdateFeeder = async (e) => {
+        e.preventDefault();
+        if (!editingFeeder) return;
+        
+        // Only require ward selection if there are NO existing wards AND NO new wards being added
+        if ((!editingFeeder.wards || editingFeeder.wards.length === 0) && (!locFormData.wardIds || locFormData.wardIds.length === 0)) {
+            return setMessage({ text: "At least one ward must be associated with the feeder", type: "error" });
+        }
+
+        setActionLoading(true);
+        try {
+            await adminService.updateFeeder(editingFeeder._id, {
+                name: locFormData.name,
+                wardIds: locFormData.wardIds
+            });
+            setMessage({ text: `Feeder "${locFormData.name}" updated successfully`, type: "success" });
+            setShowEditFeederModal(false);
+            setEditingFeeder(null);
+            setLocFormData({ name: "", stateId: "", lgaId: "", wardId: "", wardIds: [] });
+            fetchSuperData(true);
+        } catch (err) {
+            console.error("Update error [feeder]:", err);
+            setMessage({ text: err.response?.data?.message || "Failed to update feeder", type: "error" });
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const handleRemoveWardFromFeeder = async (feederId, wardId) => {
+        setActionLoading(true);
+        try {
+            const res = await adminService.updateFeeder(feederId, { removeWardId: wardId });
+            setMessage({ text: "Ward removed from feeder successfully", type: "success" });
+            
+            // Update local state
+            setEditingFeeder(res.feeder);
+            fetchSuperData(true);
+        } catch (err) {
+            setMessage({ text: err.response?.data?.message || "Failed to remove ward", type: "error" });
         } finally {
             setActionLoading(false);
         }
@@ -581,6 +629,15 @@ const SuperAdminDashboard = () => {
                                                                 <MapPin size={14} className="text-blue-500" />
                                                                 {adm.state || 'GLOBAL CORE'}
                                                             </div>
+                                                            {adm.assignedFeeders && adm.assignedFeeders.length > 0 && (
+                                                                <div className="mt-2 flex flex-wrap gap-1">
+                                                                    {adm.assignedFeeders.map((f, idx) => (
+                                                                        <span key={`${f._id || idx}-${idx}`} className="text-[8px] font-black bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-100 uppercase tracking-tighter">
+                                                                            {f.name}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            )}
                                                         </td>
                                                         <td className="p-8">
                                                             <select
@@ -993,12 +1050,29 @@ const SuperAdminDashboard = () => {
                                                                             : 'Main Grid'}
                                                                     </p>
                                                                 </div>
-                                                                <button 
-                                                                    onClick={() => handleDeleteLocation("feeder", f._id, f.name)}
-                                                                    className="p-2 text-red-400 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                                                                >
-                                                                    <Trash2 size={14} />
-                                                                </button>
+                                                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    <button 
+                                                                        onClick={() => {
+                                                                            setEditingFeeder(f);
+                                                                            setLocFormData({
+                                                                                name: f.name,
+                                                                                wardIds: f.wards?.map(w => w._id) || []
+                                                                            });
+                                                                            setShowEditFeederModal(true);
+                                                                        }}
+                                                                        className="p-2 text-blue-400 hover:bg-blue-50 rounded-lg"
+                                                                        title="Edit Feeder"
+                                                                    >
+                                                                        <Edit size={14} />
+                                                                    </button>
+                                                                    <button 
+                                                                        onClick={() => handleDeleteLocation("feeder", f._id, f.name)}
+                                                                        className="p-2 text-red-400 hover:bg-red-50 rounded-lg"
+                                                                        title="Delete Feeder"
+                                                                    >
+                                                                        <Trash2 size={14} />
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         ))}
                                                     </div>
@@ -1136,9 +1210,40 @@ const SuperAdminDashboard = () => {
                                 ))}
                                 {explorerType === "feeder" && locations.feeders.map(f => (
                                     <div key={f._id} className="p-5 bg-gray-50 rounded-2xl border border-gray-100 flex flex-col group relative">
-                                        <span className="font-black text-gray-700">{f.name}</span>
-                                        <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest">{f.ward?.name || 'Global'}</span>
-                                        <button onClick={() => { setShowAssetExplorer(false); handleDeleteLocation("feeder", f._id, f.name); }} className="absolute top-5 right-5 text-red-400 opacity-0 group-hover:opacity-100 transition-all"><Trash2 size={16} /></button>
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <span className="font-black text-gray-700">{f.name}</span>
+                                                <p className="text-[8px] font-bold text-amber-500 uppercase tracking-widest">
+                                                    {f.wards && f.wards.length > 0 
+                                                        ? (f.wards.length > 2 
+                                                            ? `${f.wards.slice(0, 2).map(w => w.name).join(', ')} +${f.wards.length - 2}` 
+                                                            : f.wards.map(w => w.name).join(', ')) 
+                                                        : 'Main Grid'}
+                                                </p>
+                                            </div>
+                                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                                <button 
+                                                    onClick={() => {
+                                                        setShowAssetExplorer(false);
+                                                        setEditingFeeder(f);
+                                                        setLocFormData({
+                                                            name: f.name,
+                                                            wardIds: f.wards?.map(w => w._id) || []
+                                                        });
+                                                        setShowEditFeederModal(true);
+                                                    }}
+                                                    className="p-1.5 text-blue-400 hover:bg-blue-50 rounded-lg"
+                                                >
+                                                    <Edit size={14} />
+                                                </button>
+                                                <button 
+                                                    onClick={() => { setShowAssetExplorer(false); handleDeleteLocation("feeder", f._id, f.name); }} 
+                                                    className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg"
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -1237,7 +1342,14 @@ const SuperAdminDashboard = () => {
                                             setLocFormData({ ...locFormData, wardIds: selectedOptions });
                                         }}
                                     >
-                                        {locations.wards.map(w => <option key={w._id} value={w._id}>{w.name} ({w.lga?.name})</option>)}
+                                        {locations.wards.map(w => {
+                                            const isAssigned = locations.feeders.some(f => f.wards?.some(fw => fw._id === w._id));
+                                            return (
+                                                <option key={w._id} value={w._id} disabled={isAssigned} className={isAssigned ? "text-gray-400 bg-gray-50" : ""}>
+                                                    {w.name} ({w.lga?.name}) {isAssigned ? '- Already Assigned' : ''}
+                                                </option>
+                                            );
+                                        })}
                                     </select>
                                     <p className="text-[10px] text-gray-400 mt-2 ml-2">Hold Ctrl (Windows) or Cmd (Mac) to select multiple wards.</p>
                                 </div>
@@ -1263,6 +1375,111 @@ const SuperAdminDashboard = () => {
                                 Initialize {locModalType}
                             </button>
                         </form>
+                    </div>
+                </div>
+            )}
+            {/* Edit Feeder Modal */}
+            {showEditFeederModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[3rem] w-full max-w-lg p-10 shadow-2xl relative max-h-[90vh] flex flex-col">
+                        <button 
+                            onClick={() => {
+                                setShowEditFeederModal(false);
+                                setEditingFeeder(null);
+                                setLocFormData({ name: "", stateId: "", lgaId: "", wardId: "", wardIds: [] });
+                            }}
+                            className="absolute top-8 right-8 text-gray-400 hover:text-gray-900 transition-colors"
+                        >
+                            <X size={24} />
+                        </button>
+                        <div className="flex items-center gap-4 mb-8">
+                            <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center">
+                                <Zap size={24} />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-black text-gray-900 tracking-tight uppercase">Manage Feeder</h3>
+                                <p className="text-xs text-gray-500 font-medium">Update name or ward distribution</p>
+                            </div>
+                        </div>
+                        
+                        <div className="flex-1 overflow-y-auto space-y-8 pr-2 custom-scrollbar">
+                            <div>
+                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Feeder Name</label>
+                                <input 
+                                    required
+                                    className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 font-bold text-sm"
+                                    placeholder="Feeder Name"
+                                    value={locFormData.name}
+                                    onChange={(e) => setLocFormData({ ...locFormData, name: e.target.value })}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Currently Assigned Wards</label>
+                                <div className="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-2xl border border-gray-100 min-h-[60px]">
+                                    {editingFeeder?.wards && editingFeeder.wards.length > 0 ? (
+                                        editingFeeder.wards.map(w => (
+                                            <div key={w._id} className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-gray-100 shadow-sm group">
+                                                <span className="text-xs font-bold text-gray-700">{w.name}</span>
+                                                <button 
+                                                    type="button"
+                                                    disabled={actionLoading}
+                                                    onClick={() => handleRemoveWardFromFeeder(editingFeeder._id, w._id)}
+                                                    className="text-gray-400 hover:text-red-500 transition-colors"
+                                                >
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center justify-center w-full">No Wards Linked</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <form onSubmit={handleUpdateFeeder} className="space-y-6 pt-4 border-t border-gray-100">
+                                <div>
+                                    <label className="block text-[10px] font-black text-blue-600 uppercase tracking-widest mb-3 ml-2">Add New Wards</label>
+                                    <div className="relative group">
+                                        <select 
+                                            multiple
+                                            className="w-full p-4 bg-blue-50/30 border border-blue-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 font-bold text-sm min-h-[140px] appearance-none"
+                                            value={locFormData.wardIds || []}
+                                            onChange={(e) => {
+                                                const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                                                setLocFormData({ ...locFormData, wardIds: selectedOptions });
+                                            }}
+                                        >
+                                            {locations.wards
+                                                .filter(w => !editingFeeder?.wards?.some(ew => ew._id === w._id))
+                                                .map(w => {
+                                                    const assignedFeeder = locations.feeders.find(f => f._id !== editingFeeder?._id && f.wards?.some(fw => fw._id === w._id));
+                                                    const isAssigned = !!assignedFeeder;
+                                                    return (
+                                                        <option key={w._id} value={w._id} disabled={isAssigned} className={`p-2 rounded-lg ${isAssigned ? "text-gray-400 bg-gray-50 cursor-not-allowed" : "cursor-pointer hover:bg-white"}`}>
+                                                            {w.name} ({w.lga?.name}) {isAssigned ? `- Assigned to ${assignedFeeder.name}` : ''}
+                                                        </option>
+                                                    );
+                                                })
+                                            }
+                                        </select>
+                                        <div className="absolute right-4 top-4 pointer-events-none text-blue-400 opacity-20">
+                                            <Plus size={32} />
+                                        </div>
+                                    </div>
+                                    <p className="text-[8px] text-gray-400 mt-3 ml-2 uppercase tracking-tight">Select one or more wards to add to the current distribution fleet.</p>
+                                </div>
+
+                                <button 
+                                    type="submit"
+                                    disabled={actionLoading || (!locFormData.wardIds?.length && locFormData.name === editingFeeder?.name)}
+                                    className="w-full py-5 bg-blue-600 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-blue-100 hover:bg-blue-700 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                                >
+                                    {actionLoading ? <Loader2 className="animate-spin" size={18} /> : <CheckCircle2 size={18} />}
+                                    Deploy Grid Updates
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             )}

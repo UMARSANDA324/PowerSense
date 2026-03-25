@@ -17,4 +17,6 @@ const wardSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+wardSchema.index({ name: 1, lga: 1 }, { unique: true });
+
 export default mongoose.model("Ward", wardSchema);

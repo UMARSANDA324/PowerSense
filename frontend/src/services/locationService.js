@@ -7,23 +7,20 @@ const locationService = {
         return response.data;
     },
     
-    // We can add more specific fetchers if needed
     getStates: async () => {
-        const response = await api.get("/location/all");
-        return response.data.states;
+        const response = await api.get("/location/states");
+        return response.data;
     },
     
     getLGAs: async (stateId) => {
-        const response = await api.get("/location/all");
-        if (stateId) {
-            return response.data.lgas.filter(lga => lga.state?._id === stateId);
-        }
-        return response.data.lgas;
+        const url = stateId ? `/location/lgas?stateId=${stateId}` : "/location/lgas";
+        const response = await api.get(url);
+        return response.data;
     },
     
     getFeeders: async () => {
-        const response = await api.get("/location/all");
-        return response.data.feeders;
+        const response = await api.get("/location/feeders");
+        return response.data;
     }
 };
 
