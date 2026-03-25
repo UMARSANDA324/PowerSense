@@ -7,18 +7,48 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Public route for users to check power status for all feeders
-router.get("/all-status", async (req, res) => {
+// Protected route for users to check power status for allowed feeders
+router.get("/all-status", protect, async (req, res) => {
     try {
-        const statuses = await PowerStatus.find().populate("feeder", "name");
+        let allowedFeederIds = [];
+        const isSuperAdmin = req.user.role === 'super-admin';
+
+        if (!isSuperAdmin) {
+            if (req.user.role === 'admin') {
+                allowedFeederIds = req.user.assignedFeeders || [];
+            } else {
+                // User role: filter by state
+                if (!req.user.state) {
+                    return res.json([]);
+                }
+                const StateModel = mongoose.model("State");
+                const state = await StateModel.findOne({ name: req.user.state });
+                
+                if (state) {
+                    const LGAModel = mongoose.model("LGA");
+                    const lgas = await LGAModel.find({ state: state._id });
+                    
+                    const WardModel = mongoose.model("Ward");
+                    const wards = await WardModel.find({ lga: { $in: lgas.map(l => l._id) } });
+                    
+                    const FeederModel = mongoose.model("Feeder");
+                    const feedersInState = await FeederModel.find({ wards: { $in: wards.map(w => w._id) } });
+                    
+                    allowedFeederIds = feedersInState.map(f => f._id);
+                }
+            }
+        }
+
+        const query = isSuperAdmin ? {} : { feeder: { $in: allowedFeederIds } };
+        const statuses = await PowerStatus.find(query).populate("feeder", "name");
         res.json(statuses);
     } catch (error) {
         res.status(500).json({ message: "Error fetching statuses", error: error.message });
     }
 });
 
-// Public route for users to check power status for a specific feeder
-router.get("/status", async (req, res) => {
+// Protected route for users to check power status for a specific feeder
+router.get("/status", protect, async (req, res) => {
     const { feeder } = req.query;
     try {
         let status;
@@ -53,6 +83,32 @@ router.get("/status", async (req, res) => {
                 estimatedNextOutage: "TBD"
             });
         }
+
+        // Apply filtering logic for the fetched status
+        if (req.user.role !== 'super-admin') {
+            let isAllowed = false;
+            if (req.user.role === 'admin') {
+                const assignedStrs = (req.user.assignedFeeders || []).map(id => id.toString());
+                isAllowed = assignedStrs.includes(status.feeder.toString());
+            } else if (req.user.role === 'user' && req.user.state) {
+                const FeederModel = mongoose.model("Feeder");
+                const f = await FeederModel.findById(status.feeder).populate({
+                    path: 'wards',
+                    populate: {
+                        path: 'lga',
+                        populate: { path: 'state' }
+                    }
+                });
+                
+                if (f && f.wards) {
+                    isAllowed = f.wards.some(w => w.lga?.state?.name === req.user.state);
+                }
+            }
+            if (!isAllowed) {
+                return res.status(403).json({ message: "Access denied to this feeder's status." });
+            }
+        }
+
         res.json(status);
     } catch (error) {
         res.status(500).json({ message: "Error fetching status", error: error.message });

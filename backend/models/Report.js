@@ -38,4 +38,9 @@ const reportSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+reportSchema.index({ state: 1 });
+reportSchema.index({ lga: 1 });
+reportSchema.index({ ward: 1 });
+reportSchema.index({ feeder: 1 });
+
 export default mongoose.model("Report", reportSchema);
