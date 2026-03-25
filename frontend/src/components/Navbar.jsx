@@ -247,13 +247,16 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
-            <button
-              className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-all active:scale-90"
-              aria-label="Location"
-              onClick={() => setShowLocationModal(true)}
-            >
-              <MapPin size={22} />
-            </button>
+            {user && (
+              <button
+                className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-all active:scale-90"
+                aria-label="Location"
+                onClick={() => setShowLocationModal(true)}
+              >
+                <MapPin size={22} />
+              </button>
+            )}
+
           </div>
         </div>
       </nav>
@@ -279,19 +282,19 @@ const Navbar = () => {
               <div className="w-full space-y-4 mb-8 text-left">
                 <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">State</p>
-                  <p className="text-gray-900 font-bold">{user.state || "State not set"}</p>
+                  <p className="text-gray-900 font-bold">{user?.state || "State not set"}</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Local Government</p>
-                  <p className="text-gray-900 font-bold">{user.lga || "Not set"}</p>
+                  <p className="text-gray-900 font-bold">{user?.lga || "Not set"}</p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Area</p>
-                  <p className="text-gray-900 font-bold">{user.ward || "Not set"}</p>
+                  <p className="text-gray-900 font-bold">{user?.ward || "Not set"}</p>
                 </div>
                 <div className="p-4 bg-blue-50/50 rounded-2xl border border-blue-100">
                   <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Feeder</p>
-                  <p className="text-blue-700 font-bold">{user.feeder || "Not set"}</p>
+                  <p className="text-blue-700 font-bold">{user?.feeder || "Not set"}</p>
                 </div>
               </div>
 

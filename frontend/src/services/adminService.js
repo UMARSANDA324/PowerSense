@@ -113,6 +113,11 @@ const adminService = {
   deleteFeeder: async (id) => {
     const response = await api.delete(`/location/feeder/${id}`);
     return response.data;
+  },
+
+  updateFeeder: async (id, feederData) => {
+    const response = await api.put(`/location/feeder/${id}`, feederData);
+    return response.data;
   }
 };
 

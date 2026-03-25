@@ -20,6 +20,11 @@ const AllStatus = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                if (!user) {
+                    setLoading(false);
+                    return; // Unauthenticated users cannot view statuses
+                }
+
                 setLoading(true);
                 
                 // Fetch all feeders and statuses in parallel
@@ -29,8 +34,25 @@ const AllStatus = () => {
                 ]);
 
                 const statuses = statusesData.data;
+                const allowedFeederIds = statuses.map(s => s.feeder?._id || s.feeder).filter(Boolean);
                 
-                const enrichedFeeders = feedersData.map((feeder) => {
+                // Only show feeders that were returned from the authorized /power/all-status endpoint
+                // or super-admins can see all feeders regardless of status existing.
+                let allowedFeeders = feedersData;
+                if (user.role !== 'super-admin') {
+                    // We also ensure we only display feeders for which the user is authorized
+                    // Because we fetch statuses after enforcing authorization in the backend,
+                    // we can safely rely on frontend role-filtering as long as we also check backend output
+                    if (user.role === 'admin') {
+                        allowedFeeders = feedersData.filter(f => (user.assignedFeeders || []).includes(f._id));
+                    } else if (user.role === 'user' && user.state) {
+                        allowedFeeders = feedersData.filter(f => f.wards?.some(w => w.lga?.state?.name === user.state));
+                    } else {
+                        allowedFeeders = [];
+                    }
+                }
+                
+                const enrichedFeeders = allowedFeeders.map((feeder) => {
                     const feederStatus = statuses.find(s => s.feeder?._id === feeder._id || s.feeder === feeder._id);
                     return {
                         ...feeder,
