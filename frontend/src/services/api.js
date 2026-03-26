@@ -1,8 +1,18 @@
 import axios from "axios";
 
-// Use a relative base URL — Vite proxy forwards /api/* to the backend.
+// Use Vite environment variables instead of hardcoded paths.
+// If VITE_API_URL is available, use it (and append /api). Otherwise fallback to /api (for local dev proxy or single deployment).
+const getBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL || import.meta.env.REACT_APP_API_URL;
+  if (envUrl) {
+    // Ensuring no trailing slash to correctly append /api
+    return `${envUrl.replace(/\/$/, "")}/api`;
+  }
+  return "/api";
+};
+
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: getBaseUrl(),
   headers: {
     "Content-Type": "application/json",
   },
