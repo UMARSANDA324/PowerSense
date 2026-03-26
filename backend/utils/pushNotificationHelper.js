@@ -1,9 +1,13 @@
 import admin from "firebase-admin";
 
-// Initialize Firebase Admin SDK
-// Note: In production, you should use a service account key JSON file
-// For this environment, we'll check for environment variables or a placeholder
-const initializeFirebase = () => {
+let firebaseApp = null;
+let firebaseInitialized = false;
+
+// Lazy-init Firebase Admin SDK — deferred so dotenv has time to load env vars
+const getFirebaseApp = () => {
+    if (firebaseInitialized) return firebaseApp;
+    firebaseInitialized = true;
+
     try {
         if (!process.env.FIREBASE_PROJECT_ID) {
             console.warn("FIREBASE_PROJECT_ID not found in environment variables. Push notifications will be mocked.");
@@ -16,16 +20,17 @@ const initializeFirebase = () => {
             clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         };
 
-        return admin.initializeApp({
+        firebaseApp = admin.initializeApp({
             credential: admin.credential.cert(serviceAccount),
         });
+
+        console.log("[Firebase] Admin SDK initialized successfully.");
+        return firebaseApp;
     } catch (error) {
         console.error("Firebase Admin initialization error:", error);
         return null;
     }
 };
-
-const firebaseApp = initializeFirebase();
 
 /**
  * Sends a push notification to one or more device tokens
@@ -33,7 +38,8 @@ const firebaseApp = initializeFirebase();
  * @param {Object} payload - Notification payload { title, body, data }
  */
 export const sendPushNotification = async (tokens, { title, body, data = {} }) => {
-    if (!firebaseApp || !tokens || tokens.length === 0) {
+    const app = getFirebaseApp();
+    if (!app || !tokens || tokens.length === 0) {
         if (tokens?.length > 0) {
             console.log(`[FCM MOCK] Sending to ${tokens.length} tokens: ${title} - ${body}`);
         }

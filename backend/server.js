@@ -74,8 +74,6 @@ app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cors(corsOptions));
-// Handle CORS preflight for all routes
-app.options("*", cors(corsOptions));
 
 // --- Rate Limiting ---
 const limiter = rateLimit({
@@ -111,7 +109,7 @@ if (process.env.NODE_ENV === "production") {
   const frontendPath = path.join(__dirname, "../frontend/dist");
   app.use(express.static(frontendPath));
   // All non-API routes return the React app
-  app.get("*", (req, res) => {
+  app.get("/", (req, res) => {
     res.sendFile(path.resolve(frontendPath, "index.html"));
   });
 } else {
