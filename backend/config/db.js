@@ -1,40 +1,106 @@
 
 import mongoose from "mongoose";
+import dns from "dns";
 
-const connectDB = async () => {
-  const uri = process.env.MONGODB_URI;
+// Implementation of exponential backoff retry for MongoDB connection
+const MAX_RETRIES = 5;
+const INITIAL_RETRY_DELAY = 2000; // 2 seconds
 
-  if (!uri) {
-    console.error("[MongoDB] MONGODB_URI is not set in environment variables.");
-    process.exit(1);
-  }
-
+const connectWithRetry = async (uri, attempt = 1) => {
   try {
-    const conn = await mongoose.connect(uri, {
-      // These options ensure stable connections on Atlas in production
-      serverSelectionTimeoutMS: 10000, // 10 seconds to find a server
-      socketTimeoutMS: 45000,          // Close sockets after 45 seconds of inactivity
+    // Trim and sanitize URI to prevent malformed connection strings
+    const sanitizedUri = uri.trim();
+    
+    // Diagnostic check for database name in URI
+    const uriObj = sanitizedUri.split('?')[0]; // Ignore query params
+    const parts = uriObj.split('/');
+    const dbName = parts[parts.length - 1];
+    
+    if (!dbName || dbName === "") {
+      console.warn("[MongoDB] WARNING: No database name detected in connection string. Using 'test' by default.");
+    } else {
+      console.log(`[MongoDB] Targeting database: ${dbName}`);
+    }
+
+    // Programmatic DNS override for development SRV resolution issues
+    // This solves querySrv ECONNREFUSED in many local environments
+    if (process.env.NODE_ENV === "development") {
+      try {
+        dns.setServers(["8.8.8.8", "8.8.4.4"]);
+      } catch (dnsErr) {
+        console.warn("[MongoDB] DNS override skipped:", dnsErr.message);
+      }
+    }
+
+    const conn = await mongoose.connect(sanitizedUri, {
+      serverSelectionTimeoutMS: 15000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
     });
 
-    console.log(`[MongoDB] Connected successfully: ${conn.connection.host}`);
-    console.log(`[MongoDB] Database: ${conn.connection.name}`);
+    console.log(`[MongoDB] MongoDB Connected`);
+    return true;
   } catch (error) {
-    console.error(`[MongoDB] Connection FAILED: ${error.message}`);
-    console.error("[MongoDB] Check that:");
-    console.error("  1. MONGODB_URI is correctly set in Render environment variables");
-    console.error("  2. Your MongoDB Atlas cluster is running");
-    console.error("  3. Your Render IP is whitelisted in Atlas (set 0.0.0.0/0 to allow all)");
-    process.exit(1);
+    if (error.message.includes("authentication failed")) {
+      console.error("[MongoDB] CRITICAL: Authentication failed. Please verify your username and password.");
+      console.error("[MongoDB] Note: If your password contains special characters, ensure they are URL-encoded.");
+      return false; // Don't retry auth errors as they won't fix themselves
+    }
+    
+    console.error(`[MongoDB] Attempt ${attempt} failed: ${error.message}`);
+    
+    if (attempt < MAX_RETRIES) {
+      const delay = INITIAL_RETRY_DELAY * Math.pow(2, attempt - 1);
+      console.log(`[MongoDB] Retrying in ${delay / 1000}s...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return connectWithRetry(uri, attempt + 1);
+    }
+    
+    return false;
   }
 };
 
-// Handle unexpected disconnections
+const connectDB = async () => {
+  // Prefer MONGO_URI as per senior engineering standard, fallback to MONGODB_URI
+  const uri = process.env.MONGO_URI || process.env.MONGODB_URI;
+
+  if (!uri) {
+    console.error("[PowerSense] FATAL: MONGO_URI is not set in environment variables.");
+    process.exit(1);
+  }
+
+  const success = await connectWithRetry(uri);
+  
+  if (!success) {
+    console.error("[PowerSense] FATAL: Failed to connect to MongoDB after multiple attempts.");
+    console.error("Troubleshooting Steps:");
+    console.error("1. Check if your MONGO_URI is correct (mongodb+srv://...)");
+    console.error("2. Ensure 0.0.0.0/0 is whitelisted in MongoDB Atlas Network Access");
+    console.error("3. Verify your database user credentials (username/password)");
+    console.error("4. Ensure the cluster is active and not paused.");
+    
+    // In production, we might want to keep the process alive but in a 'degraded' state
+    // but for most MERN apps, the app cannot function without the DB.
+    if (process.env.NODE_ENV === "production") {
+       console.error("[PowerSense] Production startup failed. Exiting.");
+       process.exit(1);
+    } else {
+       console.warn("[PowerSense] Development mode: Keeping process alive for code changes, but DB features will fail.");
+    }
+  }
+};
+
+// Handle post-connection lifecycle events
+mongoose.connection.on("error", (err) => {
+  console.error(`[MongoDB] Runtime error: ${err.message}`);
+});
+
 mongoose.connection.on("disconnected", () => {
-  console.warn("[MongoDB] Disconnected from database. Attempting to reconnect...");
+  console.warn("[MongoDB] Disconnected from cluster. Mongoose will attempt to reconnect automatically.");
 });
 
 mongoose.connection.on("reconnected", () => {
-  console.log("[MongoDB] Reconnected to database.");
+  console.log("[MongoDB] Reconnected successfully.");
 });
 
 export default connectDB;
