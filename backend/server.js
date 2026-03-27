@@ -22,10 +22,16 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 // --- Validate critical environment variables on startup ---
-const REQUIRED_ENV = ["MONGODB_URI", "JWT_SECRET"];
+const REQUIRED_ENV = ["JWT_SECRET"];
 const missing = REQUIRED_ENV.filter((key) => !process.env[key]);
+
+// Standardize on MONGO_URI, but allow MONGODB_URI as fallback
+if (!process.env.MONGO_URI && !process.env.MONGODB_URI) {
+  missing.push("MONGO_URI");
+}
+
 if (missing.length > 0) {
-  console.error(`[PowerSense] FATAL: Missing environment variables: ${missing.join(", ")}`);
+  console.error(`[PowerSense] FATAL: Missing required environment variables: ${missing.join(", ")}`);
   console.error("[PowerSense] Please set these in your Render Environment settings.");
   process.exit(1);
 }
@@ -43,7 +49,25 @@ const httpServer = createServer(app);
 // e.g. "https://powersense.onrender.com,http://localhost:5173"
 const getAllowedOrigins = () => {
   const raw = process.env.FRONTEND_URL || "http://localhost:5173";
-  return raw.split(",").map((url) => url.trim()).filter(Boolean);
+  const origins = raw.split(",").map((url) => url.trim()).filter(Boolean);
+  
+  // Add production origins if they are not already present
+  const productionOrigins = [
+    "https://powersense-1.onrender.com",
+    "https://powersense-2.onrender.com",
+    "https://powersense-1.onrender.com/",
+    "https://powersense-2.onrender.com/"
+  ];
+  
+  productionOrigins.forEach(origin => {
+    // Check both with and without trailing slash
+    const normalized = origin.replace(/\/$/, "");
+    if (!origins.includes(normalized)) {
+      origins.push(normalized);
+    }
+  });
+
+  return origins;
 };
 
 const allowedOrigins = getAllowedOrigins();
@@ -53,11 +77,16 @@ const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (e.g., Postman, mobile apps, server-to-server)
     if (!origin) return callback(null, true);
+    
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
+    
+    // Fallback: allow any Render subdomain in production if needed, 
+    // but we already added the specific ones above.
+    // For now, let's just log and block without throwing a server-side error.
     console.warn(`[PowerSense] CORS blocked request from: ${origin}`);
-    callback(new Error(`CORS policy: Origin ${origin} is not allowed.`));
+    callback(null, false);
   },
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],

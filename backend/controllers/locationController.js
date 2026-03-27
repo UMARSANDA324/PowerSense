@@ -162,28 +162,31 @@ export const getFeeders = async (req, res) => {
 // @access  Public
 export const getAllLocations = async (req, res) => {
   try {
-    const states = await State.find({ isActive: { $ne: false } });
-    const lgas = await LGA.find({ isActive: { $ne: false } }).populate("state");
-    const wards = await Ward.find({ isActive: { $ne: false } }).populate({
-        path: 'lga',
-        populate: { path: 'state' }
-    });
-    const feeders = await Feeder.find({ isActive: { $ne: false } }).populate({
-        path: 'wards',
-        populate: {
-            path: 'lga',
-            populate: { path: 'state' }
-        }
-    });
+    const [states, lgas, wards, feeders] = await Promise.all([
+      State.find({ isActive: { $ne: false } }),
+      LGA.find({ isActive: { $ne: false } }).populate("state"),
+      Ward.find({ isActive: { $ne: false } }).populate({
+          path: 'lga',
+          populate: { path: 'state' }
+      }),
+      Feeder.find({ isActive: { $ne: false } }).populate({
+          path: 'wards',
+          populate: {
+              path: 'lga',
+              populate: { path: 'state' }
+          }
+      })
+    ]);
 
     res.json({
       states: states.filter(s => s.isActive !== false),
-      lgas: lgas.filter(l => l.isActive !== false && (!l.state || l.state.isActive !== false)),
-      wards: wards.filter(w => w.isActive !== false && (!w.lga || w.lga.isActive !== false)),
+      lgas: lgas.filter(l => l.isActive !== false && l.state && l.state.isActive !== false),
+      wards: wards.filter(w => w.isActive !== false && w.lga && w.lga.isActive !== false && w.lga.state && w.lga.state.isActive !== false),
       feeders: feeders.filter(f => f.isActive !== false)
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("[LocationController] getAllLocations Error:", error);
+    res.status(500).json({ message: "Error fetching location hierarchy", error: error.message });
   }
 };
 
