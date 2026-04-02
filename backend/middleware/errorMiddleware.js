@@ -23,6 +23,7 @@ const errorHandler = (err, req, res, next) => {
  * Handle 404 - Not Found
  */
 const notFound = (req, res, next) => {
+    console.warn(`[NotFound] ${req.method} ${req.url}`);
     const error = new Error(`Not Found - ${req.originalUrl}`);
     res.status(404);
     next(error);
