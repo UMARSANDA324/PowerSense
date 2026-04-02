@@ -52,7 +52,7 @@ button {
   transition: border-color 0.25s;
 }
 
-/* Global Submit Button Styles */
+/* Global Submit Button Styles */ 
 button[type="submit"], 
 .submit-btn {
   background-color: black !important;

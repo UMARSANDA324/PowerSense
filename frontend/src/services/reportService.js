@@ -6,7 +6,7 @@ import api from "./api";
 
 export const reportIssue = async (issueData) => {
   try {
-    const response = await api.post("/reports", issueData);
+    const response = await api.post("reports", issueData);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to report issue");
@@ -15,7 +15,7 @@ export const reportIssue = async (issueData) => {
 
 export const getReports = async () => {
   try {
-    const response = await api.get("/reports/my");
+    const response = await api.get("reports/my");
     return response.data;
   } catch (error) {
     console.error("Error fetching reports:", error);
@@ -25,7 +25,7 @@ export const getReports = async () => {
 
 export const getAllReports = async () => {
   try {
-    const response = await api.get("/reports");
+    const response = await api.get("reports");
     return response.data;
   } catch (error) {
     console.error("Error fetching all reports:", error);
@@ -35,7 +35,7 @@ export const getAllReports = async () => {
 
 export const getReportById = async (reportId) => {
   try {
-    const response = await api.get(`/reports/${reportId}`);
+    const response = await api.get(`reports/${reportId}`);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch report");
@@ -44,7 +44,7 @@ export const getReportById = async (reportId) => {
 
 export const updateReport = async (reportId, updateData) => {
   try {
-    const response = await api.put(`/reports/${reportId}`, updateData);
+    const response = await api.put(`reports/${reportId}`, updateData);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to update report");
@@ -53,7 +53,7 @@ export const updateReport = async (reportId, updateData) => {
 
 export const deleteReport = async (reportId) => {
   try {
-    const response = await api.delete(`/reports/${reportId}`);
+    const response = await api.delete(`reports/${reportId}`);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to delete report");

@@ -21,21 +21,18 @@ const getBaseUrl = () => {
   const envUrl = import.meta.env.VITE_API_URL;
 
   if (envUrl && envUrl.trim() !== "") {
-    // Strip trailing slash, then append /api
-    return `${envUrl.trim().replace(/\/$/, "")}/api`;
+    // Ensure we have a clean domain, then append /api/ (with trailing slash)
+    return `${envUrl.trim().replace(/\/$/, "")}/api/`;
   }
 
   // In production without VITE_API_URL, use a relative URL.
-  // This only works if the frontend and backend are served from the same domain.
   if (import.meta.env.PROD) {
     console.warn(
-      "[PowerSense] VITE_API_URL is not set. " +
-        "If your frontend and backend are on separate Render services, " +
-        "you MUST set VITE_API_URL in your frontend environment variables on Render."
+      "[PowerSense] VITE_API_URL is not set. Using relative /api/ path."
     );
   }
 
-  return "/api";
+  return "/api/";
 };
 
 const api = axios.create({
@@ -43,7 +40,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // Send cookies if any (required for some auth flows)
+  withCredentials: false, // Disabled to debug silent 401s on localhost
 });
 
 // Attach JWT auth token automatically on every request

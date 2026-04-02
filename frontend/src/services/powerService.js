@@ -5,7 +5,7 @@ import api from "./api";
  */
 export const getPowerStatus = async (feederName) => {
     try {
-        const url = feederName ? `/power/status?feeder=${encodeURIComponent(feederName)}` : "/power/status";
+        const url = feederName ? `power/status?feeder=${encodeURIComponent(feederName)}` : "power/status";
         const response = await api.get(url);
         return response.data;
     } catch (error) {
@@ -19,7 +19,7 @@ export const getPowerStatus = async (feederName) => {
  */
 export const updatePowerStatus = async (isActive) => {
     try {
-        const response = await api.post("/admin/power/status", { isActive });
+        const response = await api.post("admin/power-status", { isActive });
         return response.data;
     } catch (error) {
         console.error("Error updating power status from Admin Dashboard:", error);
