@@ -4,7 +4,7 @@ import api from "./api";
  * Service to handle Authentication logic
  */
 export const login = async (email, password) => {
-  const response = await api.post("/auth/login", { email, password });
+  const response = await api.post("auth/login", { email, password });
   if (response.data.token) {
     const user = {
       _id: response.data._id,
@@ -26,7 +26,7 @@ export const login = async (email, password) => {
 };
 
 export const register = async (userData) => {
-  const response = await api.post("/auth/register", userData);
+  const response = await api.post("auth/register", userData);
   if (response.data.token) {
     const user = {
       _id: response.data._id,
@@ -66,7 +66,7 @@ export const getCurrentUser = () => {
 };
 
 export const updateProfile = async (userData) => {
-  const response = await api.put("/auth/profile", userData);
+  const response = await api.put("auth/profile", userData);
   if (response.data.token) {
     const user = {
       _id: response.data._id,
@@ -88,16 +88,16 @@ export const updateProfile = async (userData) => {
 };
 
 export const forgotPassword = async (email) => {
-  const response = await api.post("/auth/forgot-password", { email });
+  const response = await api.post("auth/forgot-password", { email });
   return response.data;
 };
 
 export const verifyOTP = async (email, otp) => {
-  const response = await api.post("/auth/verify-otp", { email, otp });
+  const response = await api.post("auth/verify-otp", { email, otp });
   return response.data;
 };
 
 export const resetPassword = async (email, otp, password) => {
-  const response = await api.post("/auth/reset-password", { email, otp, password });
+  const response = await api.post("auth/reset-password", { email, otp, password });
   return response.data;
 };

@@ -12,8 +12,9 @@ const getSocketUrl = () => {
   if (envUrl && envUrl.trim() !== "") {
     return envUrl.trim().replace(/\/$/, "");
   }
-  // Development falls back to proxy; production single-service uses same origin
-  return import.meta.env.DEV ? "http://localhost:5000" : "/";
+  // In development, explicitly use the backend URL to bypass proxy issues if any.
+  // In production (single service), use relative path.
+  return import.meta.env.DEV ? "http://127.0.0.1:5000" : "/";
 };
 
 const SOCKET_URL = getSocketUrl();
