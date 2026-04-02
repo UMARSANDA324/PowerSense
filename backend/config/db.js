@@ -39,6 +39,15 @@ const connectWithRetry = async (uri, attempt = 1) => {
     });
 
     console.log(`[MongoDB] MongoDB Connected`);
+    
+    // Diagnostic check: Count users in the database
+    try {
+      const userCount = await mongoose.connection.db.collection("users").countDocuments();
+      console.log(`[MongoDB] Database Diagnostic: Found ${userCount} users in 'users' collection.`);
+    } catch (countErr) {
+      console.warn(`[MongoDB] Database Diagnostic Error: ${countErr.message}`);
+    }
+
     return true;
   } catch (error) {
     if (error.message.includes("authentication failed")) {

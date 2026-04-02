@@ -12,6 +12,8 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             unique: true,
+            lowercase: true,
+            trim: true,
         },
 
         password: {
@@ -71,6 +73,7 @@ const userSchema = new mongoose.Schema(
         resetPasswordExpire: Date,
         otpCode: String,
         otpExpire: Date,
+        lastLogin: Date,
     },
     { timestamps: true }
 );
@@ -90,4 +93,4 @@ userSchema.pre("save", async function () {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-export default mongoose.model("User", userSchema);  
+export default mongoose.model("User", userSchema, "users");

@@ -6,6 +6,7 @@ import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
 import Ward from "../models/Location/Ward.js";
 import Feeder from "../models/Location/Feeder.js";
+import mongoose from "mongoose";
 
 
 // @desc    Register a new user
@@ -15,19 +16,36 @@ export const registerUser = async (req, res) => {
   if (!req.body || Object.keys(req.body).length === 0) {
     return res.status(400).json({ message: "Request body is missing or empty" });
   }
-  const { fullName, email, password, phone, role, state, lga, ward, feeder } = req.body;
+  let { fullName, email, password, phone, role, state, lga, ward, feeder } = req.body;
 
   if (!fullName || !email || !password) {
     return res.status(400).json({ message: "Please provide all required fields: fullName, email, password" });
   }
 
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: "Please provide a valid email address" });
+  }
+
+  // Validate password strength
+  if (password.length < 6) {
+    return res.status(400).json({ message: "Password must be at least 6 characters long" });
+  }
+
+  // Normalize email
+  email = email.toLowerCase().trim();
+
   try {
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      return res.status(400).json({ message: "User already exists" });
+      console.warn(`[Register] Registration attempt for existing email: ${email}`);
+      return res.status(400).json({ message: "User with this email already exists" });
     }
 
+    console.log(`[Register] Creating new user: ${email}`);
+    
     const user = await User.create({
       fullName,
       email,
@@ -41,25 +59,39 @@ export const registerUser = async (req, res) => {
     });
 
     if (user) {
+      console.log(`[Register] ✅ Success: Created user ${user.email} (ID: ${user._id})`);
+      
+      // Return user data without sensitive information
       res.status(201).json({
-        _id: user._id,
-        fullName: user.fullName,
-        email: user.email,
-        phone: user.phone,
-        state: user.state,
-        lga: user.lga,
-        ward: user.ward,
-        feeder: user.feeder,
-        role: user.role,
-        notificationPreference: user.notificationPreference,
+        success: true,
+        message: "User registered successfully",
+        user: {
+          _id: user._id,
+          fullName: user.fullName,
+          email: user.email,
+          phone: user.phone,
+          state: user.state,
+          lga: user.lga,
+          ward: user.ward,
+          feeder: user.feeder,
+          role: user.role,
+          notificationPreference: user.notificationPreference,
+        },
         token: generateToken(user._id),
       });
     } else {
-      res.status(400).json({ message: "Invalid user data" });
+      console.error(`[Register] ❌ Failed to create user: ${email}`);
+      res.status(400).json({ message: "Failed to create user. Please try again." });
     }
   } catch (error) {
-    console.error("updateUserProfile error:", error);
-    res.status(500).json({ message: error.message });
+    console.error(`[Register] Error creating user ${email}:`, error);
+    
+    // Handle specific MongoDB errors
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "User with this email already exists" });
+    }
+    
+    res.status(500).json({ message: "Server error during registration. Please try again." });
   }
 };
 
@@ -195,17 +227,77 @@ export const loginUser = async (req, res) => {
   if (!req.body || Object.keys(req.body).length === 0) {
     return res.status(400).json({ message: "Request body is missing or empty" });
   }
-  const { email, password } = req.body;
+  let { email, password } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ message: "Please provide email and password" });
   }
 
-  try {
-    const user = await User.findOne({ email });
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: "Please provide a valid email address" });
+  }
 
-    if (user && (await user.matchPassword(password))) {
-      res.json({
+  // Normalize email
+  email = email.toLowerCase().trim();
+
+  try {
+    const dbName = mongoose.connection.db?.databaseName || 'UNKNOWN';
+    console.log(`[Login] Login attempt for: ${email}`);
+    console.log(`[Login DB Debug] Target DB: ${dbName}`);
+    
+    try {
+      if (mongoose.connection.db) {
+        const totalUsers = await mongoose.connection.db.collection("users").countDocuments();
+        console.log(`[Login DB Debug] Documents in 'users' collection: ${totalUsers}`);
+      }
+    } catch (e) {
+      console.log(`[Login DB Debug] Error counting users: ${e.message}`);
+    }
+    
+    // Explicitly select password to ensure it's available for matchPassword
+    const user = await User.findOne({ email }).select("+password");
+    console.log(`[Login DB Debug] User.findOne() for ${email} returned: ${user ? 'FOUND (ID: ' + user._id + ')' : 'NULL'}`);
+
+    if (!user) {
+      console.warn(`[Login] ❌ User not found: ${email}`);
+      return res.status(401).json({ 
+        success: false,
+        message: "Invalid email or password",
+        code: "USER_NOT_FOUND"
+      });
+    }
+
+    if (!user.isActive) {
+      console.warn(`[Login] ❌ Account deactivated: ${email}`);
+      return res.status(401).json({ 
+        success: false,
+        message: "Your account has been deactivated. Please contact support.",
+        code: "ACCOUNT_DEACTIVATED"
+      });
+    }
+
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      console.warn(`[Login] ❌ Password mismatch for: ${email}`);
+      return res.status(401).json({ 
+        success: false,
+        message: "Invalid email or password",
+        code: "INVALID_PASSWORD"
+      });
+    }
+
+    console.log(`[Login] ✅ Success: ${email} (${user.role})`);
+    
+    // Update last login timestamp (optional)
+    user.lastLogin = new Date();
+    await user.save();
+    
+    res.json({
+      success: true,
+      message: "Login successful",
+      user: {
         _id: user._id,
         fullName: user.fullName,
         email: user.email,
@@ -216,13 +308,17 @@ export const loginUser = async (req, res) => {
         role: user.role,
         feeder: user.feeder,
         notificationPreference: user.notificationPreference,
-        token: generateToken(user._id),
-      });
-    } else {
-      res.status(401).json({ message: "Invalid email or password" });
-    }
+        lastLogin: user.lastLogin,
+      },
+      token: generateToken(user._id),
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(`[Login] Error for ${email}:`, error);
+    res.status(500).json({ 
+      success: false,
+      message: "Server error during login. Please try again.",
+      code: "SERVER_ERROR"
+    });
   }
 };
 
