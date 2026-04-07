@@ -1,49 +1,42 @@
 import axios from "axios";
 
 /**
- * Determine the API base URL.
- *
- * DEPLOYMENT MODES:
- *
- * A) Separate frontend & backend services on Render (RECOMMENDED):
- *    - Set VITE_API_URL in Render's frontend environment variables
- *    - e.g. VITE_API_URL=https://powersense-backend.onrender.com
- *    - The "/api" prefix is appended automatically.
- *
- * B) Single Render service (backend serves frontend build):
- *    - Leave VITE_API_URL unset or empty.
- *    - Relative "/api" will work because frontend and backend share the same domain.
- *
- * IMPORTANT: Vite only exposes env vars prefixed with VITE_ to the browser bundle.
- * REACT_APP_* variables DO NOT work in Vite — only VITE_* does.
+ * Determine the API base URL dynamically based on environment variables.
+ * 
+ * VITE_API_URL Configuration in Render:
+ * - Go to your Render Dashboard -> Select your Frontend Frontend Web Service.
+ * - Under 'Environment', add a variable: VITE_API_URL
+ * - Set the value to your Backend URL, e.g., https://your-backend.onrender.com (no trailing slash).
  */
 const getBaseUrl = () => {
-  const envUrl = import.meta.env.VITE_API_URL;
+  // Use VITE_API_URL if defined, otherwise empty string
+  const rawUrl = import.meta.env.VITE_API_URL || "";
+  let resolvedUrl = "";
 
-  if (envUrl && envUrl.trim() !== "") {
-    // Ensure we have a clean domain, then append /api/ (with trailing slash)
-    return `${envUrl.trim().replace(/\/$/, "")}/api/`;
+  if (rawUrl) {
+    // Strip any trailing slashes from the raw URL to avoid double slashes, then append '/api/'
+    resolvedUrl = `${rawUrl.trim().replace(/\/+$/, "")}/api/`;
+  } else {
+    // Fallback if VITE_API_URL is not set:
+    // In development, assume localhost:5000
+    // In production, assume same-domain relative path
+    resolvedUrl = import.meta.env.DEV ? "http://localhost:5000/api/" : "/api/";
   }
 
-  // In production without VITE_API_URL, use a relative URL.
-  if (import.meta.env.PROD) {
-    console.warn(
-      "[PowerSense] VITE_API_URL is not set. Using relative /api/ path."
-    );
-  }
-
-  return "/api/";
+  console.log(`[API Config] Initializing Axios with baseURL: ${resolvedUrl}`);
+  return resolvedUrl;
 };
 
+// Configure Axios instance
 const api = axios.create({
   baseURL: getBaseUrl(),
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: false, // Disabled to debug silent 401s on localhost
+  withCredentials: false, 
 });
 
-// Attach JWT auth token automatically on every request
+// Add request interceptor: attach JWT token dynamically
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -55,16 +48,24 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Global response interceptor — handle 401s uniformly
+// Add response interceptor: handle 401 errors globally
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Check if error is due to an unauthorized/expired token
     if (error.response?.status === 401) {
+      console.warn("[API] 401 Unauthorized detected. Clearing session.");
+      
+      // Clear auth tokens
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      // Redirect to login if not already there
-      if (!window.location.pathname.includes("/login")) {
-        window.location.href = "/login";
+      
+      // Dispatch custom event so React components (like AuthProvider) can immediately re-render or redirect safely
+      window.dispatchEvent(new Event("unauthorized"));
+      
+      // Fallback redirect if the app doesn't handle the event internally
+      if (window.location.pathname !== '/login') {
+         window.location.href = '/login';
       }
     }
     return Promise.reject(error);
