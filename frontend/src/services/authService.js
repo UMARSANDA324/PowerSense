@@ -6,19 +6,7 @@ import api from "./api";
 export const login = async (email, password) => {
   const response = await api.post("auth/login", { email, password });
   if (response.data.token) {
-    const user = {
-      _id: response.data._id,
-      fullName: response.data.fullName,
-      email: response.data.email,
-      phone: response.data.phone,
-      state: response.data.state,
-      lga: response.data.lga,
-      ward: response.data.ward,
-      feeder: response.data.feeder,
-      role: response.data.role,
-      notificationPreference: response.data.notificationPreference || "push",
-      assignedFeeders: response.data.assignedFeeders || [],
-    };
+    const user = response.data.user;
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", response.data.token);
   }
@@ -28,19 +16,7 @@ export const login = async (email, password) => {
 export const register = async (userData) => {
   const response = await api.post("auth/register", userData);
   if (response.data.token) {
-    const user = {
-      _id: response.data._id,
-      fullName: response.data.fullName,
-      email: response.data.email,
-      phone: response.data.phone,
-      state: response.data.state,
-      lga: response.data.lga,
-      ward: response.data.ward,
-      feeder: response.data.feeder,
-      role: response.data.role,
-      notificationPreference: response.data.notificationPreference || "push",
-      assignedFeeders: response.data.assignedFeeders || [],
-    };
+    const user = response.data.user;
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", response.data.token);
   }
@@ -65,24 +41,24 @@ export const getCurrentUser = () => {
   }
 };
 
+export const getCurrentUserFromApi = async () => {
+  try {
+    const response = await api.get("auth/profile");
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch user profile from API", error);
+    throw error;
+  }
+};
+
 export const updateProfile = async (userData) => {
   const response = await api.put("auth/profile", userData);
-  if (response.data.token) {
-    const user = {
-      _id: response.data._id,
-      fullName: response.data.fullName,
-      email: response.data.email,
-      role: response.data.role,
-      phone: response.data.phone || "",
-      state: response.data.state || "",
-      lga: response.data.lga || "",
-      ward: response.data.ward || "",
-      feeder: response.data.feeder || "",
-      notificationPreference: response.data.notificationPreference || "push",
-      assignedFeeders: response.data.assignedFeeders || [],
-    };
+  if (response.data.user || response.data.token) {
+    const user = response.data.user || response.data;
     localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", response.data.token);
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
+    }
   }
   return response.data;
 };

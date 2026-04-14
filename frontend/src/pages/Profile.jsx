@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { User, Settings, Shield, Bell, HelpCircle, LogOut, ChevronRight, MapPin, Smartphone, Mail, Edit3, X, Loader2, CheckCircle2, Zap } from "lucide-react";
-import { getCurrentUser, logout, updateProfile } from "../services/authService";
+import { getCurrentUser, logout, updateProfile, getCurrentUserFromApi } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 import locationService from "../services/locationService";
 
@@ -53,6 +53,22 @@ const Profile = () => {
             }));
         }
     }, [user]);
+
+    // Refresh user data from server on mount
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const updatedUser = await getCurrentUserFromApi(); 
+                if (updatedUser) {
+                    setUser(updatedUser);
+                    localStorage.setItem("user", JSON.stringify(updatedUser));
+                }
+            } catch (err) {
+                console.error("Failed to sync profile with server", err);
+            }
+        };
+        fetchProfile();
+    }, []);
 
     // Fetch locations
     useEffect(() => {
