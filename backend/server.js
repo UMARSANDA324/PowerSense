@@ -176,7 +176,7 @@ if (process.env.NODE_ENV === "production") {
     app.use(express.static(frontendPath));
     
     // All non-API routes return the React app
-    app.get("*path", (req, res, next) => {
+    app.get("*", (req, res, next) => {
       // If the request is for an API route that wasn't matched above, let it pass to 404 handler
       if (req.path.startsWith("/api/")) return next();
       

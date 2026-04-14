@@ -9,12 +9,36 @@ const INITIAL_RETRY_DELAY = 2000; // 2 seconds
 const connectWithRetry = async (uri, attempt = 1) => {
   try {
     // Trim and sanitize URI to prevent malformed connection strings
-    const sanitizedUri = uri.trim();
+    let sanitizedUri = uri.trim();
+    
+    // Check for common <password> placeholder mistakes
+    if (sanitizedUri.includes("<password>") || sanitizedUri.includes("<username>")) {
+       console.error("[MongoDB] CRITICAL: Your connection string contains '<password>' or '<username>'. You must replace these placeholders with your actual database credentials.");
+       return false;
+    }
+
+    try {
+      // Auto-encode special characters in username and password if they aren't already encoded
+      const parsedUrl = new URL(sanitizedUri);
+      if (parsedUrl.username && parsedUrl.password) {
+        const decodedUser = decodeURIComponent(parsedUrl.username);
+        const decodedPass = decodeURIComponent(parsedUrl.password);
+        parsedUrl.username = encodeURIComponent(decodedUser);
+        parsedUrl.password = encodeURIComponent(decodedPass);
+        sanitizedUri = parsedUrl.toString();
+      }
+    } catch (urlErr) {
+      console.warn("[MongoDB] Could not parse connection string for auto-encoding credentials.");
+    }
     
     // Diagnostic check for database name in URI
     const uriObj = sanitizedUri.split('?')[0]; // Ignore query params
     const parts = uriObj.split('/');
-    const dbName = parts[parts.length - 1];
+    let dbName = parts[parts.length - 1];
+    
+    if (dbName === "" && sanitizedUri.startsWith("mongodb+srv://")) {
+      dbName = "test"; // Default for srv without db path
+    }
     
     if (!dbName || dbName === "") {
       console.warn("[MongoDB] WARNING: No database name detected in connection string. Using 'test' by default.");
