@@ -19,11 +19,16 @@ const ForgotPassword = () => {
     setError("");
     setIsLoading(true);
 
+    const normalizedEmail = email.toLowerCase().trim();
+    console.log(`[ForgotPassword] Initiating OTP request for: ${normalizedEmail}`);
+
     try {
-      await forgotPassword(email);
+      await forgotPassword(normalizedEmail);
+      console.log(`[ForgotPassword] Success: OTP request acknowledged by server`);
       setStep(1);
     } catch (err) {
-      const msg = err.response?.data?.message || "User with this email does not exist.";
+      console.error(`[ForgotPassword] ❌ Error:`, err.response?.data?.message || err.message);
+      const msg = err.response?.data?.message || "We couldn't process your request. Please check your connection.";
       setError(msg);
     } finally {
       setIsLoading(false);
