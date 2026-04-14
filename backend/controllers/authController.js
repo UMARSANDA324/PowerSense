@@ -45,7 +45,7 @@ export const registerUser = async (req, res) => {
     }
 
     console.log(`[Register] Creating new user: ${email}`);
-    
+
     const user = await User.create({
       fullName,
       email,
@@ -60,7 +60,7 @@ export const registerUser = async (req, res) => {
 
     if (user) {
       console.log(`[Register] ✅ Success: Created user ${user.email} (ID: ${user._id})`);
-      
+
       // Return user data without sensitive information
       res.status(201).json({
         success: true,
@@ -85,12 +85,12 @@ export const registerUser = async (req, res) => {
     }
   } catch (error) {
     console.error(`[Register] Error creating user ${email}:`, error);
-    
+
     // Handle specific MongoDB errors
     if (error.code === 11000) {
       return res.status(400).json({ message: "User with this email already exists" });
     }
-    
+
     res.status(500).json({ message: "Server error during registration. Please try again." });
   }
 };
@@ -153,10 +153,10 @@ export const updateUserProfile = async (req, res) => {
       if (req.body.lga) {
         user.lga = req.body.lga;
       }
-      
+
       if (req.body.ward) {
         user.ward = req.body.ward;
-        
+
         // --- Automatically Update Feeder based on new Ward ---
         try {
           const wardObj = await Ward.findOne({ name: req.body.ward });
@@ -182,7 +182,7 @@ export const updateUserProfile = async (req, res) => {
         if (!user.deviceTokens) {
           user.deviceTokens = [];
         }
-        
+
         // Add new token if it doesn't exist
         const tokenExists = user.deviceTokens.find(dt => dt.token === req.body.fcmToken);
         if (!tokenExists) {
@@ -246,7 +246,7 @@ export const loginUser = async (req, res) => {
     const dbName = mongoose.connection.db?.databaseName || 'UNKNOWN';
     console.log(`[Login] Login attempt for: ${email}`);
     console.log(`[Login DB Debug] Target DB: ${dbName}`);
-    
+
     try {
       if (mongoose.connection.db) {
         const totalUsers = await mongoose.connection.db.collection("users").countDocuments();
@@ -255,14 +255,14 @@ export const loginUser = async (req, res) => {
     } catch (e) {
       console.log(`[Login DB Debug] Error counting users: ${e.message}`);
     }
-    
+
     // Explicitly select password to ensure it's available for matchPassword
     const user = await User.findOne({ email }).select("+password");
     console.log(`[Login DB Debug] User.findOne() for ${email} returned: ${user ? 'FOUND (ID: ' + user._id + ')' : 'NULL'}`);
 
     if (!user) {
       console.warn(`[Login] ❌ User not found: ${email}`);
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
         message: "Invalid email or password",
         code: "USER_NOT_FOUND"
@@ -271,7 +271,7 @@ export const loginUser = async (req, res) => {
 
     if (!user.isActive) {
       console.warn(`[Login] ❌ Account deactivated: ${email}`);
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
         message: "Your account has been deactivated. Please contact support.",
         code: "ACCOUNT_DEACTIVATED"
@@ -281,7 +281,7 @@ export const loginUser = async (req, res) => {
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       console.warn(`[Login] ❌ Password mismatch for: ${email}`);
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
         message: "Invalid email or password",
         code: "INVALID_PASSWORD"
@@ -289,11 +289,11 @@ export const loginUser = async (req, res) => {
     }
 
     console.log(`[Login] ✅ Success: ${email} (${user.role})`);
-    
+
     // Update last login timestamp (optional)
     user.lastLogin = new Date();
     await user.save();
-    
+
     res.json({
       success: true,
       message: "Login successful",
@@ -314,7 +314,7 @@ export const loginUser = async (req, res) => {
     });
   } catch (error) {
     console.error(`[Login] Error for ${email}:`, error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: "Server error during login. Please try again.",
       code: "SERVER_ERROR"
