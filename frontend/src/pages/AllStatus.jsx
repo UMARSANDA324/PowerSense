@@ -132,10 +132,10 @@ const AllStatus = () => {
                 };
             case "Off":
                 return {
-                    icon: <Power size={20} className="text-white" />,
-                    bgColor: "bg-black",
-                    textColor: "text-white",
-                    badge: "bg-gray-800 text-white"
+                    icon: <Power size={20} className="text-red-500" />,
+                    bgColor: "bg-white border-red-100",
+                    textColor: "text-red-600",
+                    badge: "bg-red-50 text-red-600"
                 };
             case "Maintenance":
                 return {

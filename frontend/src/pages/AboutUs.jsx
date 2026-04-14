@@ -86,7 +86,7 @@ const AboutUs = () => {
                         <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Terms & Conditions</h2>
                     </div>
                     
-                    <div className="bg-gray-50 rounded-[2.5rem] p-8 space-y-8">
+                    <div className="bg-white border border-gray-100 rounded-[2.5rem] p-8 space-y-8 shadow-sm">
                         <div className="space-y-3">
                             <h4 className="font-black text-xs text-blue-600 uppercase tracking-widest">1. Proper Use of the Platform</h4>
                             <p className="text-sm text-gray-600 font-medium leading-relaxed">

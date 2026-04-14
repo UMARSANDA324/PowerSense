@@ -220,7 +220,7 @@ const Profile = () => {
                 <div className="max-w-2xl mx-auto flex flex-col items-center gap-5 text-center relative">
                     <button
                         onClick={() => setIsEditing(true)}
-                        className="absolute right-0 top-0 flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl font-bold text-xs hover:bg-blue-100 transition-all active:scale-95"
+                        className="absolute right-0 top-0 flex items-center gap-2 px-2 py-2 text-blue-600 font-bold text-xs hover:text-blue-700 transition-all active:scale-95"
                     >
                         <Edit3 size={16} />
                         EDIT PROFILE
@@ -247,7 +247,7 @@ const Profile = () => {
                 {/* Contact Info Grid */}
                 <div className="grid grid-cols-1 gap-4">
                     <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
-                        <div className="p-3 bg-gray-50 rounded-2xl text-gray-400">
+                        <div className="text-gray-400">
                             <Mail size={20} />
                         </div>
                         <div>
@@ -257,7 +257,7 @@ const Profile = () => {
                     </div>
                     {user?.phone && (
                         <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
-                            <div className="p-3 bg-gray-50 rounded-2xl text-gray-400">
+                            <div className="text-gray-400">
                                 <Smartphone size={20} />
                             </div>
                             <div>
@@ -267,7 +267,7 @@ const Profile = () => {
                         </div>
                     )}
                     <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
-                        <div className="p-3 bg-gray-50 rounded-2xl text-gray-400">
+                        <div className="text-gray-400">
                             <MapPin size={20} />
                         </div>
                         <div>
@@ -277,7 +277,7 @@ const Profile = () => {
                     </div>
                     {user?.feeder && (
                         <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
-                            <div className="p-3 bg-blue-50 rounded-2xl text-blue-600">
+                            <div className="text-blue-600">
                                 <Zap size={20} />
                             </div>
                             <div>
@@ -304,7 +304,7 @@ const Profile = () => {
                                         if (item.label === "About Us") navigate("/about-us");
                                     }}
                                 >
-                                    <div className="p-3 bg-white rounded-2xl group-active:scale-95 transition-transform shadow-sm">
+                                    <div className="group-active:scale-95 transition-transform">
                                         {item.icon}
                                     </div>
                                     <div className="text-center">
