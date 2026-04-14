@@ -326,13 +326,23 @@ export const loginUser = async (req, res) => {
 // @route   POST /api/auth/forgot-password
 // @access  Public
 export const forgotPassword = async (req, res) => {
-  const { email } = req.body;
-  console.log(`Forgot password request for: ${email}`);
+  let { email } = req.body;
+  const userAgent = req.headers["user-agent"] || "unknown";
+  
+  if (!email) {
+    return res.status(400).json({ message: "Please provide an email address." });
+  }
+
+  // Normalize email to prevent mobile keyboard trailing space issues
+  email = email.toLowerCase().trim();
+  
+  console.log(`[ForgotPassword] Request for: ${email} | Device: ${userAgent}`);
 
   try {
     const user = await User.findOne({ email });
 
     if (!user) {
+      console.warn(`[ForgotPassword] 404: Email ${email} not found.`);
       return res.status(404).json({ message: "This email is not registered in the system." });
     }
 
@@ -375,22 +385,25 @@ export const forgotPassword = async (req, res) => {
     };
 
     try {
-      console.log("Attempting to send OTP email...");
+      console.log(`[ForgotPassword] Attempting to send OTP email to ${user.email}...`);
       await sendEmailWithTimeout({
         email: user.email,
         subject: "PowerSense Password Reset OTP",
         html: message,
       });
-      console.log("Email sent successfully.");
+      console.log(`[ForgotPassword] ✅ Email sent successfully to ${user.email}`);
 
       return res.status(200).json({
         success: true,
         message: "OTP sent to your email.",
       });
     } catch (emailError) {
-      console.error("Email processing error:", emailError.message);
+      console.error(`[ForgotPassword] ❌ Email processing error for ${user.email}:`, emailError.message);
+      console.error(`[ForgotPassword] Full Error Stack:`, emailError);
+      
       return res.status(500).json({
-        message: "We couldn't send the email right now. Please try again later."
+        message: "We couldn't send the email right now. Please try again later.",
+        debug: process.env.NODE_ENV === "development" ? emailError.message : undefined
       });
     }
   } catch (error) {

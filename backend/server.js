@@ -45,15 +45,15 @@ connectDB();
 setTimeout(async () => {
   console.log("\n🔍 Running comprehensive database diagnostics...");
   await debugDatabase();
-  
+
   // Attempt to fix any inconsistencies
   if (process.env.FIX_DATABASE === "true") {
     console.log("\n🔧 Attempting to fix database inconsistencies...");
     await fixDatabaseInconsistency();
   }
-  
+
   await verifyDatabase();
-  
+
   // Only seed in development or if explicitly enabled
   if (process.env.NODE_ENV === "development" || process.env.SEED_DATABASE === "true") {
     await seedDatabase();
@@ -78,7 +78,7 @@ app.use((req, res, next) => {
 const getAllowedOrigins = () => {
   const raw = process.env.FRONTEND_URL || "http://localhost:5173";
   const origins = raw.split(",").map((url) => url.trim()).filter(Boolean);
-  
+
   // Add production origins if they are not already present
   const productionOrigins = [
     "https://powersense-1.onrender.com",
@@ -88,7 +88,7 @@ const getAllowedOrigins = () => {
     "http://localhost:5173",
     "http://127.0.0.1:5173"
   ];
-  
+
   productionOrigins.forEach(origin => {
     // Check both with and without trailing slash
     const normalized = origin.replace(/\/$/, "");
@@ -109,14 +109,14 @@ const corsOptions = {
     if (process.env.NODE_ENV !== "production") {
       return callback(null, true);
     }
-    
+
     // Allow requests with no origin (e.g., Postman, mobile apps, server-to-server)
     if (!origin) return callback(null, true);
-    
+
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    
+
     console.warn(`[PowerSense] CORS blocked request from: ${origin}`);
     callback(null, false);
   },
@@ -169,17 +169,17 @@ app.use("/api/notifications", notificationRoutes);
 // Note: This block only runs if NODE_ENV=production AND the frontend/dist folder exists.
 if (process.env.NODE_ENV === "production") {
   const frontendPath = path.join(__dirname, "../frontend/dist");
-  
+
   // Check if the directory exists before attempting to serve it
   if (fs.existsSync(frontendPath)) {
     console.log(`[PowerSense] Serving static frontend from: ${frontendPath}`);
     app.use(express.static(frontendPath));
-    
+
     // All non-API routes return the React app
     app.get("*", (req, res, next) => {
       // If the request is for an API route that wasn't matched above, let it pass to 404 handler
       if (req.path.startsWith("/api/")) return next();
-      
+
       const indexPath = path.resolve(frontendPath, "index.html");
       if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
@@ -189,9 +189,9 @@ if (process.env.NODE_ENV === "production") {
     });
   } else {
     console.warn("[PowerSense] Production mode active but /frontend/dist not found. " +
-                 "Ensure frontend is built before starting backend or that services are separate.");
+      "Ensure frontend is built before starting backend or that services are separate.");
     app.get("/", (req, res) => {
-      res.status(200).json({ 
+      res.status(200).json({
         message: "PowerSense API is active. Frontend build missing.",
         note: "If this is a separate service deployment, this is expected."
       });
