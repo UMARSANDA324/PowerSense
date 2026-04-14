@@ -82,7 +82,7 @@ function App() {
         ))}
       </div>
 
-      <div className="flex-1 pb-20">
+      <div className="flex-1 pt-[72px] pb-20">
         <AppRoutes />
       </div>
       <BottomNav />

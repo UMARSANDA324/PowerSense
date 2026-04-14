@@ -337,10 +337,11 @@ const Status = () => {
                     ) : (
                         <div className="space-y-4">
                             {notificationHistory.map((notification) => (
-                                <div key={notification._id} className={`rounded-2xl border shadow-lg shadow-blue-50/50 p-6 transition ${notification.read
+                                <div key={notification._id} className={`rounded-2xl border shadow-lg shadow-blue-50/50 p-6 transition relative overflow-hidden ${notification.read
                                         ? "bg-white border-gray-100"
-                                        : "bg-blue-50 border-blue-200"
+                                        : "bg-white border-blue-200"
                                     }`}>
+                                    {!notification.read && <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600" />}
                                     <div className="flex items-start gap-4">
                                         <div className={`p-3 rounded-lg flex-shrink-0 ${notification.read
                                                 ? "bg-gray-100 text-gray-600"

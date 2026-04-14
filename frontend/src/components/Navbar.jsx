@@ -111,13 +111,13 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="bg-white border-b border-gray-100 py-4 px-6 sticky top-0 z-50 shadow-sm">
+      <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-100 py-4 px-6 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left Side: Hamburger & Brand */}
           <div className="flex items-center gap-3">
             <button
               onClick={toggleMenu}
-              className="p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-full transition-all active:scale-90"
+              className="p-2 -ml-2 text-gray-600 transition-all active:scale-90"
               aria-label="Menu"
             >
               <Menu size={24} />
@@ -135,7 +135,7 @@ const Navbar = () => {
               <>
                 {/* Notification Icon */}
                 <button
-                  className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-all active:scale-90 relative"
+                  className="p-2 text-gray-500 transition-all active:scale-90 relative"
                   aria-label="Notifications"
                   onClick={() => setShowNotifications(true)}
                 >
@@ -201,7 +201,7 @@ const Navbar = () => {
                 <div className="flex-1 overflow-y-auto bg-gray-50/30">
                   {notifications.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center p-12 text-center">
-                      <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6 text-gray-300">
+                      <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6 text-gray-300">
                         <Bell size={40} />
                       </div>
                       <h4 className="text-lg font-bold text-gray-800">No Notifications Yet</h4>
@@ -249,7 +249,7 @@ const Navbar = () => {
             </div>
             {user && (
               <button
-                className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-all active:scale-90"
+                className="p-2 text-gray-500 transition-all active:scale-90"
                 aria-label="Location"
                 onClick={() => setShowLocationModal(true)}
               >

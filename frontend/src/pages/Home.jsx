@@ -83,7 +83,7 @@ const Home = () => {
                     </div>
                 )}
                 <div className={`w-full max-w-lg p-8 sm:p-12 rounded-[2.5rem] shadow-2xl transition-all duration-700 relative overflow-hidden group ${isLoading ? "bg-white border-blue-50" :
-                    isPowerOn ? "bg-white border-blue-50 shadow-blue-100" : "bg-black border-gray-800 shadow-gray-200"
+                    isPowerOn ? "bg-white border-blue-50 shadow-blue-100" : "bg-white border-gray-200 shadow-gray-200"
                     } border`}>
 
                     {/* Background Glow Effect */}
@@ -98,18 +98,18 @@ const Home = () => {
                     ) : (
                         <div className="relative z-10 flex flex-col items-center">
                             {/* Icon - Centered */}
-                            <div className={`flex p-5 sm:p-6 rounded-[2rem] mb-6 sm:mb-8 transition-all duration-700 ${isPowerOn ? "bg-green-600 text-white shadow-xl shadow-green-200" : "bg-white text-black shadow-xl shadow-gray-400"
+                            <div className={`flex p-5 sm:p-6 rounded-[2rem] mb-6 sm:mb-8 transition-all duration-700 ${isPowerOn ? "bg-green-600 text-white shadow-xl shadow-green-200" : "bg-red-50 text-red-600 border border-red-100 shadow-xl shadow-red-50"
                                 }`}>
-                                <Zap size={48} className="sm:w-12 sm:h-12" fill={isPowerOn ? "white" : "black"} />
+                                <Zap size={48} className="sm:w-12 sm:h-12" fill={isPowerOn ? "white" : "red"} />
                             </div>
 
                             {/* Status Text */}
-                            <h2 className={`text-4xl sm:text-5xl font-black mb-3 sm:mb-4 transition-colors duration-700 text-center ${isPowerOn ? "text-gray-900" : "text-white"
+                            <h2 className={`text-4xl sm:text-5xl font-black mb-3 sm:mb-4 transition-colors duration-700 text-center ${isPowerOn ? "text-gray-900" : "text-gray-900"
                                 }`}>
                                 {isPowerOn ? "Power On" : "Power Off"}
                             </h2>
 
-                            <p className={`text-base sm:text-lg font-medium px-2 transition-colors duration-700 text-center ${isPowerOn ? "text-gray-500" : "text-gray-400"
+                            <p className={`text-base sm:text-lg font-medium px-2 transition-colors duration-700 text-center ${isPowerOn ? "text-gray-500" : "text-gray-500"
                                 }`}>
 
                                 {isPowerOn ? "Electricity is stable in your area" : "Outage detected by technical team"}
