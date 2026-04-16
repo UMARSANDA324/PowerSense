@@ -26,25 +26,38 @@ if (isFirebaseConfigValid) {
 
 export const requestNotificationPermission = async () => {
   if (!isFirebaseConfigValid || !messaging) {
-    // Silent fail if config is missing
+    console.warn("FCM: Firebase config is invalid or messaging not initialized.");
     return null;
   }
   try {
     const permission = await Notification.requestPermission();
+    console.log("Notification permission state:", permission);
+    
     if (permission === "granted") {
-      const token = await getToken(messaging, {
-        vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
-      });
+      // Register service worker explicitly for better reliability
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        console.log("Service Worker registered with scope:", registration.scope);
       
-      if (token) {
-        console.log("FCM Token:", token);
-        // Send token to backend
-        await updateProfile({ fcmToken: token, deviceType: "web" });
-        return token;
+        const token = await getToken(messaging, {
+          vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+          serviceWorkerRegistration: registration
+        });
+        
+        if (token) {
+          console.log("FCM Token generated successfully:", token);
+          // Send token to backend
+          await updateProfile({ fcmToken: token, deviceType: "web" });
+          return token;
+        } else {
+          console.warn("Failed to get FCM token.");
+        }
       }
+    } else {
+      console.warn("Notification permission denied or dismissed.");
     }
   } catch (error) {
-    console.error("Error requesting notification permission:", error);
+    console.error("Error in requestNotificationPermission:", error);
   }
   return null;
 };
