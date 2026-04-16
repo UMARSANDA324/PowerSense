@@ -39,9 +39,13 @@ const getFirebaseApp = () => {
  */
 export const sendPushNotification = async (tokens, { title, body, data = {} }) => {
     const app = getFirebaseApp();
+    console.log(`[FCM] Attempting to send notification: "${title}" to ${tokens?.length || 0} tokens.`);
+
     if (!app || !tokens || tokens.length === 0) {
         if (tokens?.length > 0) {
             console.log(`[FCM MOCK] Sending to ${tokens.length} tokens: ${title} - ${body}`);
+        } else {
+            console.warn("[FCM] No tokens provided for notification.");
         }
         return null;
     }
@@ -53,28 +57,29 @@ export const sendPushNotification = async (tokens, { title, body, data = {} }) =
         },
         data: {
             ...data,
-            click_action: "FLUTTER_NOTIFICATION_CLICK", // For mobile apps if applicable
+            click_action: "FLUTTER_NOTIFICATION_CLICK",
         },
         tokens: tokens,
     };
 
     try {
         const response = await admin.messaging().sendMulticast(message);
-        console.log(`Successfully sent ${response.successCount} push notifications.`);
+        console.log(`[FCM] Successfully sent ${response.successCount} notifications. Failed: ${response.failureCount}`);
         
         if (response.failureCount > 0) {
             const failedTokens = [];
             response.responses.forEach((resp, idx) => {
                 if (!resp.success) {
                     failedTokens.push(tokens[idx]);
+                    console.error(`[FCM] Token failure error:`, resp.error);
                 }
             });
-            console.warn("Failed tokens:", failedTokens);
+            console.warn("[FCM] Failed tokens list:", failedTokens);
         }
         
         return response;
     } catch (error) {
-        console.error("Error sending push notification:", error);
+        console.error("[FCM] Critical error sending push notification:", error);
         return null;
     }
 };
