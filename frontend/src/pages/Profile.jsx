@@ -511,13 +511,13 @@ const Profile = () => {
                         <div className="space-y-3">
                             <button
                                 onClick={confirmLogout}
-                                className="w-full py-4 rounded-2xl font-black bg-red-600 text-white hover:bg-red-700 active:scale-[0.98] transition-all shadow-lg shadow-red-200"
+                                className="w-full py-4 rounded-2xl font-black bg-red-600 text-black hover:bg-red-500 active:scale-[0.98] transition-all shadow-lg shadow-red-200"
                             >
                                 Yes, Sign Me Out
                             </button>
                             <button
                                 onClick={() => setShowLogoutConfirm(false)}
-                                className="w-full py-4 rounded-2xl font-black bg-black text-white hover:bg-gray-900 active:scale-[0.98] transition-all shadow-lg shadow-gray-200"
+                                className="w-full py-4 rounded-2xl font-black !bg-black !text-white hover:!bg-gray-900 active:scale-[0.98] transition-all shadow-lg shadow-gray-200"
                             >
                                 No, Stay Logged In
                             </button>

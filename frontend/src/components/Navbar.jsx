@@ -300,7 +300,7 @@ const Navbar = () => {
 
               <button
                 onClick={() => setShowLocationModal(false)}
-                className="w-full py-4 rounded-2xl font-bold bg-black text-white shadow-xl hover:bg-gray-900 transition-all active:scale-95"
+                className="w-full py-4 rounded-2xl font-bold !bg-black !text-white shadow-xl hover:!bg-gray-900 transition-all active:scale-95"
               >
                 Close
               </button>
@@ -384,13 +384,13 @@ const Navbar = () => {
               <div className="grid grid-cols-2 gap-4 w-full">
                 <button
                   onClick={() => setShowLogoutConfirm(false)}
-                  className="py-4 rounded-2xl font-black bg-black text-white shadow-lg shadow-gray-200 hover:bg-gray-900 transition-all active:scale-95"
+                  className="py-4 rounded-2xl font-black !bg-black !text-white shadow-lg shadow-gray-200 hover:!bg-gray-900 transition-all active:scale-95"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="py-4 rounded-2xl font-black bg-red-600 text-white shadow-lg shadow-red-200 hover:bg-red-700 transition-all active:scale-95"
+                  className="py-4 rounded-2xl font-black bg-red-600 text-black shadow-lg shadow-red-200 hover:bg-red-500 transition-all active:scale-95"
                 >
                   Yes, Logout
                 </button>
