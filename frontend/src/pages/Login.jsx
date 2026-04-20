@@ -39,8 +39,8 @@ const Login = () => {
         className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100"
       >
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
-            Welcome Back ⚡
+          <h2 className="text-3xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">
+            Welcome Back <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
           </h2>
           <p className="text-gray-500">Login to your PowerSense account</p>
         </div>

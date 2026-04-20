@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
     Shield, Users, UserPlus, Globe, Activity, TrendingUp, AlertCircle,
     Trash2, Edit, CheckCircle2, ChevronRight, Search, Loader2, RefreshCw,
-    MapPin, Zap, MessageSquare, HardHat, Settings, LogOut, ArrowUpRight,
+    MapPin, MessageSquare, HardHat, Settings, LogOut, ArrowUpRight,
     Send, Info, X, Plus, Eye, EyeOff
 } from "lucide-react";
 import adminService from "../services/adminService";
@@ -302,7 +302,7 @@ const SuperAdminDashboard = () => {
                     {[
                         { id: "overview", icon: <Activity size={20} />, label: "Grid Overview" },
                         { id: "admins", icon: <Shield size={20} />, label: "Admin Fleet" },
-                        { id: "assignments", icon: <Zap size={20} />, label: "Feeder Assignments" },
+                        { id: "assignments", icon: <img src="/logo.png" alt="Logo" className="w-7 h-7 object-contain" />, label: "Feeder Assignments" },
                         { id: "messaging", icon: <Send size={20} />, label: "Global Messaging" },
                         { id: "infrastructure", icon: <Globe size={20} />, label: "Global Infra" },
                         { id: "audit", icon: <Activity size={20} />, label: "Audit Logs" }
@@ -433,7 +433,7 @@ const SuperAdminDashboard = () => {
 
                                     <div className="bg-gray-900 rounded-[3rem] p-10 shadow-2xl relative overflow-hidden group">
                                         <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-20 transition-opacity">
-                                            <Zap size={200} className="text-white" />
+                                            <img src="/logo.png" alt="Logo" className="w-48 h-48 object-contain" />
                                         </div>
                                         <div className="relative z-10">
                                             <h3 className="text-xl font-black text-white mb-2">Grid Operational Health</h3>
@@ -714,7 +714,7 @@ const SuperAdminDashboard = () => {
                                         {!selectedAdmin ? (
                                             <div className="bg-gray-50 rounded-[3rem] p-20 border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-center">
                                                 <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center mb-6 text-gray-300">
-                                                    <Zap size={40} />
+                                                    <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain opacity-30" />
                                                 </div>
                                                 <h3 className="text-xl font-black text-gray-400">Select an administrator to configure grid permissions</h3>
                                                 <p className="text-gray-400 text-sm mt-2 font-medium">Assigned feeders determine which area's data the admin can manage</p>
@@ -795,7 +795,7 @@ const SuperAdminDashboard = () => {
                                                                     className={`flex items-center gap-4 p-5 rounded-3xl border-2 transition-all text-left group relative ${isSelected ? 'border-blue-600 bg-blue-50/30' : 'border-gray-50 hover:border-gray-200'} ${isAssignedElsewhere ? 'opacity-60 cursor-not-allowed grayscale' : ''}`}
                                                                 >
                                                                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${isSelected ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'bg-gray-50 text-gray-400 group-hover:bg-white'}`}>
-                                                                        <Zap size={20} />
+                                                                        <img src="/logo.png" alt="Logo" className={`w-7 h-7 object-contain ${isSelected ? '' : 'opacity-40 grayscale'}`} />
                                                                     </div>
                                                                     <div className="flex-1 overflow-hidden">
                                                                         <div className="flex items-center gap-2 mb-0.5">
@@ -925,7 +925,7 @@ const SuperAdminDashboard = () => {
                                                 { type: "state", label: "States", count: locations.states.length, icon: <Globe />, color: "text-purple-600", bg: "bg-purple-50" },
                                                 { type: "lga", label: "LGAs", count: locations.lgas.length, icon: <MapPin />, color: "text-blue-600", bg: "bg-blue-50" },
                                                 { type: "ward", label: "Wards", count: locations.wards.length, icon: <Activity />, color: "text-indigo-600", bg: "bg-indigo-50" },
-                                                { type: "feeder", label: "Feeders", count: locations.feeders.length, icon: <Zap />, color: "text-amber-600", bg: "bg-amber-50" },
+                                                { type: "feeder", label: "Feeders", count: locations.feeders.length, icon: <img src="/logo.png" alt="Logo" className="w-5 h-5 object-contain" />, color: "text-amber-600", bg: "bg-amber-50" },
                                             ].map((loc, i) => (
                                                 <div key={i} className="space-y-4 group">
                                                     <div 
@@ -1035,7 +1035,7 @@ const SuperAdminDashboard = () => {
                                                 <div className="p-6 bg-gray-50 rounded-3xl border border-gray-100 md:col-span-2">
                                                     <div className="flex items-center justify-between mb-4">
                                                         <p className="font-black text-[10px] text-gray-400 uppercase tracking-widest">Power Distribution Feeders</p>
-                                                        <Zap size={14} className="text-amber-400" />
+                                                        <img src="/logo.png" alt="Logo" className="w-3.5 h-3.5 object-contain opacity-50" />
                                                     </div>
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                                                         {locations.feeders.map(f => (
@@ -1178,7 +1178,7 @@ const SuperAdminDashboard = () => {
                                 {explorerType === "state" && <Globe size={24} />}
                                 {explorerType === "lga" && <MapPin size={24} />}
                                 {explorerType === "ward" && <Activity size={24} />}
-                                {explorerType === "feeder" && <Zap size={24} />}
+                                {explorerType === "feeder" && <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" />}
                             </div>
                             <div>
                                 <h3 className="text-2xl font-black text-gray-900 tracking-tight uppercase">System {explorerType}s</h3>
@@ -1289,7 +1289,7 @@ const SuperAdminDashboard = () => {
                                 {locModalType === "state" && <Globe size={24} />}
                                 {locModalType === "lga" && <MapPin size={24} />}
                                 {locModalType === "ward" && <Activity size={24} />}
-                                {locModalType === "feeder" && <Zap size={24} />}
+                                {locModalType === "feeder" && <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" />}
                             </div>
                             <div>
                                 <h3 className="text-xl font-black text-gray-900 tracking-tight uppercase">Deploy {locModalType}</h3>
@@ -1394,7 +1394,7 @@ const SuperAdminDashboard = () => {
                         </button>
                         <div className="flex items-center gap-4 mb-8">
                             <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center">
-                                <Zap size={24} />
+                                <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" />
                             </div>
                             <div>
                                 <h3 className="text-xl font-black text-gray-900 tracking-tight uppercase">Manage Feeder</h3>

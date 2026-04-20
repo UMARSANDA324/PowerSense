@@ -1,4 +1,4 @@
-import { ArrowLeft, Shield, Info, Zap, MessageSquare, Bell, ScrollText } from "lucide-react";
+import { ArrowLeft, Shield, Info, MessageSquare, Bell, ScrollText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const AboutUs = () => {
@@ -33,7 +33,7 @@ const AboutUs = () => {
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="p-5 rounded-3xl bg-blue-50 border border-blue-100/50 space-y-3">
-                            <Zap className="text-blue-600" size={24} />
+                            <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" />
                             <h3 className="font-bold text-gray-900">Live Status</h3>
                             <p className="text-sm text-gray-500 font-medium leading-relaxed">Instantly check if your grid is currently powered or experiencing an outage.</p>
                         </div>

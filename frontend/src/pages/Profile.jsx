@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, Settings, Shield, Bell, HelpCircle, LogOut, ChevronRight, MapPin, Smartphone, Mail, Edit3, X, Loader2, CheckCircle2, Zap } from "lucide-react";
+import { User, Settings, Shield, Bell, HelpCircle, LogOut, ChevronRight, MapPin, Smartphone, Mail, Edit3, X, Loader2, CheckCircle2 } from "lucide-react";
 import { getCurrentUser, logout, updateProfile, getCurrentUserFromApi } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 import locationService from "../services/locationService";
@@ -278,7 +278,7 @@ const Profile = () => {
                     {user?.feeder && (
                         <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
                             <div className="text-blue-600">
-                                <Zap size={20} />
+                                <img src="/logo.png" alt="Logo" className="w-5 h-5 object-contain" />
                             </div>
                             <div>
                                 <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Assigned Feeder</p>

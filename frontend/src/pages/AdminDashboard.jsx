@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-    Send, AlertTriangle, Info, ZapOff, Zap, CheckCircle2,
+    Send, AlertTriangle, Info, CheckCircle2,
     Loader2, Users, FileText, Activity, Shield, Trash2,
     Search, RefreshCw, ChevronRight, Menu, X, Clock, MapPin, Lock
 } from "lucide-react";
@@ -265,7 +265,7 @@ const AdminDashboard = () => {
                 <nav className="space-y-2">
                     {[
                         { id: "overview", icon: <Activity size={18} />, label: "Overview" },
-                        { id: "control", icon: <Zap size={18} />, label: "Power Control" },
+                        { id: "control", icon: <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" />, label: "Power Control" },
                         { id: "reports", icon: <FileText size={18} />, label: "Reports" },
                         { id: "users", icon: <Users size={18} />, label: "User Management" },
                         { id: "notifs", icon: <Send size={18} />, label: "Messaging" }
@@ -439,7 +439,7 @@ const AdminDashboard = () => {
                                 { 
                                     label: selectedFeeder ? `Feeder: ${assignedFeeders.find(f => (f._id || f) === selectedFeeder)?.name || 'Selected'}` : "Global Grid", 
                                     val: powerForm.isActive ? "ONLINE" : "OFFLINE", 
-                                    icon: <Zap className={powerForm.isActive ? "text-green-600" : "text-black"} />, 
+                                    icon: <img src="/logo.png" alt="Logo" className={`w-7 h-7 object-contain ${powerForm.isActive ? "" : "grayscale brightness-50"}`} />, 
                                     bg: powerForm.isActive ? "bg-green-50" : "bg-gray-100" 
                                 },
                             ].map((stat, i) => (
@@ -521,7 +521,7 @@ const AdminDashboard = () => {
                     <div className="max-w-2xl bg-white rounded-[2.5rem] p-8 sm:p-12 border border-gray-100 shadow-sm">
                         <header className="mb-10 text-center sm:text-left">
                             <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3 justify-center sm:justify-start">
-                                <Zap className="text-blue-600" />
+                                <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
                                 Infrastructure Control
                             </h2>
                             <p className="text-gray-500 font-medium mt-2">Adjust live grid status and maintenance schedules</p>
@@ -577,14 +577,14 @@ const AdminDashboard = () => {
                                         onClick={() => setPowerForm({ ...powerForm, isActive: true })}
                                         className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.isActive ? 'bg-green-600 text-white border-green-700 shadow-xl shadow-green-200' : 'bg-green-50 text-green-600 border-green-100'}`}
                                     >
-                                        <Zap size={18} /> POWER ON
+                                        <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" /> POWER ON
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setPowerForm({ ...powerForm, isActive: false })}
                                         className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${!powerForm.isActive ? 'bg-black text-white border-black shadow-xl shadow-gray-400' : 'bg-gray-100 text-gray-400 border-gray-100 hover:border-gray-200'}`}
                                     >
-                                        <ZapOff size={18} /> POWER OFF
+                                        <img src="/logo.png" alt="Logo" className={`w-6 h-6 object-contain ${!powerForm.isActive ? "" : "grayscale brightness-50"}`} /> POWER OFF
                                     </button>
                                 </div>
                             </div>

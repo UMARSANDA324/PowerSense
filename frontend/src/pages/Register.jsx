@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { 
     Eye, EyeOff, Loader2, User, Mail, Lock, ShieldCheck, 
-    CheckCircle2, AlertCircle, MapPin, Zap, Globe, Activity 
+    CheckCircle2, AlertCircle, MapPin, Globe, Activity 
 } from "lucide-react";
 import { register } from "../services/authService";
 import locationService from "../services/locationService";
@@ -177,8 +177,8 @@ const Register = () => {
                 className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100 max-h-[90vh] overflow-y-auto"
             >
                 <div className="text-center mb-6">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                        Join PowerSense ⚡
+                    <h2 className="text-3xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">
+                        Join PowerSense <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
                     </h2>
                     <p className="text-gray-500 text-sm">Create an account to start reporting issues</p>
                 </div>
@@ -333,7 +333,7 @@ const Register = () => {
                         </div>
                         {formData.ward && (
                             <p className="text-[10px] text-blue-600 font-bold mt-2 ml-1 flex items-center gap-1">
-                                <Zap size={10} />
+                                <img src="/logo.png" alt="Logo" className="w-3 h-3 object-contain" />
                                 Auto-detected Feeder: {(() => {
                                     const wardObj = locations.wards.find(w => w.name === formData.ward);
                                     if (wardObj) {
