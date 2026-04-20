@@ -16,20 +16,22 @@ firebase.initializeApp({
   appId: "1:161586697486:web:c9d0343a11363648bb735f"
 });
 
-// Retrieve an instance of Firebase Messaging so that it can handle background
-// messages.
+// Retrieve an instance of Firebase Messaging so that it can handle background messages.
 const messaging = firebase.messaging();
 
+console.log('[firebase-messaging-sw.js] Firebase initialized in service worker');
+
+// Handle background messages
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
   
-  // Customize notification here
-  const notificationTitle = payload.notification?.title || "PowerSense Alert";
+  const notificationTitle = payload.notification?.title || payload.data?.title || "PowerSense Alert";
   const notificationOptions = {
-    body: payload.notification?.body || "New update received",
-    icon: "/vite.svg", // Using vite.svg since logo.png doesn't exist
+    body: payload.notification?.body || payload.data?.body || "New update received",
+    icon: "/vite.svg", 
     badge: "/vite.svg",
     data: payload.data,
+    tag: payload.data?.tag || 'powersense-notification',
   };
 
   return self.registration.showNotification(notificationTitle, notificationOptions);
@@ -42,6 +44,15 @@ self.addEventListener('notificationclick', (event) => {
 
   // Open the app or a specific URL
   event.waitUntil(
-    clients.openWindow('/')
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url === '/' && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow('/');
+      }
+    })
   );
 });
