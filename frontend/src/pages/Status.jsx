@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Activity, Clock, CheckCircle2, AlertCircle, ChevronRight, MapPin, ReceiptText, Bell, Zap, TrendingDown, TrendingUp, Lock } from "lucide-react";
+import { Activity, Clock, CheckCircle2, AlertCircle, ChevronRight, MapPin, ReceiptText, Bell, TrendingDown, TrendingUp, Lock } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
 import { Link } from "react-router-dom";
 import notificationService from "../services/notificationService.js";
@@ -215,7 +215,7 @@ const Status = () => {
                 {/* Monthly Electricity History Section */}
                 <section>
                     <div className="flex items-center gap-2 mb-4">
-                        <Zap size={20} className="text-blue-600" />
+                        <img src="/logo.png" alt="Logo" className="w-5 h-5 object-contain" />
                         <h2 className="text-xl font-bold text-gray-800">Monthly Electricity History</h2>
                     </div>
 

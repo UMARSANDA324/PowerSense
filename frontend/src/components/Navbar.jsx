@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Zap, Bell, MapPin, Menu, X, Home, FileText, Activity, AlertTriangle, User, LogOut, AlertCircle, Shield, Clock, CheckCircle2, Gauge } from "lucide-react";
+import { Bell, MapPin, Menu, X, Home, FileText, Activity, AlertTriangle, User, LogOut, AlertCircle, Shield, Clock, CheckCircle2, Gauge } from "lucide-react";
 import { logout, getCurrentUser } from "../services/authService";
 import notificationService from "../services/notificationService";
 import socket from "../services/socket";
@@ -97,7 +97,7 @@ const Navbar = () => {
   }
 
   if (user && user.role === "super-admin") {
-    navLinks.push({ path: "/super-admin-dashboard", icon: <Zap size={20} />, label: "Super Admin" });
+    navLinks.push({ path: "/super-admin-dashboard", icon: <img src="/logo.png" alt="Logo" className="w-5 h-5 object-contain" />, label: "Super Admin" });
   }
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -122,8 +122,8 @@ const Navbar = () => {
             >
               <Menu size={24} />
             </button>
-            <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-blue-600 transition-transform active:scale-95">
-              <Zap size={28} className="fill-blue-600" />
+            <Link to="/" className="flex items-center gap-2.5 text-2xl font-bold text-blue-600 transition-transform active:scale-95">
+              <img src="/logo.png" alt="PowerSense Logo" className="w-10 h-10 object-contain" />
               <span className="tracking-tight">PowerSense</span>
             </Link>
           </div>
@@ -323,8 +323,8 @@ const Navbar = () => {
       >
         <div className="p-6 h-full flex flex-col">
           <div className="flex items-center justify-between mb-10">
-            <div className="flex items-center gap-2">
-              <Zap size={24} className="text-blue-600 fill-blue-600" />
+            <div className="flex items-center gap-3">
+              <img src="/logo.png" alt="PowerSense Logo" className="w-8 h-8 object-contain" />
               <span className="text-xl font-black text-blue-600 tracking-tight">PowerSense</span>
             </div>
             <button

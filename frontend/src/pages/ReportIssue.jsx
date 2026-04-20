@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { AlertCircle, MapPin, Zap, Clock, Send, ArrowLeft } from "lucide-react";
+import { AlertCircle, MapPin, Clock, Send, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { reportIssue } from "../services/reportService";
 import { getCurrentUser } from "../services/authService";
@@ -9,6 +9,7 @@ const ReportIssue = () => {
   const navigate = useNavigate();
   const [currUser, setCurrUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
 
   const [formData, setFormData] = useState({
@@ -65,7 +66,9 @@ const ReportIssue = () => {
       };
 
       await reportIssue(payload);
-      setMessage({ text: "Your report has been received successfully. We will review it shortly. Thank you.", type: "success" });
+      
+      // Trigger success state
+      setSuccess(true);
       
       // Reset form (keeping user details)
       setFormData(prev => ({
@@ -77,7 +80,7 @@ const ReportIssue = () => {
       // Redirect after 2 seconds
       setTimeout(() => navigate("/status"), 2000);
     } catch (error) {
-      setMessage({ text: error.message || "Failed to report issue. Please try again.", type: "error" });
+      setMessage({ text: error.message || "Failed to submit report. Please try again.", type: "error" });
     } finally {
       setIsLoading(false);
     }
@@ -85,6 +88,36 @@ const ReportIssue = () => {
 
   const readOnlyInputStyle = "w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 cursor-not-allowed font-medium outline-none";
   const editableInputStyle = "w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium";
+
+  // Success State UI
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-lg bg-white p-12 rounded-[2.5rem] border border-gray-100 shadow-2xl flex flex-col items-center text-center space-y-6 animate-in zoom-in duration-500">
+          <div className="w-24 h-24 bg-green-50 text-green-500 rounded-[2rem] flex items-center justify-center shadow-lg shadow-green-100 animate-bounce">
+            <CheckCircle2 size={56} />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-3xl font-black text-gray-900 tracking-tight">Report Logged!</h3>
+            <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Reference: #{Math.random().toString(36).substr(2, 6).toUpperCase()}</p>
+          </div>
+          <div className="p-6 bg-green-50/50 rounded-3xl border border-green-100 w-full">
+            <p className="text-green-800 font-bold">Report submitted successfully</p>
+            <p className="text-green-600 text-sm mt-1 font-medium">Redirecting you to status page...</p>
+          </div>
+          <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+            <div className="bg-green-500 h-full animate-[progress_2s_linear]" style={{ width: '100%' }}></div>
+          </div>
+          <style>{`
+            @keyframes progress {
+              from { width: 0%; }
+              to { width: 100%; }
+            }
+          `}</style>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -202,7 +235,7 @@ const ReportIssue = () => {
             {/* Feeder */}
             <div>
               <label htmlFor="feeder" className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                <Zap size={16} className="text-gray-500" />
+                <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain opacity-80" />
                 Assigned Feeder
               </label>
               <input

@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { Map, ChevronDown, Loader2, AlertCircle, AlertTriangle, Smartphone, X, CheckCircle2, Zap, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Map, ChevronDown, Loader2, AlertCircle, AlertTriangle, Smartphone, X, CheckCircle2, Lock } from "lucide-react";
 import { reportIssue } from "../services/reportService";
 import locationService from "../services/locationService";
 import { useAuth } from "../context/AuthContext";
 
 const ReportForm = ({ onClose }) => {
+    const navigate = useNavigate();
     const { user } = useAuth();
     // State for Area/Feeder selection
     const [locations, setLocations] = useState({ wards: [], feeders: [] });
@@ -121,19 +123,12 @@ const ReportForm = ({ onClose }) => {
             });
 
             setSuccess(true);
-            setFormData({
-                fullName: "",
-                phone: "",
-                issueType: "",
-                description: ""
-            });
-            setSelectedArea("");
-            setFeederName("");
-
-            // Auto close after 3 seconds if inside a modal
-            if (onClose) {
-                setTimeout(onClose, 3000);
-            }
+            
+            // Redirect to status page after 2 seconds as per requirements
+            setTimeout(() => {
+                if (onClose) onClose();
+                navigate("/status");
+            }, 2000);
         } catch (err) {
             setError(err.message || "Failed to submit report. Please try again.");
         } finally {
@@ -145,12 +140,25 @@ const ReportForm = ({ onClose }) => {
         return (
             <div className="w-full max-w-lg mx-auto p-12 rounded-[2.5rem] bg-white border border-gray-100 shadow-2xl flex flex-col items-center text-center space-y-6 animate-in zoom-in duration-300">
                 <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center">
-                    <CheckCircle2 size={48} />
+                    <CheckCircle2 size={48} className="animate-bounce" />
                 </div>
-                <div>
-                    <h3 className="text-2xl font-black text-gray-800">Report Logged!</h3>
-                    <p className="text-gray-500 font-medium mt-2">Our technical team has been notified and is looking into it.</p>
+                <div className="space-y-2">
+                    <h3 className="text-2xl font-black text-gray-800 tracking-tight">Report Logged!</h3>
+                    <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Reference: #{Math.random().toString(36).substr(2, 6).toUpperCase()}</p>
                 </div>
+                <div className="p-6 bg-green-50/50 rounded-3xl border border-green-100 w-full">
+                    <p className="text-green-800 font-bold">Report submitted successfully</p>
+                    <p className="text-green-600 text-sm mt-1 font-medium">Redirecting to status page...</p>
+                </div>
+                <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                    <div className="bg-green-500 h-full animate-[progress_2s_linear]" style={{ width: '100%' }}></div>
+                </div>
+                <style>{`
+                  @keyframes progress {
+                    from { width: 0%; }
+                    to { width: 100%; }
+                  }
+                `}</style>
                 {!onClose && (
                     <button
                         onClick={() => setSuccess(false)}
