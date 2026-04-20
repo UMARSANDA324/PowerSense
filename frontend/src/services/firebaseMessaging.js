@@ -30,15 +30,18 @@ export const requestNotificationPermission = async () => {
     return null;
   }
   try {
+    console.log("Requesting notification permission...");
     const permission = await Notification.requestPermission();
     console.log("Notification permission state:", permission);
     
     if (permission === "granted") {
-      // Register service worker explicitly for better reliability
+      console.log("Permission granted. Registering service worker...");
       if ('serviceWorker' in navigator) {
+        // Register or get existing service worker
         const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        console.log("Service Worker registered with scope:", registration.scope);
+        console.log("Service Worker active with scope:", registration.scope);
       
+        console.log("Fetching FCM token...");
         const token = await getToken(messaging, {
           vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
           serviceWorkerRegistration: registration
@@ -46,28 +49,38 @@ export const requestNotificationPermission = async () => {
         
         if (token) {
           console.log("FCM Token generated successfully:", token);
-          // Send token to backend
-          await updateProfile({ fcmToken: token, deviceType: "web" });
+          // Send token to backend to associate with user profile
+          try {
+            await updateProfile({ fcmToken: token, deviceType: "web" });
+            console.log("FCM Token synced with backend.");
+          } catch (syncError) {
+            console.error("Failed to sync FCM token with backend:", syncError);
+          }
           return token;
         } else {
-          console.warn("Failed to get FCM token.");
+          console.warn("No FCM token retrieved. Check VAPID key or browser support.");
         }
+      } else {
+        console.warn("Service workers are not supported in this browser.");
       }
     } else {
-      console.warn("Notification permission denied or dismissed.");
+      console.warn("Notification permission denied/dismissed.");
     }
   } catch (error) {
-    console.error("Error in requestNotificationPermission:", error);
+    console.error("Critical error in FCM setup:", error);
   }
   return null;
 };
 
 export const onMessageListener = (callback) => {
   if (!isFirebaseConfigValid || !messaging) {
+    console.warn("onMessageListener: Messaging not initialized.");
     return () => {};
   }
+  
+  console.log("Setting up foreground message listener...");
   return onMessage(messaging, (payload) => {
-    console.log("Foreground message received:", payload);
+    console.log("Foreground push notification received:", payload);
     if (callback) callback(payload);
   });
 };
