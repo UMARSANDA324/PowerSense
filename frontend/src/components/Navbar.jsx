@@ -84,20 +84,13 @@ const Navbar = () => {
   const user = getCurrentUser();
   const isAdmin = user && (user.role === "admin" || user.role === "super-admin");
 
-  const navLinks = [
-    { path: "/", icon: <Home size={20} />, label: "Home" },
-    { path: "/status", icon: <Activity size={20} />, label: "All Feeder Status" },
-    { path: "/all-status", icon: <Gauge size={20} />, label: "Grid Statistics" },
-    { path: "/report-issue", icon: <AlertTriangle size={20} />, label: "Report Issue" },
-    { path: "/profile", icon: <User size={20} />, label: "Me" },
-  ];
-
+  const sidebarLinks = [];
   if (isAdmin) {
-    navLinks.push({ path: "/admin-dashboard", icon: <Shield size={20} />, label: "Admin Panel" });
+    sidebarLinks.push({ path: "/admin-dashboard", icon: <Shield size={20} />, label: "Admin Panel" });
   }
 
   if (user && user.role === "super-admin") {
-    navLinks.push({ path: "/super-admin-dashboard", icon: <img src="/logo.png" alt="Logo" className="w-5 h-5 object-contain" />, label: "Super Admin" });
+    sidebarLinks.push({ path: "/super-admin-dashboard", icon: <img src="/logo.png" alt="Logo" className="w-5 h-5 object-contain" />, label: "Super Admin" });
   }
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -115,21 +108,23 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left Side: Hamburger & Brand */}
           <div className="flex items-center gap-3">
-            <button
-              onClick={toggleMenu}
-              className="p-2 -ml-2 text-gray-600 transition-all active:scale-90"
-              aria-label="Menu"
-            >
-              <Menu size={24} />
-            </button>
-            <Link to="/" className="flex items-center gap-2.5 text-2xl font-bold text-blue-600 transition-transform active:scale-95">
+            {isAdmin && (
+              <button
+                onClick={toggleMenu}
+                className="p-2 -ml-2 text-gray-600 transition-all active:scale-90"
+                aria-label="Menu"
+              >
+                <Menu size={24} />
+              </button>
+            )}
+            <Link to="/" className="flex items-center gap-2.5 text-2xl font-bold text-blue-600 transition-transform active:scale-95 flex-shrink-0">
               <img src="/logo.png" alt="PowerSense Logo" className="w-10 h-10 object-contain" />
-              <span className="tracking-tight">PowerSense</span>
+              <span className="tracking-tight sm:inline">PowerSense</span>
             </Link>
           </div>
 
           {/* Right Side: Location, Notification & User */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
 
             {user && (
               <>
@@ -336,7 +331,7 @@ const Navbar = () => {
           </div>
 
           <div className="space-y-2 flex-1">
-            {navLinks.map((link, index) => (
+            {sidebarLinks.map((link, index) => (
               <NavLink
                 key={`${link.path}-${index}`}
                 to={link.path}

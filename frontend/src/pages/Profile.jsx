@@ -234,11 +234,13 @@ const Profile = () => {
                     <div>
                         <h1 className="text-2xl font-black text-gray-900 leading-tight">{user?.fullName || "Guest User"}</h1>
                         <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mt-0.5">{user ? "Verified User" : "Not Logged In"}</p>
-                        <div className="flex items-center justify-center gap-3 mt-3">
-                            <span className="flex items-center gap-1 text-[11px] font-black text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase tracking-tighter">
-                                ROLE: {user?.role || "USER"}
-                            </span>
-                        </div>
+                        {(user?.role === "admin" || user?.role === "super-admin") && (
+                            <div className="flex items-center justify-center gap-3 mt-3">
+                                <span className="flex items-center gap-1 text-[11px] font-black text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase tracking-tighter">
+                                    ROLE: {user?.role}
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
