@@ -17,9 +17,9 @@ export const getPowerStatus = async (feederName) => {
 /**
  * Admin function to update the Power Status (Used by Dashboard)
  */
-export const updatePowerStatus = async (isActive) => {
+export const updatePowerStatus = async (statusData) => {
     try {
-        const response = await api.post("admin/power-status", { isActive });
+        const response = await api.post("admin/power-status", statusData);
         return response.data;
     } catch (error) {
         console.error("Error updating power status from Admin Dashboard:", error);
