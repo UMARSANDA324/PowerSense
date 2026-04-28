@@ -77,6 +77,7 @@ router.get("/status", protect, async (req, res) => {
 
         if (!status) {
             return res.json({
+                status: "on",
                 isActive: true,
                 lastUpdated: "Just Now",
                 message: "System initialized",

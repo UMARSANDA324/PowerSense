@@ -8,7 +8,8 @@ const powerLogSchema = new mongoose.Schema({
     },
     feederName: String,
     status: {
-        type: Boolean,
+        type: String,
+        enum: ["on", "off", "maintenance"],
         required: true
     },
     timestamp: {
