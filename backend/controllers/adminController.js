@@ -50,13 +50,13 @@ export const getSystemStats = async (req, res) => {
             totalUsers,
             pendingReports,
             totalReports,
-            powerStatus: powerStatus || { isActive: true, message: "System operational" }
+            powerStatus: powerStatus || { status: "on", isActive: true, message: "System operational" }
         });
     } catch (error) {
         console.error("Error in getSystemStats:", error);
-        res.status(500).json({ 
-            message: "Error fetching system stats", 
-            error: error.message 
+        res.status(500).json({
+            message: "Error fetching system stats",
+            error: error.message
         });
     }
 };
@@ -223,8 +223,8 @@ export const getAllFeeders = async (req, res) => {
         res.json(feeders);
     } catch (error) {
         console.error("Error in getAllFeeders:", error);
-        res.status(500).json({ 
-            message: "Error fetching feeders", 
+        res.status(500).json({
+            message: "Error fetching feeders",
             error: error.message,
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
@@ -255,10 +255,10 @@ export const assignFeedersToAdmin = async (req, res) => {
                 admin: u.fullName,
                 feederIds: u.assignedFeeders.filter(f => feederIds.includes(f.toString()))
             }));
-            
-            return res.status(400).json({ 
-                message: "One or more feeders are already assigned to other administrators.", 
-                conflicts: conflictDetails 
+
+            return res.status(400).json({
+                message: "One or more feeders are already assigned to other administrators.",
+                conflicts: conflictDetails
             });
         }
 
@@ -333,7 +333,7 @@ export const getProfile = async (req, res) => {
                 }
             })
             .select("-password");
-        
+
         if (!user) {
             console.warn(`User profile not found: ${req.user._id}`);
             return res.status(404).json({ message: "User not found" });
@@ -346,8 +346,8 @@ export const getProfile = async (req, res) => {
         res.json(userObj);
     } catch (error) {
         console.error("Error in getProfile:", error);
-        res.status(500).json({ 
-            message: "Error fetching profile", 
+        res.status(500).json({
+            message: "Error fetching profile",
             error: error.message,
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });

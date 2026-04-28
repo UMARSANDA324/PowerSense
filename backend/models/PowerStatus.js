@@ -1,10 +1,15 @@
 import mongoose from "mongoose";
 
 const powerStatusSchema = new mongoose.Schema({
+    status: {
+        type: String,
+        enum: ["on", "off", "maintenance"],
+        default: "off"
+    },
     isActive: {
         type: Boolean,
         required: true,
-        default: true
+        default: false
     },
     feeder: {
         type: mongoose.Schema.Types.ObjectId,

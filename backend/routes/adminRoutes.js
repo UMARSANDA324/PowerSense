@@ -39,8 +39,20 @@ router.post("/create-admin", authorize("super-admin"), createAdmin);
 
 // Route for Admin Dashboard to toggle power status for one or more feeders
 router.post("/power-status", authorize("super-admin", "admin"), async (req, res) => {
-    const { isActive, estimatedNextOutage, feederId, feederIds } = req.body;
+    const { status, isActive: legacyIsActive, estimatedNextOutage, feederId, feederIds } = req.body;
     
+    // Determine the status. Priority: status > legacyIsActive
+    let finalStatus = status;
+    if (!finalStatus && legacyIsActive !== undefined) {
+        finalStatus = legacyIsActive ? "on" : "off";
+    }
+    
+    if (!finalStatus) {
+        return res.status(400).json({ message: "Status is required (on, off, or maintenance)" });
+    }
+
+    const isActive = finalStatus === "on";
+
     // Support both single feederId and array feederIds
     const targetFeederIds = feederIds || (feederId ? [feederId] : []);
     
@@ -74,27 +86,29 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
                 continue;
             }
 
-            let status = await PowerStatus.findOne({ feeder: id });
-            if (!status) {
-                status = new PowerStatus({ 
+            let statusDoc = await PowerStatus.findOne({ feeder: id });
+            if (!statusDoc) {
+                statusDoc = new PowerStatus({ 
+                    status: finalStatus,
                     isActive, 
                     estimatedNextOutage, 
                     feeder: id,
                     updatedBy: req.user._id 
                 });
             } else {
-                if (isActive !== undefined) status.isActive = isActive;
-                if (estimatedNextOutage !== undefined) status.estimatedNextOutage = estimatedNextOutage;
-                status.lastUpdated = Date.now();
-                status.updatedBy = req.user._id;
+                statusDoc.status = finalStatus;
+                statusDoc.isActive = isActive;
+                if (estimatedNextOutage !== undefined) statusDoc.estimatedNextOutage = estimatedNextOutage;
+                statusDoc.lastUpdated = Date.now();
+                statusDoc.updatedBy = req.user._id;
             }
-            await status.save();
+            await statusDoc.save();
 
             // Record this status change in the power log for history
             const log = new PowerLog({
                 feeder: id,
                 feederName: feeder.name,
-                status: isActive,
+                status: finalStatus,
                 updatedBy: req.user._id
             });
             await log.save();
@@ -104,17 +118,24 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
                 req.io.emit("powerStatusUpdated", {
                     feederId: id,
                     feederName: feeder.name,
+                    status: finalStatus,
                     isActive,
                     estimatedNextOutage,
-                    lastUpdated: status.lastUpdated
+                    lastUpdated: statusDoc.lastUpdated
                 });
             }
 
             // Trigger notifications to users in this feeder
             const title = "Power Status Update";
-            const message = isActive 
-                ? `Electricity has been restored in your area (${feeder.name}). Expected until: ${estimatedNextOutage}`
-                : `Electricity has been disconnected in your area (${feeder.name}). Expected back: ${estimatedNextOutage}`;
+            let message = "";
+            
+            if (finalStatus === "on") {
+                message = `Electricity has been restored in your area (${feeder.name}). Expected until: ${estimatedNextOutage}`;
+            } else if (finalStatus === "off") {
+                message = `Electricity has been disconnected in your area (${feeder.name}). Expected back: ${estimatedNextOutage}`;
+            } else if (finalStatus === "maintenance") {
+                message = `Maintenance in progress in your area (${feeder.name}). Engineers are working on the issue. Expected completion: ${estimatedNextOutage}`;
+            }
 
             await notifyArea({
                 feeder: id,
