@@ -51,7 +51,7 @@ export const createReport = async (req, res) => {
                 title,
                 message,
                 io: req.io,
-                sender: req.user._id,
+                sender: req.user?._id || null,
                 targetArea: { feeder: feederId, ward: area },
                 isCustom: false
             });
