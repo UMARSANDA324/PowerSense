@@ -115,7 +115,7 @@ const Status = () => {
             <div className="bg-white border-b border-gray-100">
                 <div className="max-w-7xl mx-auto p-6 pt-12">
                     <div>
-                        <h1 className="text-3xl font-black text-gray-800">All Feeder Status</h1>
+                        <h1 className="text-3xl font-black text-gray-800">History</h1>
                         <p className="text-gray-500 mt-2 font-medium">Track your requests, reports, and notifications</p>
                     </div>
 

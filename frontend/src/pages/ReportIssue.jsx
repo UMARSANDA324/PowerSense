@@ -32,9 +32,6 @@ const ReportIssue = () => {
         feeder: areaFeederMapping[user.ward] || user.feeder || "",
         contactNumber: user.phone || ""
       }));
-    } else {
-      // If no user, redirect to login
-      navigate("/login?redirect=/report");
     }
   }, [navigate]);
 
