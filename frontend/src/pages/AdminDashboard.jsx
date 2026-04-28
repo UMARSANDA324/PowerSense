@@ -63,8 +63,9 @@ const AdminDashboard = () => {
                         if (s && s.feeder) {
                             const fId = s.feeder._id || s.feeder;
                             const fName = s.feeder.name || s.feederName;
-                            statusMap[fId] = s.isActive;
-                            if (fName) statusMap[fName] = s.isActive;
+                            const status = s.status || (s.isActive ? "on" : "off");
+                            statusMap[fId] = status;
+                            if (fName) statusMap[fName] = status;
                         }
                     });
                 }
@@ -91,7 +92,7 @@ const AdminDashboard = () => {
     const [notifData, setNotifData] = useState({ title: "", message: "" });
 
     // Power Status State
-    const [powerForm, setPowerForm] = useState({ isActive: true, estimatedNextOutage: "", feederId: "" });
+    const [powerForm, setPowerForm] = useState({ status: "on", isActive: true, estimatedNextOutage: "", feederId: "" });
 
     const [selectedFeeders, setSelectedFeeders] = useState([]);
 
@@ -122,8 +123,10 @@ const AdminDashboard = () => {
     const fetchFeederStatus = async (feederId) => {
         try {
             const response = await api.get(`/power/status?feeder=${feederId}`);
+            const status = response.data.status || (response.data.isActive ? "on" : "off");
             setPowerForm({
-                isActive: response.data.isActive,
+                status: status,
+                isActive: status === "on",
                 estimatedNextOutage: response.data.estimatedNextOutage || "",
                 feederId: feederId
             });
@@ -178,7 +181,7 @@ const AdminDashboard = () => {
             // Update local state for immediate UI feedback
             const newStatuses = { ...feederStatuses };
             selectedFeeders.forEach(id => {
-                newStatuses[id] = powerForm.isActive;
+                newStatuses[id] = powerForm.status;
             });
             setFeederStatuses(newStatuses);
             
@@ -438,9 +441,9 @@ const AdminDashboard = () => {
                                 { label: "Pending Tasks", val: stats?.pendingReports || 0, icon: <AlertTriangle className="text-amber-600" />, bg: "bg-amber-50" },
                                 { 
                                     label: selectedFeeder ? `Feeder: ${assignedFeeders.find(f => (f._id || f) === selectedFeeder)?.name || 'Selected'}` : "Global Grid", 
-                                    val: powerForm.isActive ? "ONLINE" : "OFFLINE", 
-                                    icon: <img src="/logo.png" alt="Logo" className={`w-7 h-7 object-contain ${powerForm.isActive ? "" : "grayscale brightness-50"}`} />, 
-                                    bg: powerForm.isActive ? "bg-green-50" : "bg-gray-100" 
+                                    val: (feederStatuses[selectedFeeder] === "on" || (!feederStatuses[selectedFeeder] && powerForm.status === "on")) ? "ONLINE" : (feederStatuses[selectedFeeder] === "maintenance" ? "MAINTENANCE" : "OFFLINE"), 
+                                    icon: <img src="/logo.png" alt="Logo" className={`w-7 h-7 object-contain ${ (feederStatuses[selectedFeeder] === "on" || (!feederStatuses[selectedFeeder] && powerForm.status === "on")) ? "" : (feederStatuses[selectedFeeder] === "maintenance" ? "sepia-[.5] hue-rotate-[320deg]" : "grayscale brightness-50")}`} />, 
+                                    bg: (feederStatuses[selectedFeeder] === "on" || (!feederStatuses[selectedFeeder] && powerForm.status === "on")) ? "bg-green-50" : (feederStatuses[selectedFeeder] === "maintenance" ? "bg-red-50" : "bg-gray-100") 
                                 },
                             ].map((stat, i) => (
                                 <div key={i} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
@@ -470,8 +473,12 @@ const AdminDashboard = () => {
                                                 {selectedFeeder ? 'Currently managing this feeder' : 'Global system override for all users'}
                                             </p>
                                         </div>
-                                        <div className={`px-4 py-2 rounded-xl text-xs font-black tracking-widest uppercase ${powerForm.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-900 border border-gray-200'}`}>
-                                            {powerForm.isActive ? 'ACTIVE' : 'OUTAGE'}
+                                        <div className={`px-4 py-2 rounded-xl text-xs font-black tracking-widest uppercase ${
+                                            (feederStatuses[selectedFeeder] === "on" || (!feederStatuses[selectedFeeder] && powerForm.status === "on")) ? 'bg-green-100 text-green-700' : 
+                                            (feederStatuses[selectedFeeder] === "maintenance" ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-900 border border-gray-200')
+                                        }`}>
+                                            {feederStatuses[selectedFeeder] === "on" || (!feederStatuses[selectedFeeder] && powerForm.status === "on") ? 'ACTIVE' : 
+                                             (feederStatuses[selectedFeeder] === "maintenance" ? 'MAINTENANCE' : 'OUTAGE')}
                                         </div>
 
                                     </div>
@@ -538,8 +545,7 @@ const AdminDashboard = () => {
                                         const fId = typeof feeder === "string" ? feeder : feeder._id;
                                         const fName = typeof feeder === "string" ? feeder : feeder.name;
                                         const isSelected = selectedFeeders.includes(fId);
-                                        // Default to false if not found to show "OFF" (Black) as a safer default for monitoring
-                                        const isFeederActive = feederStatuses[fId] === true || feederStatuses[fName] === true;
+                                        const isFeederActive = feederStatuses[fId] || feederStatuses[fName] || "off";
                                         
                                         return (
                                             <button
@@ -548,18 +554,20 @@ const AdminDashboard = () => {
                                                 onClick={() => toggleFeederSelection(fId)}
                                                 className={`p-4 rounded-2xl border-2 transition-all text-left flex items-center gap-3 ${isSelected 
                                                     ? 'border-blue-600 bg-blue-50 shadow-sm' 
-                                                    : isFeederActive 
+                                                    : isFeederActive === "on"
                                                         ? 'border-gray-50 bg-white hover:border-gray-200 hover:bg-gray-50' 
-                                                        : 'border-black/10 bg-gray-50/50 hover:border-black/20'
+                                                        : isFeederActive === "maintenance"
+                                                            ? 'border-red-50 bg-white hover:border-red-100 hover:bg-red-50'
+                                                            : 'border-black/10 bg-gray-50/50 hover:border-black/20'
                                                 }`}
                                             >
-                                                <div className={`p-2 rounded-lg ${isSelected ? 'bg-blue-600 text-white' : isFeederActive ? 'bg-green-600 text-white' : 'bg-black text-white'}`}>
+                                                <div className={`p-2 rounded-lg ${isSelected ? 'bg-blue-600 text-white' : isFeederActive === "on" ? 'bg-green-600 text-white' : isFeederActive === "maintenance" ? 'bg-red-600 text-white' : 'bg-black text-white'}`}>
                                                     <MapPin size={14} />
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <span className={`text-xs font-black uppercase tracking-tight ${isSelected ? 'text-blue-900' : isFeederActive ? 'text-gray-500' : 'text-black'}`}>{fName}</span>
-                                                    <span className={`text-[8px] font-bold ${isFeederActive ? 'text-green-600' : 'text-black'}`}>
-                                                        {isFeederActive ? 'POWER ON' : 'POWER OFF'}
+                                                    <span className={`text-xs font-black uppercase tracking-tight ${isSelected ? 'text-blue-900' : isFeederActive === "on" ? 'text-gray-500' : 'text-black'}`}>{fName}</span>
+                                                    <span className={`text-[8px] font-bold ${isFeederActive === "on" ? 'text-green-600' : isFeederActive === "maintenance" ? 'text-red-600' : 'text-black'}`}>
+                                                        {isFeederActive === "on" ? 'POWER ON' : isFeederActive === "maintenance" ? 'MAINTENANCE' : 'POWER OFF'}
                                                     </span>
                                                 </div>
                                                 {isSelected && <CheckCircle2 className="ml-auto text-blue-600" size={16} />}
@@ -571,20 +579,27 @@ const AdminDashboard = () => {
 
                             <div className="p-6 bg-gray-50 rounded-[2rem] border border-gray-100 space-y-4">
                                 <p className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Grid Operational Status</p>
-                                <div className="flex gap-4">
+                                <div className="flex flex-col sm:flex-row gap-4">
                                     <button
                                         type="button"
-                                        onClick={() => setPowerForm({ ...powerForm, isActive: true })}
-                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.isActive ? 'bg-green-600 text-white border-green-700 shadow-xl shadow-green-200' : 'bg-green-50 text-green-600 border-green-100'}`}
+                                        onClick={() => setPowerForm({ ...powerForm, status: "on", isActive: true })}
+                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.status === "on" ? 'bg-green-600 text-white border-green-700 shadow-xl shadow-green-200' : 'bg-green-50 text-green-600 border-green-100'}`}
                                     >
                                         <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" /> POWER ON
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => setPowerForm({ ...powerForm, isActive: false })}
-                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${!powerForm.isActive ? 'bg-black text-white border-black shadow-xl shadow-gray-400' : 'bg-gray-100 text-gray-400 border-gray-100 hover:border-gray-200'}`}
+                                        onClick={() => setPowerForm({ ...powerForm, status: "maintenance", isActive: false })}
+                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.status === "maintenance" ? 'bg-red-600 text-white border-red-700 shadow-xl shadow-red-200' : 'bg-red-50 text-red-600 border-red-100'}`}
                                     >
-                                        <img src="/logo.png" alt="Logo" className={`w-6 h-6 object-contain ${!powerForm.isActive ? "" : "grayscale brightness-50"}`} /> POWER OFF
+                                        <img src="/logo.png" alt="Logo" className={`w-6 h-6 object-contain ${powerForm.status === "maintenance" ? "" : "grayscale brightness-50"}`} /> MAINTENANCE
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setPowerForm({ ...powerForm, status: "off", isActive: false })}
+                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.status === "off" ? 'bg-black text-white border-black shadow-xl shadow-gray-400' : 'bg-gray-100 text-gray-400 border-gray-100 hover:border-gray-200'}`}
+                                    >
+                                        <img src="/logo.png" alt="Logo" className={`w-6 h-6 object-contain ${powerForm.status === "off" ? "" : "grayscale brightness-50"}`} /> POWER OFF
                                     </button>
                                 </div>
                             </div>

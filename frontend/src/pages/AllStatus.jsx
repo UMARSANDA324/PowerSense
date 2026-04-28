@@ -26,7 +26,7 @@ const AllStatus = () => {
                 }
 
                 setLoading(true);
-                
+
                 // Fetch all feeders and statuses in parallel
                 const [feedersData, statusesData] = await Promise.all([
                     locationService.getFeeders(),
@@ -35,7 +35,7 @@ const AllStatus = () => {
 
                 const statuses = statusesData.data;
                 const allowedFeederIds = statuses.map(s => s.feeder?._id || s.feeder).filter(Boolean);
-                
+
                 // Only show feeders that were returned from the authorized /power/all-status endpoint
                 // or super-admins can see all feeders regardless of status existing.
                 let allowedFeeders = feedersData;
@@ -51,19 +51,26 @@ const AllStatus = () => {
                         allowedFeeders = [];
                     }
                 }
-                
+
                 const enrichedFeeders = allowedFeeders.map((feeder) => {
                     const feederStatus = statuses.find(s => s.feeder?._id === feeder._id || s.feeder === feeder._id);
+                    let status = "Off";
+                    if (feederStatus) {
+                        status = feederStatus.status ? feederStatus.status.charAt(0).toUpperCase() + feederStatus.status.slice(1) : (feederStatus.isActive ? "On" : "Off");
+                    } else {
+                        status = "On"; // Default if no status record exists
+                    }
+
                     return {
                         ...feeder,
-                        status: feederStatus ? (feederStatus.isActive ? "On" : "Off") : "On",
-                        lastUpdated: feederStatus ? new Date(feederStatus.lastUpdated).toLocaleTimeString([], { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
+                        status: status,
+                        lastUpdated: feederStatus ? new Date(feederStatus.lastUpdated).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit'
                         }) : "Just Now"
                     };
                 });
-                
+
                 setFeeders(enrichedFeeders);
                 setFilteredFeeders(enrichedFeeders);
                 setLoading(false);
@@ -77,12 +84,13 @@ const AllStatus = () => {
 
         // Listen for real-time status updates
         const handleStatusUpdate = (update) => {
-            setFeeders(prevFeeders => 
+            setFeeders(prevFeeders =>
                 prevFeeders.map(feeder => {
                     if (feeder._id === update.feederId) {
+                        const status = update.status ? update.status.charAt(0).toUpperCase() + update.status.slice(1) : (update.isActive ? "On" : "Off");
                         return {
                             ...feeder,
-                            status: update.isActive ? "On" : "Off",
+                            status: status,
                             lastUpdated: "Just Now"
                         };
                     }
@@ -109,7 +117,7 @@ const AllStatus = () => {
                 const wardNames = feeder.wards?.map(w => w.name?.toLowerCase() || "") || [];
                 const feederName = feeder.name?.toLowerCase() || "";
                 const lgaNames = feeder.wards?.map(w => w.lga?.name?.toLowerCase() || "") || [];
-                
+
                 return (
                     wardNames.some(name => name.includes(searchLower)) ||
                     feederName.includes(searchLower) ||
@@ -132,17 +140,17 @@ const AllStatus = () => {
                 };
             case "Off":
                 return {
-                    icon: <Power size={20} className="text-red-500" />,
-                    bgColor: "bg-white border-red-100",
-                    textColor: "text-red-600",
-                    badge: "bg-red-50 text-red-600"
+                    icon: <Power size={20} className="text-black" />,
+                    bgColor: "bg-white border-gray-200",
+                    textColor: "text-black",
+                    badge: "bg-black text-white"
                 };
             case "Maintenance":
                 return {
-                    icon: <AlertCircle size={20} className="text-yellow-600" />,
-                    bgColor: "bg-yellow-50",
-                    textColor: "text-yellow-700",
-                    badge: "bg-yellow-100 text-yellow-700"
+                    icon: <AlertCircle size={20} className="text-red-600" />,
+                    bgColor: "bg-red-50",
+                    textColor: "text-red-700",
+                    badge: "bg-red-100 text-red-700"
                 };
             default:
                 return {
@@ -323,19 +331,17 @@ const AllStatus = () => {
                                         {/* User Area Indicator */}
                                         {user && (
                                             <div
-                                                className={`mb-6 p-3 rounded-lg border ${
-                                                    isUserArea
-                                                        ? "bg-green-50 border-green-200"
-                                                        : "bg-gray-50 border-gray-200"
-                                                }`}
+                                                className={`mb-6 p-3 rounded-lg border ${isUserArea
+                                                    ? "bg-green-50 border-green-200"
+                                                    : "bg-gray-50 border-gray-200"
+                                                    }`}
                                             >
                                                 <p className="text-xs text-gray-600 font-semibold uppercase tracking-wider">
                                                     Your registered area
                                                 </p>
                                                 <p
-                                                    className={`text-sm font-bold ${
-                                                        isUserArea ? "text-green-700" : "text-gray-700"
-                                                    }`}
+                                                    className={`text-sm font-bold ${isUserArea ? "text-green-700" : "text-gray-700"
+                                                        }`}
                                                 >
                                                     {isUserArea ? (
                                                         <span className="flex items-center gap-2">
@@ -358,11 +364,10 @@ const AllStatus = () => {
                                         {user && user.role === "user" && (
                                             <button
                                                 onClick={() => handleReportClick(feeder)}
-                                                className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition ${
-                                                    isUserArea
-                                                        ? "bg-black hover:bg-gray-900 text-white shadow-lg shadow-gray-200"
-                                                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                                }`}
+                                                className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition ${isUserArea
+                                                    ? "bg-black hover:bg-gray-900 text-white shadow-lg shadow-gray-200"
+                                                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                                    }`}
                                                 disabled={!isUserArea}
                                             >
                                                 <AlertCircle size={18} />
@@ -389,7 +394,7 @@ const AllStatus = () => {
                         </div>
 
                         <p className="text-gray-600 mb-6">
-                            You can only report issues in your registered area. To report an issue in another area, 
+                            You can only report issues in your registered area. To report an issue in another area,
                             you need to update your profile first.
                         </p>
 

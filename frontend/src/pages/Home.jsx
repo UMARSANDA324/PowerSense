@@ -11,6 +11,7 @@ const Home = () => {
 
     // State controlled by the Admin Dashboard via powerService
     const [powerStatus, setPowerStatus] = useState({
+        status: "on",
         isActive: true,
         lastUpdated: "Fetching...",
         estimatedNextOutage: "TBD"
@@ -43,6 +44,7 @@ const Home = () => {
             if (isSuperAdmin || isTargetFeeder) {
                 setPowerStatus(prev => ({
                     ...prev,
+                    status: update.status || (update.isActive ? "on" : "off"),
                     isActive: update.isActive,
                     estimatedNextOutage: update.estimatedNextOutage || prev.estimatedNextOutage,
                     lastUpdated: "Just Now",
@@ -59,7 +61,10 @@ const Home = () => {
         };
     }, [user?.feeder, user?.role]);
 
-    const isPowerOn = powerStatus.isActive;
+    const status = powerStatus.status || (powerStatus.isActive ? "on" : "off");
+    const isPowerOn = status === "on";
+    const isMaintenance = status === "maintenance";
+    const isPowerOff = status === "off";
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
@@ -83,11 +88,16 @@ const Home = () => {
                     </div>
                 )}
                 <div className={`w-full max-w-lg p-10 sm:p-14 rounded-[3rem] shadow-2xl transition-all duration-700 relative overflow-hidden group border ${isLoading ? "bg-white border-blue-50" :
-                    isPowerOn ? "bg-white border-green-50 shadow-green-100/50" : "bg-white border-red-50 shadow-red-100/30"
+                    isPowerOn ? "bg-white border-green-50 shadow-green-100/50" : 
+                    isMaintenance ? "bg-white border-red-50 shadow-red-100/30" :
+                    "bg-white border-gray-200 shadow-gray-100/30"
                     }`}>
 
                     {/* Background Glow Effect */}
-                    <div className={`absolute -top-40 -right-20 w-80 h-80 rounded-full blur-[100px] transition-all duration-1000 ${isPowerOn ? "bg-green-400/20" : "bg-red-400/10"
+                    <div className={`absolute -top-40 -right-20 w-80 h-80 rounded-full blur-[100px] transition-all duration-1000 ${
+                        isPowerOn ? "bg-green-400/20" : 
+                        isMaintenance ? "bg-red-400/10" :
+                        "bg-gray-400/10"
                         }`} />
 
                     {isLoading ? (
@@ -104,17 +114,23 @@ const Home = () => {
                             <div className="relative mb-10 group cursor-default">
                                 {/* Glow Halo */}
                                 <div className={`absolute inset-0 blur-[40px] rounded-full transition-all duration-1000 scale-150 ${
-                                    isPowerOn ? "bg-green-500/30 opacity-100" : "bg-red-500/20 opacity-0"
+                                    isPowerOn ? "bg-green-500/30 opacity-100" : 
+                                    isMaintenance ? "bg-red-500/20 opacity-100" :
+                                    "bg-gray-500/20 opacity-0"
                                 }`} />
                                 
                                 {/* The Bulb Logo */}
                                 <div className={`relative p-8 rounded-[3rem] transition-all duration-700 transform ${
-                                    isPowerOn ? "scale-110 shadow-[0_0_50px_rgba(34,197,94,0.3)] bg-green-50" : "scale-100 bg-gray-50 opacity-80"
+                                    isPowerOn ? "scale-110 shadow-[0_0_50px_rgba(34,197,94,0.3)] bg-green-50" : 
+                                    isMaintenance ? "scale-105 shadow-[0_0_40px_rgba(239,68,68,0.2)] bg-red-50" :
+                                    "scale-100 bg-gray-50 opacity-80"
                                 }`}>
                                     <svg 
                                         viewBox="0 0 24 24" 
                                         className={`w-24 h-24 sm:w-32 sm:h-32 transition-all duration-1000 ${
-                                            isPowerOn ? "fill-green-500 filter drop-shadow(0 0 10px rgba(34,197,94,0.5))" : "fill-red-500 filter grayscale-[0.5]"
+                                            isPowerOn ? "fill-green-500 filter drop-shadow(0 0 10px rgba(34,197,94,0.5))" : 
+                                            isMaintenance ? "fill-red-500 filter drop-shadow(0 0 8px rgba(239,68,68,0.4))" :
+                                            "fill-black filter brightness-0"
                                         }`}
                                     >
                                         <path d="M9 21h6v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C8.67 12.05 8 10.58 8 9c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.58-.67 3.05-2.15 4.1zM11 10h2V7h-2v3zm4.55-1.55l1.41-1.41-1.41-1.41-1.41 1.41 1.41 1.41zM9.86 5.64l-1.41-1.41-1.41 1.41 1.41 1.41 1.41-1.41z" />
@@ -132,22 +148,24 @@ const Home = () => {
                                 <h2 className={`text-4xl sm:text-5xl font-black transition-all duration-700 tracking-tight ${
                                     isPowerOn ? "text-gray-900" : "text-gray-900"
                                 }`}>
-                                    {isPowerOn ? "Power Available" : "Grid Outage"}
+                                    {isPowerOn ? "Power Available" : isMaintenance ? "Maintenance in progress" : "Grid Outage"}
                                 </h2>
                                 <p className={`text-sm sm:text-base font-bold uppercase tracking-widest transition-colors duration-700 ${
-                                    isPowerOn ? "text-green-600" : "text-red-500"
+                                    isPowerOn ? "text-green-600" : isMaintenance ? "text-red-500" : "text-gray-500"
                                 }`}>
-                                    {isPowerOn ? "System is fully operational" : "Area administrators investigating"}
+                                    {isPowerOn ? "System is fully operational" : isMaintenance ? "Engineers are working on the issue" : "System Inactive"}
                                 </p>
                             </div>
 
                             {/* Refined Indicators */}
                             <div className="mt-12 flex flex-col items-center gap-6">
                                 <div className={`flex items-center gap-3 px-8 py-3.5 rounded-2xl text-sm font-black transition-all duration-700 ${
-                                    isPowerOn ? "bg-green-600 text-white shadow-xl shadow-green-200" : "bg-black text-white shadow-xl shadow-gray-200"
+                                    isPowerOn ? "bg-green-600 text-white shadow-xl shadow-green-200" : 
+                                    isMaintenance ? "bg-red-600 text-white shadow-xl shadow-red-200" :
+                                    "bg-black text-white shadow-xl shadow-gray-200"
                                 }`}>
-                                    <span className={`w-3 h-3 rounded-full ${isPowerOn ? "bg-white animate-pulse" : "bg-red-500"}`}></span>
-                                    {isPowerOn ? "LIVE UPDATES ACTIVE" : "SYSTEM INACTIVE"}
+                                    <span className={`w-3 h-3 rounded-full ${isPowerOn ? "bg-white animate-pulse" : isMaintenance ? "bg-white animate-pulse" : "bg-red-500"}`}></span>
+                                    {isPowerOn ? "LIVE UPDATES ACTIVE" : isMaintenance ? "MAINTENANCE MODE" : "SYSTEM INACTIVE"}
                                 </div>
 
                                 <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 opacity-60">
@@ -168,7 +186,9 @@ const Home = () => {
                         <p className="text-gray-900 font-bold text-lg sm:text-xl leading-tight">
                             {isPowerOn 
                                 ? `Next outage expected: ${powerStatus.estimatedNextOutage || "TBD"}`
-                                : `Power restoration expected: ${powerStatus.estimatedNextOutage || "TBD"}`
+                                : isMaintenance
+                                    ? `Restoration expected: ${powerStatus.estimatedNextOutage || "TBD"}`
+                                    : `Power restoration expected: ${powerStatus.estimatedNextOutage || "TBD"}`
                             }
                         </p>
                         <p className="text-blue-600 text-xs sm:text-sm font-semibold mt-1">
