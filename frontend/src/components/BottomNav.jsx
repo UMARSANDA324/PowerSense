@@ -1,14 +1,13 @@
 import { NavLink } from "react-router-dom";
-import { MdHome, MdReportProblem, MdQueryStats, MdPerson } from "react-icons/md";
-import { Gauge } from "lucide-react";
+import { Home, Gauge, AlertCircle, Clock, User } from "lucide-react";
 
 const BottomNav = () => {
   const navItems = [
-    { path: "/", icon: <MdHome size={28} />, label: "Home" },
-    { path: "/status", icon: <MdQueryStats size={24} />, label: "Feeder Status" },
-    { path: "/all-status", icon: <Gauge size={22} />, label: "Status" },
-    { path: "/report-issue", icon: <MdReportProblem size={28} />, label: "Report" },
-    { path: "/profile", icon: <MdPerson size={28} />, label: "Me" },
+    { path: "/", icon: <Home size={24} />, label: "Home" },
+    { path: "/all-status", icon: <Gauge size={24} />, label: "Status" },
+    { path: "/report-issue", icon: <AlertCircle size={24} />, label: "Report" },
+    { path: "/status", icon: <Clock size={24} />, label: "History" },
+    { path: "/profile", icon: <User size={24} />, label: "Me" },
   ];
 
   return (

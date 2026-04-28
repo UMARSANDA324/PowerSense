@@ -589,17 +589,17 @@ const AdminDashboard = () => {
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => setPowerForm({ ...powerForm, status: "maintenance", isActive: false })}
-                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.status === "maintenance" ? 'bg-red-600 text-white border-red-700 shadow-xl shadow-red-200' : 'bg-red-50 text-red-600 border-red-100'}`}
-                                    >
-                                        <img src="/logo.png" alt="Logo" className={`w-6 h-6 object-contain ${powerForm.status === "maintenance" ? "" : "grayscale brightness-50"}`} /> MAINTENANCE
-                                    </button>
-                                    <button
-                                        type="button"
                                         onClick={() => setPowerForm({ ...powerForm, status: "off", isActive: false })}
                                         className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.status === "off" ? 'bg-black text-white border-black shadow-xl shadow-gray-400' : 'bg-gray-100 text-gray-400 border-gray-100 hover:border-gray-200'}`}
                                     >
                                         <img src="/logo.png" alt="Logo" className={`w-6 h-6 object-contain ${powerForm.status === "off" ? "" : "grayscale brightness-50"}`} /> POWER OFF
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setPowerForm({ ...powerForm, status: "maintenance", isActive: false })}
+                                        className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.status === "maintenance" ? 'bg-red-600 text-white border-red-700 shadow-xl shadow-red-200' : 'bg-red-50 text-red-600 border-red-100'}`}
+                                    >
+                                        <img src="/logo.png" alt="Logo" className={`w-6 h-6 object-contain ${powerForm.status === "maintenance" ? "" : "grayscale brightness-50"}`} /> MAINTENANCE
                                     </button>
                                 </div>
                             </div>
