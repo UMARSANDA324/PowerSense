@@ -3,6 +3,8 @@ import State from "../models/Location/State.js";
 import LGA from "../models/Location/LGA.js";
 import Ward from "../models/Location/Ward.js";
 import Feeder from "../models/Location/Feeder.js";
+import Coordinates from "../models/Location/Coordinates.js";
+import { buildAreaSlug, buildAreaStableId, buildLGAStableId, slugify } from "../utils/slugGenerator.js";
 
 // @desc    Create a new State
 // @route   POST /api/location/state
@@ -26,7 +28,30 @@ export const createState = async (req, res) => {
 export const createLGA = async (req, res) => {
   try {
     const { name, stateId } = req.body;
-    const lga = await LGA.create({ name, state: stateId });
+    const lgaName = String(name).trim();
+
+    const state = await State.findById(stateId);
+    if (!state) {
+      return res.status(404).json({ message: "State not found" });
+    }
+
+    const existingLGA = await LGA.findOne({ name: lgaName, state: stateId });
+    if (existingLGA) {
+      return res.status(400).json({ message: "LGA already exists in this state" });
+    }
+
+    const slug = slugify(lgaName);
+    const lgaId = buildLGAStableId(state.name, lgaName);
+
+    const lga = await LGA.create({
+      name: lgaName,
+      lgaId,
+      slug,
+      state: stateId,
+      status: "active",
+      isActive: true
+    });
+
     res.status(201).json({
       message: "LGA created successfully",
       lga
@@ -41,8 +66,53 @@ export const createLGA = async (req, res) => {
 // @access  Private/Super-Admin
 export const createWard = async (req, res) => {
   try {
-    const { name, lgaId } = req.body;
-    const ward = await Ward.create({ name, lga: lgaId });
+    const { name, lgaId, aliases = [], coordinates = null, latitude = null, longitude = null, isUrban = true } = req.body;
+    const normalizedName = String(name).trim();
+
+    const lga = await LGA.findById(lgaId).populate('state');
+    if (!lga) {
+      return res.status(404).json({ message: "LGA not found" });
+    }
+
+    const state = lga.state;
+    if (!state) {
+      return res.status(400).json({ message: "LGA does not have a state reference" });
+    }
+
+    const existingWard = await Ward.findOne({ name: normalizedName, lga: lga._id });
+    if (existingWard) {
+      return res.status(400).json({ message: "Ward already exists in this LGA" });
+    }
+
+    const baseSlug = buildAreaSlug(normalizedName);
+    let slug = baseSlug;
+    let suffix = 1;
+    while (await Ward.findOne({ lga: lga._id, slug })) {
+      slug = `${baseSlug}-${suffix}`;
+      suffix += 1;
+    }
+
+    const areaId = buildAreaStableId(state.name, lga.name, normalizedName);
+
+    const ward = await Ward.create({
+      name: normalizedName,
+      wardName: normalizedName,
+      areaId,
+      slug,
+      lga: lga._id,
+      lgaId: lga.lgaId || buildLGAStableId(state.name, lga.name),
+      lgaName: lga.name,
+      state: state._id,
+      country: "Nigeria",
+      aliases: Array.isArray(aliases) ? aliases.map(a => String(a).trim()).filter(Boolean) : [],
+      latitude,
+      longitude,
+      coordinates,
+      isUrban,
+      status: "active",
+      feederIds: []
+    });
+
     res.status(201).json({
       message: "Ward created successfully",
       ward
@@ -137,12 +207,138 @@ export const getLGAs = async (req, res) => {
   }
 };
 
-// @desc    Get all Feeders
-// @route   GET /api/location/feeders
+// @desc    Get Wards (optionally filtered by LGA)
+// @route   GET /api/location/wards
 // @access  Public
+export const getWards = async (req, res) => {
+  try {
+    const { lgaId, lgaIds, q } = req.query;
+    const query = { isActive: { $ne: false } };
+    
+    if (lgaId) {
+      query.lga = lgaId;
+    } else if (lgaIds) {
+      // Support multiple LGAs: ?lgaIds=id1,id2,id3
+      const ids = lgaIds.split(',').filter(id => id.trim());
+      if (ids.length > 0) {
+        query.lga = { $in: ids };
+      }
+    }
+
+    if (q && String(q).trim().length > 0) {
+      const escaped = String(q).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(escaped, "i");
+      query.$or = [
+        { name: regex },
+        { wardName: regex },
+        { slug: regex },
+        { areaId: regex },
+        { aliases: regex }
+      ];
+    }
+    
+    const wards = await Ward.find(query)
+      .populate({
+        path: 'lga',
+        populate: { path: 'state' }
+      })
+      .sort({ name: 1 });
+    
+    // Fetch coordinates from Coordinates collection matching communityIds (ward.id)
+    const communityIds = wards.map(w => w.id).filter(Boolean);
+    const coordsList = await Coordinates.find({ communityId: { $in: communityIds } });
+    
+    // Map of communityId -> Coordinate document
+    const coordsMap = new Map();
+    for (const c of coordsList) {
+      coordsMap.set(c.communityId, c);
+    }
+    
+    // Map wards to overlay coordinates from the Coordinates collection
+    const wardsWithCoords = wards.map(w => {
+      const coord = coordsMap.get(w.id);
+      const wardObj = w.toObject();
+      if (coord) {
+        wardObj.latitude = coord.latitude;
+        wardObj.longitude = coord.longitude;
+        wardObj.coordinates = {
+          latitude: coord.latitude,
+          longitude: coord.longitude
+        };
+      } else {
+        // Explicitly set to null if not found in Coordinates collection
+        wardObj.latitude = null;
+        wardObj.longitude = null;
+        wardObj.coordinates = null;
+      }
+      return wardObj;
+    });
+
+    res.json(wardsWithCoords);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Search locations with fuzzy matching across wards and LGAs
+// @route   GET /api/location/search
+// @access  Public
+export const searchLocations = async (req, res) => {
+  try {
+    const { q, stateName = "Kano" } = req.query;
+    if (!q || !String(q).trim()) {
+      return res.status(400).json({ message: "Query parameter q is required" });
+    }
+
+    const state = await State.findOne({ name: stateName });
+    if (!state) {
+      return res.status(404).json({ message: `State '${stateName}' not found` });
+    }
+
+    const escaped = String(q).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(escaped, "i");
+
+    const [wards, lgas] = await Promise.all([
+      Ward.find({
+        isActive: { $ne: false },
+        state: state._id,
+        $or: [
+          { name: regex },
+          { wardName: regex },
+          { slug: regex },
+          { areaId: regex },
+          { aliases: regex }
+        ]
+      }).populate('lga').limit(50),
+      LGA.find({
+        state: state._id,
+        isActive: { $ne: false },
+        $or: [
+          { name: regex },
+          { slug: regex },
+          { lgaId: regex }
+        ]
+      }).limit(20)
+    ]);
+
+    res.json({
+      query: q,
+      wards,
+      lgas
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const getFeeders = async (req, res) => {
   try {
-    const feeders = await Feeder.find({ isActive: { $ne: false } })
+    const isAuthorized = req.user && ["super-admin", "admin"].includes(req.user.role);
+    const query = Feeder.find({ isActive: { $ne: false } });
+    if (isAuthorized) {
+      query.select("+injectionSubstation");
+    }
+    const feeders = await query
       .populate({
         path: 'wards',
         populate: {
@@ -163,19 +359,19 @@ export const getFeeders = async (req, res) => {
 export const getAllLocations = async (req, res) => {
   try {
     const [states, lgas, wards, feeders] = await Promise.all([
-      State.find({ isActive: { $ne: false } }),
-      LGA.find({ isActive: { $ne: false } }).populate("state"),
+      State.find({ isActive: { $ne: false } }).sort({ name: 1 }).lean(),
+      LGA.find({ isActive: { $ne: false } }).populate("state").sort({ name: 1 }).lean(),
       Ward.find({ isActive: { $ne: false } }).populate({
           path: 'lga',
           populate: { path: 'state' }
-      }),
+      }).sort({ name: 1 }).lean(),
       Feeder.find({ isActive: { $ne: false } }).populate({
           path: 'wards',
           populate: {
               path: 'lga',
               populate: { path: 'state' }
           }
-      })
+      }).sort({ name: 1 }).lean()
     ]);
 
     res.json({

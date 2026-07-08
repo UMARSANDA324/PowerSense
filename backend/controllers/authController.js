@@ -96,109 +96,72 @@ export const registerUser = async (req, res) => {
 };
 
 
-// that's right//
-// try it//
 // @desc    Get user profile
 // @route   GET /api/auth/profile
 // @access  Private
+// Uses req.user already populated by protect middleware — no extra DB call needed.
 export const getUserProfile = async (req, res) => {
-  const user = await User.findById(req.user._id);
-
-  if (user) {
-    res.json({
-      _id: user._id,
-      fullName: user.fullName,
-      email: user.email,
-      role: user.role,
-      phone: user.phone || "",
-      state: user.state || "",
-      lga: user.lga || "",
-      ward: user.ward || "",
-      feeder: user.feeder || "",
-      notificationPreference: user.notificationPreference,
-    });
-  } else {
-    res.status(404).json({ message: "User not found" });
-  }
+  const user = req.user;
+  res.json({
+    _id: user._id,
+    fullName: user.fullName,
+    email: user.email,
+    role: user.role,
+    phone: user.phone || "",
+    state: user.state || "",
+    lga: user.lga || "",
+    ward: user.ward || "",
+    feeder: user.feeder || "",
+    notificationPreference: user.notificationPreference,
+  });
 };
 
 // @desc    Update user profile
 // @route   PUT /api/auth/profile
 // @access  Private
+//
+// IMPORTANT: Uses a two-path strategy to avoid timeout bugs:
+//   - FCM token-only updates: single atomic findByIdAndUpdate (no save hooks, 1 DB round-trip)
+//   - Full profile updates (password change / ward change): traditional find+save so hooks run correctly
 export const updateUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
+    const userId = req.user._id;
+    const body = req.body;
 
-    if (user) {
-      user.fullName = req.body.fullName || user.fullName;
-      user.email = req.body.email || user.email;
+    // --- FCM TOKEN-ONLY PATH ---
+    // When only fcmToken (and optional deviceType) are sent, use a single atomic update.
+    // This is the hot path called on every page load — must be fast and resilient.
+    const isFcmOnlyUpdate = body.fcmToken &&
+      Object.keys(body).every(k => ["fcmToken", "deviceType"].includes(k));
 
-      if (req.body.phone !== undefined) {
-        user.phone = req.body.phone;
+    if (isFcmOnlyUpdate) {
+      const token = body.fcmToken;
+      const deviceType = body.deviceType || "web";
+      const now = new Date();
+
+      // Try to update existing token timestamp first (upsert into array element)
+      const updateExisting = await User.findOneAndUpdate(
+        { _id: userId, "deviceTokens.token": token },
+        { $set: { "deviceTokens.$.lastUpdated": now } },
+        { new: true, select: "-password" }
+      );
+
+      let updatedUser = updateExisting;
+
+      if (!updateExisting) {
+        // Token not in array yet — push it
+        updatedUser = await User.findByIdAndUpdate(
+          userId,
+          { $push: { deviceTokens: { token, deviceType, lastUpdated: now } } },
+          { new: true, select: "-password" }
+        );
       }
 
-      if (req.body.password) {
-        // Password hashing is handled by pre-save hook in UserModel
-        user.password = req.body.password;
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
       }
 
-      if (req.body.notificationPreference) {
-        let preference = req.body.notificationPreference;
-        // Map old preferences to new supported ones
-        if (preference === "phone") preference = "in-app";
-        if (preference === "sms") preference = "push";
-        user.notificationPreference = preference;
-      }
-
-      if (req.body.lga) {
-        user.lga = req.body.lga;
-      }
-
-      if (req.body.ward) {
-        user.ward = req.body.ward;
-
-        // --- Automatically Update Feeder based on new Ward ---
-        try {
-          const wardObj = await Ward.findOne({ name: req.body.ward });
-          if (wardObj) {
-            const feederObj = await Feeder.findOne({ wards: wardObj._id });
-            if (feederObj) {
-              user.feeder = feederObj.name;
-              console.log(`Auto-updated feeder to: ${feederObj.name} for ward: ${req.body.ward}`);
-            }
-          }
-        } catch (error) {
-          console.error("Auto-feeder update error:", error);
-        }
-      }
-
-      if (req.body.state) {
-        user.state = req.body.state;
-      }
-
-
-      if (req.body.fcmToken) {
-        // Ensure deviceTokens array exists
-        if (!user.deviceTokens) {
-          user.deviceTokens = [];
-        }
-
-        // Add new token if it doesn't exist
-        const tokenExists = user.deviceTokens.find(dt => dt.token === req.body.fcmToken);
-        if (!tokenExists) {
-          user.deviceTokens.push({
-            token: req.body.fcmToken,
-            deviceType: req.body.deviceType || "web",
-            lastUpdated: Date.now()
-          });
-        } else {
-          tokenExists.lastUpdated = Date.now();
-        }
-      }
-
-      const updatedUser = await user.save();
-
-      res.json({
+      return res.json({
         _id: updatedUser._id,
         fullName: updatedUser.fullName,
         email: updatedUser.email,
@@ -209,11 +172,92 @@ export const updateUserProfile = async (req, res) => {
         ward: updatedUser.ward || "",
         feeder: updatedUser.feeder || "",
         notificationPreference: updatedUser.notificationPreference,
+        businessModeEnabled: updatedUser.businessModeEnabled || false,
+        businessType: updatedUser.businessType || "other",
+        businessRiskScore: updatedUser.businessRiskScore || 0,
         token: generateToken(updatedUser._id),
       });
-    } else {
-      res.status(404).json({ message: "User not found" });
     }
+
+    // --- FULL PROFILE UPDATE PATH ---
+    // Handles password changes, ward/feeder auto-resolution, and other field updates.
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.fullName = body.fullName || user.fullName;
+    user.email = body.email || user.email;
+
+    if (body.phone !== undefined) user.phone = body.phone;
+
+    if (body.password) {
+      // Password hashing is handled by pre-save hook in UserModel
+      user.password = body.password;
+    }
+
+    if (body.notificationPreference) {
+      let preference = body.notificationPreference;
+      // Map old preferences to new supported ones
+      if (preference === "phone") preference = "in-app";
+      if (preference === "sms") preference = "push";
+      user.notificationPreference = preference;
+    }
+
+    if (body.businessModeEnabled !== undefined) {
+      user.businessModeEnabled = body.businessModeEnabled === true || body.businessModeEnabled === "true";
+    }
+    if (body.businessType) user.businessType = body.businessType;
+    if (body.businessRiskScore !== undefined) user.businessRiskScore = Number(body.businessRiskScore) || 0;
+    if (body.lga) user.lga = body.lga;
+    if (body.state) user.state = body.state;
+
+    if (body.ward) {
+      user.ward = body.ward;
+      // Automatically resolve feeder based on new ward
+      try {
+        const wardObj = await Ward.findOne({ name: body.ward });
+        if (wardObj) {
+          const feederObj = await Feeder.findOne({ wards: wardObj._id });
+          if (feederObj) {
+            user.feeder = feederObj.name;
+            console.log(`Auto-updated feeder to: ${feederObj.name} for ward: ${body.ward}`);
+          }
+        }
+      } catch (err) {
+        console.error("Auto-feeder update error:", err);
+      }
+    }
+
+    // Handle FCM token if included in a full update
+    if (body.fcmToken) {
+      if (!user.deviceTokens) user.deviceTokens = [];
+      const tokenExists = user.deviceTokens.find(dt => dt.token === body.fcmToken);
+      if (!tokenExists) {
+        user.deviceTokens.push({ token: body.fcmToken, deviceType: body.deviceType || "web", lastUpdated: new Date() });
+      } else {
+        tokenExists.lastUpdated = new Date();
+      }
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      fullName: updatedUser.fullName,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      phone: updatedUser.phone || "",
+      state: updatedUser.state || "",
+      lga: updatedUser.lga || "",
+      ward: updatedUser.ward || "",
+      feeder: updatedUser.feeder || "",
+      notificationPreference: updatedUser.notificationPreference,
+      businessModeEnabled: updatedUser.businessModeEnabled || false,
+      businessType: updatedUser.businessType || "other",
+      businessRiskScore: updatedUser.businessRiskScore || 0,
+      token: generateToken(updatedUser._id),
+    });
   } catch (error) {
     console.error("updateUserProfile error:", error);
     res.status(500).json({ message: error.message });

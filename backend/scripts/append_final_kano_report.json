@@ -1,0 +1,1029 @@
+{
+  "metadata": {
+    "generated_at": "2026-07-01T10:35:25.010Z"
+  },
+  "added": 187,
+  "duplicates_removed": 1,
+  "spelling_corrections": 0,
+  "lga_corrections": [
+    {
+      "community": "Kadawa",
+      "found_in": [
+        {
+          "lga": "Dawakin Kudu"
+        }
+      ]
+    },
+    {
+      "community": "Kantsi",
+      "found_in": [
+        {
+          "lga": "Dawakin Kudu"
+        }
+      ]
+    },
+    {
+      "community": "Malamawa",
+      "found_in": [
+        {
+          "lga": "Doguwa"
+        }
+      ]
+    },
+    {
+      "community": "Kanwa",
+      "found_in": [
+        {
+          "lga": "Dawakin Kudu"
+        }
+      ]
+    },
+    {
+      "community": "Sabon Gari",
+      "found_in": [
+        {
+          "lga": "Ungogo",
+          "id": "community_kano_ungogo_sabon_gari"
+        }
+      ]
+    },
+    {
+      "community": "Police Station",
+      "found_in": [
+        {
+          "lga": "Dala"
+        }
+      ]
+    },
+    {
+      "community": "Zango",
+      "found_in": [
+        {
+          "lga": "Ungogo",
+          "id": "community_kano_ungogo_zango"
+        }
+      ]
+    },
+    {
+      "community": "Jigawa",
+      "found_in": [
+        {
+          "lga": "Warawa",
+          "id": "community_kano_warawa_jigawa"
+        }
+      ]
+    },
+    {
+      "community": "Indabo",
+      "found_in": [
+        {
+          "lga": "Ungogo",
+          "id": "community_kano_ungogo_indabo"
+        }
+      ]
+    }
+  ],
+  "problems": [
+    {
+      "type": "sync_indexes_failed",
+      "message": "Index build failed: 01b133ad-8c88-41d3-8cec-de73e915a245: Collection test.wards ( f54cd7ce-67a6-424e-9920-af8f0fbd29af ) :: caused by :: E11000 duplicate key error collection: test.wards index: lga_1_slug_1 dup key: { lga: ObjectId('69c26d7a671a762bd9fede96'), slug: null }"
+    }
+  ],
+  "added_list": [
+    {
+      "id": "community_kano_ungogo_adaraye",
+      "name": "Adaraye",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_alhrani",
+      "name": "Alhrani",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_amar_zakawa",
+      "name": "Amar Zakawa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_bacirawa",
+      "name": "Bacirawa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_bagujan",
+      "name": "Bagujan",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_ciromawa",
+      "name": "Ciromawa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_dankunkuru",
+      "name": "Dankunkuru",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_dausayi",
+      "name": "Dausayi",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_doka",
+      "name": "Doka",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_dorayi",
+      "name": "Dorayi",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_fanisau",
+      "name": "Fanisau",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_garinlya",
+      "name": "Garinlya",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_gayawa",
+      "name": "Gayawa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_gera",
+      "name": "Gera",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_hoto",
+      "name": "Hoto",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_indabo",
+      "name": "Indabo",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_inkyan",
+      "name": "Inkyan",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_inusawa_babba",
+      "name": "Inusawa Babba",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_inusawa_karawa",
+      "name": "Inusawa Karawa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_jajira",
+      "name": "Jajira",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_kadawa",
+      "name": "Kadawa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_kakurun",
+      "name": "Kakurun",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_kanawa",
+      "name": "Kanawa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_kansuwa",
+      "name": "Kansuwa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_kantsi",
+      "name": "Kantsi",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_karo",
+      "name": "Karo",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_kauranchi",
+      "name": "Kauranchi",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_kawari",
+      "name": "Kawari",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_kera",
+      "name": "Kera",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_koranci",
+      "name": "Koranci",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_kududu_fawa",
+      "name": "Kududu Fawa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_kwajalawa",
+      "name": "Kwajalawa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_kyaran",
+      "name": "Kyaran",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_malamawa",
+      "name": "Malamawa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_mushuni",
+      "name": "Mushuni",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_rafin_mallam",
+      "name": "Rafin Mallam",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_rangaza",
+      "name": "Rangaza",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_rijiyar_dinya",
+      "name": "Rijiyar Dinya",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_rijiyar_zaki",
+      "name": "Rijiyar Zaki",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_rimi",
+      "name": "Rimi",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_rimi_gata",
+      "name": "Rimi Gata",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_rimi_zakara",
+      "name": "Rimi Zakara",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_sabon_gari",
+      "name": "Sabon Gari",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_tarda",
+      "name": "Tarda",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_tudun_fulani",
+      "name": "Tudun Fulani",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_umasawa",
+      "name": "Umasawa",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_wachani",
+      "name": "Wachani",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_watari",
+      "name": "Watari",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_wujanare",
+      "name": "Wujanare",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_yada_kunya",
+      "name": "Yada Kunya",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_yan_ali",
+      "name": "Yan Ali",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_yanmata",
+      "name": "Yanmata",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_yola",
+      "name": "Yola",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_z_babba",
+      "name": "Z/Babba",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_zango",
+      "name": "Zango",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_zaura_dan_baba",
+      "name": "Zaura Dan Baba",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_ungogo_zikaya",
+      "name": "Zikaya",
+      "lga": "Ungogo"
+    },
+    {
+      "id": "community_kano_warawa_a_giwa",
+      "name": "A'Giwa",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_madarin",
+      "name": "Madarin",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_amarawa",
+      "name": "Amarawa",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_manyan_mata",
+      "name": "Manyan Mata",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_dan_lasan",
+      "name": "Dan Lasan",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_tamburawa_gabas",
+      "name": "Tamburawa Gabas",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_galadima",
+      "name": "Galadima",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_token",
+      "name": "Token",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_ganakako",
+      "name": "Ganakako",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_wambantu",
+      "name": "Wambantu",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_garu_dau",
+      "name": "Garu Dau",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_warawa",
+      "name": "Warawa",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_giwarwan",
+      "name": "Giwarwan",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_warkai",
+      "name": "Warkai",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_goget",
+      "name": "Goget",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_yan_dalla",
+      "name": "Yan-Dalla",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_gumaka",
+      "name": "Gumaka",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_yan_tofa",
+      "name": "Yan-Tofa",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_jigawa",
+      "name": "Jigawa",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_yangizo",
+      "name": "Yangizo",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_kanta",
+      "name": "Kanta",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_kanwa",
+      "name": "Kanwa",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_katarkawa",
+      "name": "Katarkawa",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_kinchau",
+      "name": "Kinchau",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_ladimakole",
+      "name": "Ladimakole",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_warawa_limawa",
+      "name": "Limawa",
+      "lga": "Warawa"
+    },
+    {
+      "id": "community_kano_wudil_unguwar_fulani",
+      "name": "Unguwar Fulani",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_abuja",
+      "name": "Abuja",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_aliyu_dan_darman_rd.",
+      "name": "Aliyu Dan Darman Rd.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_dafawa",
+      "name": "Dafawa",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_kofar_kara",
+      "name": "Kofar Kara",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_medical_health_department",
+      "name": "Medical Health Department",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_nysc_office",
+      "name": "NYSC Office",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_special_primary_school",
+      "name": "Special Primary School",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_weekly_market",
+      "name": "Weekly Market",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_sabon_gari",
+      "name": "Sabon Gari",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_alhaji_salihu_sarki_st.",
+      "name": "Alhaji Salihu Sarki St.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_gidan_kuka_rd.",
+      "name": "Gidan Kuka Rd.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_maiduguri_rd.",
+      "name": "Maiduguri Rd.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_sabon_gari_junior_secondary_school",
+      "name": "Sabon Gari Junior Secondary School",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_yan_goro",
+      "name": "Yan Goro",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_juma_rd.",
+      "name": "Juma Rd.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_area_court",
+      "name": "Area Court",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_gaya_rd.",
+      "name": "Gaya Rd.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_gidan_biski_rd.",
+      "name": "Gidan Biski Rd.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_hanyar_farin_gida",
+      "name": "Hanyar Farin Gida",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_inec_office",
+      "name": "INEC Office",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_liberty_hotel",
+      "name": "Liberty Hotel",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_markatar_abba_st.",
+      "name": "Markatar Abba St.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_washo_rd.",
+      "name": "Washo Rd.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_kofar_fada",
+      "name": "Kofar Fada",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_gaban_komi",
+      "name": "Gaban Komi",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_islamiyya_school",
+      "name": "Islamiyya School",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_kan_karofi",
+      "name": "Kan Karofi",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_kofar_yamma",
+      "name": "Kofar Yamma",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_kukar_dabi",
+      "name": "Kukar Dabi",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_layin_alhaji_abba",
+      "name": "Layin Alhaji Abba",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_mahauta",
+      "name": "Mahauta",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_model_secondary_school",
+      "name": "Model Secondary School",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_police_station",
+      "name": "Police Station",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_tropical_commercial",
+      "name": "Tropical Commercial",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_bank",
+      "name": "Bank",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_tsohuwar_kasuwa",
+      "name": "Tsohuwar Kasuwa",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_unguwar_koko",
+      "name": "Unguwar Koko",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_women_center",
+      "name": "Women Center",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_wudil_l.g._education_dept.",
+      "name": "Wudil L.G. Education Dept.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_zango",
+      "name": "Zango",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_kano_state_university",
+      "name": "Kano State University",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_cattle_market",
+      "name": "Cattle Market",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_weekly_motor_part",
+      "name": "Weekly Motor Part",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_wudil_comprehensive_health",
+      "name": "Wudil Comprehensive Health",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_health",
+      "name": "Health",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_bauchi_yal.",
+      "name": "Bauchi Yal.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_fadi_sonka_rd.",
+      "name": "Fadi Sonka Rd.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_g.g._quarters_rd.",
+      "name": "G.G. Quarters Rd.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_gachi",
+      "name": "Gachi",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_local_government_quarters",
+      "name": "Local Government Quarters",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_rehabilitation_centre",
+      "name": "Rehabilitation Centre",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_total_petrol",
+      "name": "Total Petrol",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_wudil_company_health",
+      "name": "Wudil Company Health",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_local_government_secretariat",
+      "name": "Local Government Secretariat",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_dugaji_oil",
+      "name": "Dugaji Oil",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_iyar_sarki",
+      "name": "Iyar Sarki",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_kasco",
+      "name": "KASCO",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_ministry_of_education_zonal_office",
+      "name": "Ministry of Education Zonal Office",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_unbulu",
+      "name": "Unbulu",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_garindo",
+      "name": "Garindo",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_garindo_village",
+      "name": "Garindo Village",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_polac",
+      "name": "Polac",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_wreca",
+      "name": "WRECA",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_police_barracks",
+      "name": "Police Barracks",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_police",
+      "name": "Police",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_post_office",
+      "name": "Post Office",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_nitel_office_barracks",
+      "name": "NITEL Office Barracks",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_jigawa",
+      "name": "Jigawa",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_indabo_rd.",
+      "name": "Indabo Rd.",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_katurje",
+      "name": "Katurje",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_jumar_dan_padal",
+      "name": "Jumar Dan Padal",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_shagari_quarters",
+      "name": "Shagari Quarters",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_sakau",
+      "name": "Sakau",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_shagari_quarters_a",
+      "name": "Shagari Quarters A",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_state_primary_education_board",
+      "name": "State Primary Education Board",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_wudil_rural_communities",
+      "name": "Wudil (Rural Communities)",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_achika",
+      "name": "Achika",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_audaga",
+      "name": "Audaga",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_bange",
+      "name": "Bange",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_buda",
+      "name": "Buda",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_dagumawa",
+      "name": "Dagumawa",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_dal",
+      "name": "Dal",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_darki",
+      "name": "Darki",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_gariko",
+      "name": "Gariko",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_garin_ali",
+      "name": "Garin Ali",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_guna",
+      "name": "Guna",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_gware",
+      "name": "Gware",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_indabo",
+      "name": "Indabo",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_juma",
+      "name": "Juma",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_kafin_malami",
+      "name": "Kafin Malami",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_kausani",
+      "name": "Kausani",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_kawo",
+      "name": "Kawo",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_kwas",
+      "name": "Kwas",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_lajawa",
+      "name": "Lajawa",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_maida",
+      "name": "Maida",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_makadi",
+      "name": "Makadi",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_makera",
+      "name": "Makera",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_mandawari",
+      "name": "Mandawari",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_raba",
+      "name": "Raba",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_tsakuwadal",
+      "name": "Tsakuwadal",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_utai",
+      "name": "Utai",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_wudil",
+      "name": "Wudil",
+      "lga": "Wudil"
+    },
+    {
+      "id": "community_kano_wudil_yarka",
+      "name": "Yarka",
+      "lga": "Wudil"
+    }
+  ]
+}

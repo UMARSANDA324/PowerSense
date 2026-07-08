@@ -7,14 +7,16 @@ import {
   getAllLocations,
   getStates,
   getLGAs,
+  getWards,
   getFeeders,
+  searchLocations,
   deleteState,
   deleteLGA,
   deleteWard,
   deleteFeeder,
   updateFeeder
 } from "../controllers/locationController.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, softProtect } from "../middleware/authMiddleware.js";
 import { authorize } from "../middleware/rolemiddleware.js";
 
 const router = express.Router();
@@ -27,7 +29,9 @@ const router = express.Router();
 router.get("/all", getAllLocations);
 router.get("/states", getStates);
 router.get("/lgas", getLGAs);
-router.get("/feeders", getFeeders);
+router.get("/wards", getWards);
+router.get("/search", searchLocations);
+router.get("/feeders", softProtect, getFeeders);
 
 router.post("/state", protect, authorize("super-admin"), createState);
 router.post("/lga", protect, authorize("super-admin"), createLGA);

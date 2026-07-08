@@ -35,6 +35,19 @@ const reportSchema = new mongoose.Schema({
         type: String,
         enum: ["Pending", "Assigned", "In Progress", "Resolved"],
         default: "Pending"
+    },
+    severity: {
+        type: String,
+        enum: ["low", "medium", "high", "critical"],
+        default: "medium"
+    },
+    aiClassification: {
+        type: String,
+        default: ""
+    },
+    aiSummary: {
+        type: String,
+        default: ""
     }
 }, { timestamps: true });
 
@@ -42,5 +55,7 @@ reportSchema.index({ state: 1 });
 reportSchema.index({ lga: 1 });
 reportSchema.index({ ward: 1 });
 reportSchema.index({ feeder: 1 });
+reportSchema.index({ createdAt: -1 });
+reportSchema.index({ feeder: 1, createdAt: -1 });
 
 export default mongoose.model("Report", reportSchema);

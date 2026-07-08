@@ -4,6 +4,7 @@ import User from "../models/UserModel.js";
 import Feeder from "../models/Location/Feeder.js";
 import { hasFeederAccess, getAccessibleFeeders, getFeederQuery } from "../utils/feederAccess.js";
 import { sendBulkNotifications } from "../utils/notificationHelper.js";
+import { analyzeReportWithAI } from "../services/aiService.js";
 
 // @desc    Submit a new report
 // @route   POST /api/reports
@@ -26,6 +27,22 @@ export const createReport = async (req, res) => {
             user: req.user?._id || null
         });
 
+        // --- AUTOMATED AI REPORT ANALYSIS ---
+        try {
+            await analyzeReportWithAI(report._id);
+        } catch (aiErr) {
+            console.error("[Report Controller] Auto AI Analysis error:", aiErr.message);
+        }
+
+        // Re-fetch the report to obtain AI-populated fields
+        const populatedReport = await Report.findById(report._id);
+
+        // --- REAL-TIME EMISSION TO ADMINS ---
+        if (req.io) {
+            req.io.emit("newReport", populatedReport);
+            req.io.emit("reportAnalyzed", populatedReport);
+        }
+
         // --- REAL-TIME NOTIFICATIONS TO ADMIN & SUPER ADMIN ---
         
         // 1. Find the feeder object to get its ID if we only have the name
@@ -43,8 +60,8 @@ export const createReport = async (req, res) => {
 
         if (admins.length > 0) {
             const adminIds = admins.map(a => a._id);
-            const title = "New Incident Report 🚨";
-            const message = `New report: ${issueType} in ${area} (${feeder}). Reported by ${fullName}.`;
+            const title = `New ${populatedReport.severity?.toUpperCase() || "Incident"} Report 🚨`;
+            const message = `Issue: ${populatedReport.aiClassification || issueType} in ${area} (${feeder}). AI Summary: ${populatedReport.aiSummary || description}`;
             
             await sendBulkNotifications({
                 userIds: adminIds,
@@ -57,7 +74,7 @@ export const createReport = async (req, res) => {
             });
         }
 
-        res.status(201).json({ message: "Report submitted successfully.", report });
+        res.status(201).json({ message: "Report submitted successfully.", report: populatedReport });
     } catch (error) {
         console.error("Error in createReport:", error);
         res.status(500).json({ message: error.message });

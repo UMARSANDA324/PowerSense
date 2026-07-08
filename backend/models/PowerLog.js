@@ -22,6 +22,8 @@ const powerLogSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+powerLogSchema.index({ feeder: 1, timestamp: 1 });
+
 const PowerLog = mongoose.model("PowerLog", powerLogSchema);
 
 export default PowerLog;

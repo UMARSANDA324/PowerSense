@@ -47,6 +47,20 @@ const userSchema = new mongoose.Schema(
             default: "push"
         },
 
+        businessModeEnabled: {
+            type: Boolean,
+            default: false,
+        },
+        businessType: {
+            type: String,
+            enum: ["retail", "manufacturing", "hospitality", "office", "agriculture", "services", "other"],
+            default: "other",
+        },
+        businessRiskScore: {
+            type: Number,
+            default: 0,
+        },
+
         deviceTokens: [
             {
                 token: String,

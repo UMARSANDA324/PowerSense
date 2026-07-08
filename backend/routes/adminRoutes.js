@@ -39,23 +39,48 @@ router.post("/create-admin", authorize("super-admin"), createAdmin);
 
 // Route for Admin Dashboard to toggle power status for one or more feeders
 router.post("/power-status", authorize("super-admin", "admin"), async (req, res) => {
-    const { status, isActive: legacyIsActive, estimatedNextOutage, feederId, feederIds } = req.body;
-    
+    const {
+        status,
+        isActive: legacyIsActive,
+        estimatedNextOutage,
+        expectedOutageTime,
+        expectedRestoreTime,
+        maintenanceStart,
+        maintenanceEnd,
+        reason,
+        maintenanceReason,
+        feederId,
+        feederIds
+    } = req.body;
+
+    const parseDate = (value) => {
+        if (!value) return null;
+        const date = new Date(value);
+        return isNaN(date.getTime()) ? null : date;
+    };
+
     // Determine the status. Priority: status > legacyIsActive
     let finalStatus = status;
     if (!finalStatus && legacyIsActive !== undefined) {
         finalStatus = legacyIsActive ? "on" : "off";
     }
-    
+
     if (!finalStatus) {
         return res.status(400).json({ message: "Status is required (on, off, or maintenance)" });
     }
 
     const isActive = finalStatus === "on";
+    const parsedOutageTime = parseDate(expectedOutageTime || estimatedNextOutage);
+    const parsedRestoreTime = parseDate(expectedRestoreTime || estimatedNextOutage);
+    const parsedMaintenanceStart = parseDate(maintenanceStart);
+    const parsedMaintenanceEnd = parseDate(maintenanceEnd);
+    const scheduleReason = reason || maintenanceReason || "Scheduled maintenance";
 
-    // Support both single feederId and array feederIds
+    if ((finalStatus === "off" || finalStatus === "maintenance") && !parsedRestoreTime) {
+        return res.status(400).json({ message: "Expected restoration or completion time is required for outages and maintenance." });
+    }
+
     const targetFeederIds = feederIds || (feederId ? [feederId] : []);
-    
     if (targetFeederIds.length === 0) {
         return res.status(400).json({ message: "At least one Feeder ID is required" });
     }
@@ -64,17 +89,11 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
         return res.status(400).json({ message: "Cannot control more than 5 feeders at once" });
     }
 
-    if (!estimatedNextOutage || estimatedNextOutage.trim() === "") {
-        return res.status(400).json({ message: "Estimated Change Time is required" });
-    }
-
     try {
         const results = [];
-        
+
         for (const id of targetFeederIds) {
-            // Verify admin has access to this feeder
             const isAuthorized = await hasFeederAccess(req.user, id);
-            
             if (!isAuthorized) {
                 results.push({ feederId: id, success: false, message: "Not authorized" });
                 continue;
@@ -88,23 +107,35 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
 
             let statusDoc = await PowerStatus.findOne({ feeder: id });
             if (!statusDoc) {
-                statusDoc = new PowerStatus({ 
+                statusDoc = new PowerStatus({
                     status: finalStatus,
-                    isActive, 
-                    estimatedNextOutage, 
+                    isActive,
                     feeder: id,
-                    updatedBy: req.user._id 
+                    updatedBy: req.user._id,
+                    reason: scheduleReason,
+                    expectedOutageTime: parsedOutageTime,
+                    expectedRestoreTime: parsedRestoreTime,
+                    maintenanceStart: parsedMaintenanceStart || (finalStatus === "maintenance" ? new Date() : null),
+                    maintenanceEnd: parsedMaintenanceEnd || (finalStatus === "maintenance" ? parsedRestoreTime : null),
+                    estimatedNextOutage: parsedRestoreTime || parsedOutageTime || null,
+                    maintenanceReason: scheduleReason
                 });
             } else {
                 statusDoc.status = finalStatus;
                 statusDoc.isActive = isActive;
-                if (estimatedNextOutage !== undefined) statusDoc.estimatedNextOutage = estimatedNextOutage;
+                statusDoc.reason = scheduleReason;
+                statusDoc.expectedOutageTime = parsedOutageTime;
+                statusDoc.expectedRestoreTime = parsedRestoreTime;
+                statusDoc.maintenanceStart = parsedMaintenanceStart || (finalStatus === "maintenance" ? statusDoc.maintenanceStart || new Date() : null);
+                statusDoc.maintenanceEnd = parsedMaintenanceEnd || (finalStatus === "maintenance" ? parsedRestoreTime : null);
+                statusDoc.estimatedNextOutage = parsedRestoreTime || parsedOutageTime || null;
+                statusDoc.maintenanceReason = scheduleReason;
                 statusDoc.lastUpdated = Date.now();
                 statusDoc.updatedBy = req.user._id;
             }
+
             await statusDoc.save();
 
-            // Record this status change in the power log for history
             const log = new PowerLog({
                 feeder: id,
                 feederName: feeder.name,
@@ -113,28 +144,30 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
             });
             await log.save();
 
-            // Emit real-time update to all connected clients
             if (req.io) {
                 req.io.emit("powerStatusUpdated", {
                     feederId: id,
                     feederName: feeder.name,
                     status: finalStatus,
                     isActive,
-                    estimatedNextOutage,
+                    expectedOutageTime: statusDoc.expectedOutageTime,
+                    expectedRestoreTime: statusDoc.expectedRestoreTime,
+                    maintenanceStart: statusDoc.maintenanceStart,
+                    maintenanceEnd: statusDoc.maintenanceEnd,
+                    reason: statusDoc.reason,
+                    updatedBy: statusDoc.updatedBy,
                     lastUpdated: statusDoc.lastUpdated
                 });
             }
 
-            // Trigger notifications to users in this feeder
             const title = "Power Status Update";
             let message = "";
-            
             if (finalStatus === "on") {
-                message = `Electricity has been restored in your area (${feeder.name}). Expected until: ${estimatedNextOutage}`;
+                message = `Electricity is available in your area (${feeder.name}). Next outage scheduled for: ${parsedOutageTime ? parsedOutageTime.toISOString() : "TBD"}`;
             } else if (finalStatus === "off") {
-                message = `Electricity has been disconnected in your area (${feeder.name}). Expected back: ${estimatedNextOutage}`;
+                message = `Electricity is disrupted in your area (${feeder.name}). Expected restoration: ${parsedRestoreTime.toISOString()}`;
             } else if (finalStatus === "maintenance") {
-                message = `Maintenance in progress in your area (${feeder.name}). Engineers are working on the issue. Expected completion: ${estimatedNextOutage}`;
+                message = `Maintenance is in progress in your area (${feeder.name}). Expected completion: ${parsedRestoreTime.toISOString()}`;
             }
 
             await notifyArea({
@@ -146,7 +179,7 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
                 isCustom: false
             });
 
-            results.push({ feederId: id, success: true, status });
+            results.push({ feederId: id, success: true, status: finalStatus });
         }
 
         const failed = results.filter(r => !r.success);
@@ -154,9 +187,9 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
             return res.status(403).json({ message: "Failed to update any feeders", results });
         }
 
-        res.json({ 
-            message: failed.length > 0 ? "Power status partially updated" : "Power status updated successfully", 
-            results 
+        res.json({
+            message: failed.length > 0 ? "Power status partially updated" : "Power status updated successfully",
+            results
         });
     } catch (error) {
         console.error("Error in update power status:", error);

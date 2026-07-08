@@ -10,11 +10,10 @@ export const seedDatabase = async () => {
       console.log("[Seed] Database is empty. Creating default users...");
       
       // Create test user
-      const testUserPassword = await bcrypt.hash("123456", 10);
       const testUser = new User({
         fullName: "Test User",
         email: "test@example.com",
-        password: testUserPassword,
+        password: "123456",
         phone: "+1234567890",
         role: "user",
         isActive: true,
@@ -25,11 +24,10 @@ export const seedDatabase = async () => {
       console.log("[Seed] ✅ Created test user: test@example.com / 123456");
       
       // Create admin user
-      const adminPassword = await bcrypt.hash("admin123", 10);
       const adminUser = new User({
         fullName: "System Administrator",
         email: "admin@powersense.com",
-        password: adminPassword,
+        password: "admin123",
         phone: "+0987654321",
         role: "admin",
         isActive: true,

@@ -8,41 +8,69 @@ import { protect } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 // Protected route for users to check power status for allowed feeders
+// Cache for state to feeder IDs mapping to prevent slow DB lookups on every request
+const stateFeedersCache = new Map();
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+async function getFeedersForState(stateName) {
+    const now = Date.now();
+    const cached = stateFeedersCache.get(stateName);
+    if (cached && now < cached.expiry) {
+        return cached.feederIds;
+    }
+
+    const StateModel = mongoose.model("State");
+    const state = await StateModel.findOne({ name: stateName }).lean();
+    if (!state) return [];
+
+    const LGAModel = mongoose.model("LGA");
+    const lgas = await LGAModel.find({ state: state._id }).select("_id").lean();
+    const lgaIds = lgas.map(l => l._id);
+
+    const WardModel = mongoose.model("Ward");
+    const wards = await WardModel.find({ lga: { $in: lgaIds } }).select("_id").lean();
+    const wardIds = wards.map(w => w._id);
+
+    const FeederModel = mongoose.model("Feeder");
+    const feedersInState = await FeederModel.find({ wards: { $in: wardIds } }).select("_id").lean();
+    const feederIds = feedersInState.map(f => f._id);
+
+    stateFeedersCache.set(stateName, {
+        feederIds,
+        expiry: now + CACHE_TTL_MS
+    });
+
+    return feederIds;
+}
+
+// Protected route for users to check power status for allowed feeders
 router.get("/all-status", protect, async (req, res) => {
     try {
-        let allowedFeederIds = [];
+        let query = {};
         const isSuperAdmin = req.user.role === 'super-admin';
 
         if (!isSuperAdmin) {
             if (req.user.role === 'admin') {
-                allowedFeederIds = req.user.assignedFeeders || [];
+                query = { feeder: { $in: req.user.assignedFeeders || [] } };
             } else {
                 // User role: filter by state
                 if (!req.user.state) {
                     return res.json([]);
                 }
-                const StateModel = mongoose.model("State");
-                const state = await StateModel.findOne({ name: req.user.state });
-                
-                if (state) {
-                    const LGAModel = mongoose.model("LGA");
-                    const lgas = await LGAModel.find({ state: state._id });
-                    
-                    const WardModel = mongoose.model("Ward");
-                    const wards = await WardModel.find({ lga: { $in: lgas.map(l => l._id) } });
-                    
-                    const FeederModel = mongoose.model("Feeder");
-                    const feedersInState = await FeederModel.find({ wards: { $in: wards.map(w => w._id) } });
-                    
-                    allowedFeederIds = feedersInState.map(f => f._id);
-                }
+                const feederIds = await getFeedersForState(req.user.state);
+                query = { feeder: { $in: feederIds } };
             }
         }
 
-        const query = isSuperAdmin ? {} : { feeder: { $in: allowedFeederIds } };
-        const statuses = await PowerStatus.find(query).populate("feeder", "name");
+        const statuses = await PowerStatus.find(query)
+            .select('feeder status isActive lastUpdated updatedAt updatedBy')
+            .populate("feeder", "name latitude longitude") // Include lat/long for map
+            .populate("updatedBy", "fullName")
+            .lean(); // Lean for faster queries
+        
         res.json(statuses);
     } catch (error) {
+        console.error("Error fetching all-status:", error);
         res.status(500).json({ message: "Error fetching statuses", error: error.message });
     }
 });
@@ -69,41 +97,59 @@ router.get("/status", protect, async (req, res) => {
                 feederId = foundFeeder._id;
             }
             
-            status = await PowerStatus.findOne({ feeder: feederId });
+            status = await PowerStatus.findOne({ feeder: feederId })
+                .populate("feeder", "name latitude longitude")
+                .populate("updatedBy", "fullName");
         } else {
-            // Default to first status if no feeder specified (legacy support)
-            status = await PowerStatus.findOne();
+            // Find a default feeder the user is allowed to see
+            let allowedFeederIds = [];
+            if (req.user && req.user.role === 'admin') {
+                allowedFeederIds = req.user.assignedFeeders || [];
+            } else if (req.user && req.user.role === 'user' && req.user.state) {
+                allowedFeederIds = await getFeedersForState(req.user.state);
+            }
+
+            const query = (req.user && req.user.role === 'super-admin') 
+                ? {} 
+                : (allowedFeederIds.length > 0 ? { feeder: { $in: allowedFeederIds } } : null);
+            
+            if (query) {
+                status = await PowerStatus.findOne(query)
+                    .populate("feeder", "name latitude longitude")
+                    .populate("updatedBy", "fullName");
+            }
         }
 
         if (!status) {
             return res.json({
                 status: "on",
+                expectedOutageTime: null,
+                expectedRestoreTime: null,
+                maintenanceStart: null,
+                maintenanceEnd: null,
+                reason: null,
+                nextScheduledOutage: null,
+                estimatedNextOutage: null,
+                maintenanceReason: null,
+                updatedBy: null,
                 isActive: true,
                 lastUpdated: "Just Now",
-                message: "System initialized",
-                estimatedNextOutage: "TBD"
+                message: "System initialized"
             });
         }
 
         // Apply filtering logic for the fetched status
         if (req.user.role !== 'super-admin') {
             let isAllowed = false;
+            const feederIdStr = status.feeder ? (status.feeder._id ? status.feeder._id.toString() : status.feeder.toString()) : null;
+
             if (req.user.role === 'admin') {
                 const assignedStrs = (req.user.assignedFeeders || []).map(id => id.toString());
-                isAllowed = assignedStrs.includes(status.feeder.toString());
+                isAllowed = feederIdStr && assignedStrs.includes(feederIdStr);
             } else if (req.user.role === 'user' && req.user.state) {
-                const FeederModel = mongoose.model("Feeder");
-                const f = await FeederModel.findById(status.feeder).populate({
-                    path: 'wards',
-                    populate: {
-                        path: 'lga',
-                        populate: { path: 'state' }
-                    }
-                });
-                
-                if (f && f.wards) {
-                    isAllowed = f.wards.some(w => w.lga?.state?.name === req.user.state);
-                }
+                const allowedFeederIds = await getFeedersForState(req.user.state);
+                const allowedStrs = allowedFeederIds.map(id => id.toString());
+                isAllowed = feederIdStr && allowedStrs.includes(feederIdStr);
             }
             if (!isAllowed) {
                 return res.status(403).json({ message: "Access denied to this feeder's status." });

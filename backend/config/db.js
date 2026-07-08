@@ -1,139 +1,201 @@
-
 import mongoose from "mongoose";
-import dns from "dns";
 
-// Implementation of exponential backoff retry for MongoDB connection
-const MAX_RETRIES = 5;
-const INITIAL_RETRY_DELAY = 2000; // 2 seconds
+// Define required database name
+const REQUIRED_DB_NAME = "test";
 
-const connectWithRetry = async (uri, attempt = 1) => {
-  try {
-    // Trim and sanitize URI to prevent malformed connection strings
-    let sanitizedUri = uri.trim();
-    
-    // Check for common <password> placeholder mistakes
-    if (sanitizedUri.includes("<password>") || sanitizedUri.includes("<username>")) {
-       console.error("[MongoDB] CRITICAL: Your connection string contains '<password>' or '<username>'. You must replace these placeholders with your actual database credentials.");
-       return false;
-    }
-
-    try {
-      // Auto-encode special characters in username and password if they aren't already encoded
-      const parsedUrl = new URL(sanitizedUri);
-      if (parsedUrl.username && parsedUrl.password) {
-        const decodedUser = decodeURIComponent(parsedUrl.username);
-        const decodedPass = decodeURIComponent(parsedUrl.password);
-        parsedUrl.username = encodeURIComponent(decodedUser);
-        parsedUrl.password = encodeURIComponent(decodedPass);
-        sanitizedUri = parsedUrl.toString();
-      }
-    } catch (urlErr) {
-      console.warn("[MongoDB] Could not parse connection string for auto-encoding credentials.");
-    }
-    
-    // Diagnostic check for database name in URI
-    const uriObj = sanitizedUri.split('?')[0]; // Ignore query params
-    const parts = uriObj.split('/');
-    let dbName = parts[parts.length - 1];
-    
-    if (dbName === "" && sanitizedUri.startsWith("mongodb+srv://")) {
-      dbName = "test"; // Default for srv without db path
-    }
-    
-    if (!dbName || dbName === "") {
-      console.warn("[MongoDB] WARNING: No database name detected in connection string. Using 'test' by default.");
-    } else {
-      console.log(`[MongoDB] Targeting database: ${dbName}`);
-    }
-
-    // Programmatic DNS override for development SRV resolution issues
-    // This solves querySrv ECONNREFUSED in many local environments
-    if (process.env.NODE_ENV === "development") {
-      try {
-        dns.setServers(["8.8.8.8", "8.8.4.4"]);
-      } catch (dnsErr) {
-        console.warn("[MongoDB] DNS override skipped:", dnsErr.message);
-      }
-    }
-
-    const conn = await mongoose.connect(sanitizedUri, {
-      serverSelectionTimeoutMS: 15000,
-      socketTimeoutMS: 45000,
-      maxPoolSize: 10,
-    });
-
-    console.log(`[MongoDB] MongoDB Connected`);
-    
-    // Diagnostic check: Count users in the database
-    try {
-      const userCount = await mongoose.connection.db.collection("users").countDocuments();
-      console.log(`[MongoDB] Database Diagnostic: Found ${userCount} users in 'users' collection.`);
-    } catch (countErr) {
-      console.warn(`[MongoDB] Database Diagnostic Error: ${countErr.message}`);
-    }
-
-    return true;
-  } catch (error) {
-    if (error.message.includes("authentication failed")) {
-      console.error("[MongoDB] CRITICAL: Authentication failed. Please verify your username and password.");
-      console.error("[MongoDB] Note: If your password contains special characters, ensure they are URL-encoded.");
-      return false; // Don't retry auth errors as they won't fix themselves
-    }
-    
-    console.error(`[MongoDB] Attempt ${attempt} failed: ${error.message}`);
-    
-    if (attempt < MAX_RETRIES) {
-      const delay = INITIAL_RETRY_DELAY * Math.pow(2, attempt - 1);
-      console.log(`[MongoDB] Retrying in ${delay / 1000}s...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
-      return connectWithRetry(uri, attempt + 1);
-    }
-    
-    return false;
-  }
-};
-
-const connectDB = async () => {
-  // Prefer MONGO_URI as per senior engineering standard, fallback to MONGODB_URI
-  const uri = process.env.MONGO_URI || process.env.MONGODB_URI;
-
-  if (!uri) {
-    console.error("[PowerSense] FATAL: MONGO_URI is not set in environment variables.");
-    process.exit(1);
-  }
-
-  const success = await connectWithRetry(uri);
+// Enterprise-grade MongoDB configuration
+const MONGO_OPTIONS = {
+  // Connection pool settings
+  maxPoolSize: 50, // Maximum number of connections in the pool
+  minPoolSize: 5,  // Minimum number of connections in the pool
   
-  if (!success) {
-    console.error("[PowerSense] FATAL: Failed to connect to MongoDB after multiple attempts.");
-    console.error("Troubleshooting Steps:");
-    console.error("1. Check if your MONGO_URI is correct (mongodb+srv://...)");
-    console.error("2. Ensure 0.0.0.0/0 is whitelisted in MongoDB Atlas Network Access");
-    console.error("3. Verify your database user credentials (username/password)");
-    console.error("4. Ensure the cluster is active and not paused.");
-    
-    // In production, we might want to keep the process alive but in a 'degraded' state
-    // but for most MERN apps, the app cannot function without the DB.
-    if (process.env.NODE_ENV === "production") {
-       console.error("[PowerSense] Production startup failed. Exiting.");
-       process.exit(1);
-    } else {
-       console.warn("[PowerSense] Development mode: Keeping process alive for code changes, but DB features will fail.");
+  // Timeout settings
+  serverSelectionTimeoutMS: 10000, // Timeout for server selection
+  socketTimeoutMS: 45000,          // Socket timeout
+  connectTimeoutMS: 10000,          // Connection timeout
+  
+  // Retry settings
+  retryWrites: true,
+  retryReads: true,
+  
+  // Performance settings
+  bufferCommands: false, // Disable buffering to prevent timeout errors
+  
+  // SSL settings (required for MongoDB Atlas)
+  ssl: true,
+  tlsAllowInvalidCertificates: false,
+  
+  // Other settings
+  autoIndex: process.env.NODE_ENV !== 'production', // Auto-create indexes in dev only
+  family: 4 // Use IPv4, skip trying IPv6
+};
+
+// Connection state tracking
+let isConnected = false;
+let connectionPromise = null;
+
+// Helper to get connection state string
+const getConnectionStateString = (state) => {
+  const states = {
+    0: "Disconnected",
+    1: "Connected",
+    2: "Connecting",
+    3: "Disconnecting"
+  };
+  return states[state] || "Unknown";
+};
+
+/**
+ * Establish MongoDB connection with enterprise-grade error handling
+ * @returns {Promise<boolean>} Connection success status
+ */
+const connectDB = async () => {
+  // Return existing connection promise if connection is in progress
+  if (connectionPromise) {
+    return connectionPromise;
+  }
+
+  // Return immediately if already connected
+  if (isConnected && mongoose.connection.readyState === 1) {
+    return true;
+  }
+
+  connectionPromise = (async () => {
+    try {
+      // Get MongoDB URI from environment
+      const uri = process.env.MONGO_URI || process.env.MONGODB_URI;
+      
+      if (!uri) {
+        throw new Error('MONGO_URI environment variable is not set');
+      }
+
+      // Validate URI format
+      if (!uri.startsWith('mongodb://') && !uri.startsWith('mongodb+srv://')) {
+        throw new Error('Invalid MongoDB URI format. Must start with mongodb:// or mongodb+srv://');
+      }
+
+      // Log connection attempt (without exposing credentials)
+      const sanitizedUri = uri.replace(/\/\/.*@/, '//***:***@');
+      console.log(`[MongoDB] Connecting to: ${sanitizedUri}`);
+
+      // Configure Mongoose
+      mongoose.set('strictQuery', false);
+      
+      // Connect to MongoDB
+      await mongoose.connect(uri, MONGO_OPTIONS);
+      
+      // Get database name and validate
+      const dbName = mongoose.connection.db.databaseName;
+      
+      // Enforce required database name
+      if (dbName !== REQUIRED_DB_NAME) {
+        console.error(`[MongoDB] ❌ FATAL: Connected to wrong database! Expected '${REQUIRED_DB_NAME}', got '${dbName}'`);
+        await mongoose.disconnect();
+        throw new Error(`Connected to wrong database. Expected '${REQUIRED_DB_NAME}', got '${dbName}'`);
+      }
+      
+      isConnected = true;
+      console.log('[MongoDB] ✅ Connected successfully');
+      
+      // Log required info as specified
+      console.log("\nMongoDB Connected");
+      console.log(`Cluster: Cluster0`);
+      console.log(`Database: ${dbName}`);
+      console.log(`Connection State: ${getConnectionStateString(mongoose.connection.readyState)}\n`);
+      
+      // Diagnostic: Check collection counts to verify we're in the right database
+      try {
+        const collections = await mongoose.connection.db.listCollections().toArray();
+        console.log(`[MongoDB] Collections:`, collections.map(c => c.name));
+        
+        // Check user count specifically
+        const userCount = await mongoose.connection.db.collection('users').countDocuments();
+        console.log(`[MongoDB] Users found: ${userCount}`);
+        if (userCount > 0) {
+          const sampleUser = await mongoose.connection.db.collection('users').findOne({}, { projection: { email: 1, fullName: 1 } });
+          console.log(`[MongoDB] Sample user:`, sampleUser);
+        }
+      } catch (countErr) {
+        console.warn(`[MongoDB] Could not check collections (normal if no data yet):`, countErr.message);
+      }
+      
+      return true;
+      
+    } catch (error) {
+      isConnected = false;
+      connectionPromise = null;
+      
+      // Provide actionable error messages
+      if (error.name === 'MongoServerSelectionError') {
+        console.error('[MongoDB] ❌ Connection failed: Unable to connect to MongoDB server');
+        console.error('[MongoDB] Possible causes:');
+        console.error('  1. Invalid MONGO_URI in environment variables');
+        console.error('  2. MongoDB Atlas IP whitelist does not include your IP');
+        console.error('  3. Network connectivity issues');
+        console.error('  4. MongoDB cluster is paused or unavailable');
+      } else if (error.name === 'MongoParseError') {
+        console.error('[MongoDB] ❌ Connection string parse error:', error.message);
+      } else if (error.message.includes('authentication failed')) {
+        console.error('[MongoDB] ❌ Authentication failed: Invalid username or password');
+      } else {
+        console.error('[MongoDB] ❌ Connection error:', error.message);
+      }
+      
+      throw error;
     }
+  })();
+
+  return connectionPromise;
+};
+
+/**
+ * Gracefully close MongoDB connection
+ */
+const disconnectDB = async () => {
+  try {
+    if (mongoose.connection.readyState === 1) {
+      console.log('[MongoDB] Closing connection...');
+      await mongoose.connection.close();
+      console.log('[MongoDB] ✅ Connection closed');
+    }
+  } catch (error) {
+    console.error('[MongoDB] Error closing connection:', error.message);
   }
 };
 
-// Handle post-connection lifecycle events
-mongoose.connection.on("error", (err) => {
-  console.error(`[MongoDB] Runtime error: ${err.message}`);
+// Connection event handlers
+mongoose.connection.on('connecting', () => {
+  console.log('[MongoDB] Connecting...');
 });
 
-mongoose.connection.on("disconnected", () => {
-  console.warn("[MongoDB] Disconnected from cluster. Mongoose will attempt to reconnect automatically.");
+mongoose.connection.on('connected', () => {
+  isConnected = true;
+  console.log('[MongoDB] ✅ Connected');
 });
 
-mongoose.connection.on("reconnected", () => {
-  console.log("[MongoDB] Reconnected successfully.");
+mongoose.connection.on('disconnected', () => {
+  isConnected = false;
+  console.warn('[MongoDB] ⚠️  Disconnected');
 });
 
+mongoose.connection.on('error', (err) => {
+  console.error('[MongoDB] ❌ Error:', err.message);
+});
+
+mongoose.connection.on('reconnected', () => {
+  isConnected = true;
+  console.log('[MongoDB] ✅ Reconnected');
+});
+
+// Handle process termination gracefully
+const handleShutdown = async (signal) => {
+  console.log(`\n[MongoDB] ${signal} received, shutting down gracefully...`);
+  await disconnectDB();
+  process.exit(0);
+};
+
+process.on('SIGTERM', () => handleShutdown('SIGTERM'));
+process.on('SIGINT', () => handleShutdown('SIGINT'));
+
+export { connectDB, disconnectDB };
 export default connectDB;
