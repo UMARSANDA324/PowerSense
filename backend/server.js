@@ -23,7 +23,7 @@ import reportRoutes from "./routes/reportRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import predictionRoutes from "./routes/predictionRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
-import { startPredictionScheduler } from "./utils/cronJobs.js";
+import { startPredictionScheduler, startReminderScheduler } from "./utils/cronJobs.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 // --- Validate critical environment variables on startup ---
@@ -245,6 +245,14 @@ const initializeApp = async () => {
       } catch (err) {
         console.error("[PowerSense] Failed to start prediction scheduler:", err.message);
       }
+    }
+
+    // Step 3.5: Start reminder scheduler
+    try {
+      startReminderScheduler(io);
+      console.log("[PowerSense] Reminder scheduler started.");
+    } catch (err) {
+      console.error("[PowerSense] Failed to start reminder scheduler:", err.message);
     }
     
     // Step 4: Start HTTP server

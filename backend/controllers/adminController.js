@@ -2,6 +2,7 @@ import User from "../models/UserModel.js";
 import Report from "../models/Report.js";
 import PowerStatus from "../models/PowerStatus.js";
 import Feeder from "../models/Location/Feeder.js";
+import InjectionSubstation from "../models/Location/InjectionSubstation.js";
 import Ward from "../models/Location/Ward.js";
 import LGA from "../models/Location/LGA.js";
 import State from "../models/Location/State.js";
@@ -342,6 +343,77 @@ export const getProfile = async (req, res) => {
         console.error("Error in getProfile:", error);
         res.status(500).json({
             message: "Error fetching profile",
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+};
+
+// @desc    Get all injection substations with associated feeders
+// @route   GET /api/admin/injection-substations
+// @access  Private/Admin
+export const getInjectionSubstations = async (req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: "User context missing" });
+        }
+
+        console.log(`Fetching injection substations for user: ${req.user._id} (role: ${req.user.role})`);
+
+        // Get accessible feeder IDs based on user role
+        let accessibleFeederIds = [];
+        if (req.user.role === "super-admin") {
+            // Super admin can see all feeders
+            const allFeeders = await Feeder.find({ isActive: { $ne: false } }).select("_id").lean();
+            accessibleFeederIds = allFeeders.map(f => f._id.toString());
+        } else if (req.user.role === "admin" && req.user.assignedFeeders?.length > 0) {
+            // Feeder admin only sees their assigned feeders
+            accessibleFeederIds = req.user.assignedFeeders.map(id => id.toString());
+        }
+
+        console.log(`Accessible feeder count: ${accessibleFeederIds.length}`);
+
+        // Find relevant injection substations
+        let substations = [];
+
+        if (req.user.role === "super-admin") {
+            // Super admin gets all substations
+            substations = await InjectionSubstation.find({ status: { $ne: "inactive" } })
+                .sort({ name: 1 })
+                .lean();
+        } else {
+            // Feeder admin only gets substations that have at least one of their assigned feeders
+            const feederSubstationIds = await Feeder.distinct("injectionSubstationId", {
+                _id: { $in: accessibleFeederIds.map(id => new mongoose.Types.ObjectId(id)) },
+                isActive: { $ne: false }
+            });
+
+            if (feederSubstationIds.length > 0) {
+                substations = await InjectionSubstation.find({
+                    _id: { $in: feederSubstationIds },
+                    status: { $ne: "inactive" }
+                }).sort({ name: 1 }).lean();
+            }
+        }
+
+        console.log(`Found ${substations.length} relevant injection substations`);
+
+        // Attach feeders to each substation
+        for (const substation of substations) {
+            const substationFeeders = await Feeder.find({
+                injectionSubstationId: substation._id,
+                isActive: { $ne: false },
+                ...(req.user.role === "admin" ? { _id: { $in: accessibleFeederIds } } : {})
+            }).select('name _id isAssigned injectionSubstationId').sort({ name: 1 }).lean();
+
+            substation.feeders = substationFeeders;
+        }
+
+        res.json(substations);
+    } catch (error) {
+        console.error("Error in getInjectionSubstations:", error);
+        res.status(500).json({
+            message: "Error fetching injection substations",
             error: error.message,
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });

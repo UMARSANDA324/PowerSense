@@ -11,7 +11,8 @@ import {
     getAllAdmins,
     getAllFeeders,
     assignFeedersToAdmin,
-    getProfile
+    getProfile,
+    getInjectionSubstations
 } from "../controllers/adminController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { authorize } from "../middleware/rolemiddleware.js";
@@ -20,6 +21,7 @@ import { hasFeederAccess } from "../utils/feederAccess.js";
 import Feeder from "../models/Location/Feeder.js";
 import { notifyArea } from "../utils/notificationHelper.js";
 import PowerLog from "../models/PowerLog.js";
+import Reminder from "../models/Reminder.js";
 
 const router = express.Router();
 
@@ -28,6 +30,7 @@ router.use(protect);
 
 router.get("/test", authorize("super-admin", "admin"), adminTest);
 router.get("/profile", getProfile);
+router.get("/injection-substations", authorize("super-admin", "admin"), getInjectionSubstations);
 router.get("/stats", authorize("super-admin", "admin"), getSystemStats);
 router.get("/users", authorize("super-admin", "admin"), getAllUsers);
 router.get("/admins", authorize("super-admin"), getAllAdmins);
@@ -136,10 +139,97 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
 
             await statusDoc.save();
 
+            // Cancel any existing pending reminders for this feeder
+            await Reminder.updateMany(
+                { feeder: id, isSent: false, isCancelled: false },
+                { isCancelled: true }
+            );
+
+            // Schedule new reminders for upcoming events
+            const remindersToCreate = [];
+
+            // Schedule power off reminder if expectedOutageTime exists (10 mins before)
+            if (parsedOutageTime) {
+                const reminderTime = new Date(parsedOutageTime.getTime() - 10 * 60 * 1000);
+                if (reminderTime > new Date()) {
+                    remindersToCreate.push({
+                        feeder: id,
+                        feederName: feeder.name,
+                        reminderType: "power_off",
+                        scheduledTime: reminderTime,
+                        reason: scheduleReason
+                    });
+                }
+            }
+
+            // Schedule power on reminder if expectedRestoreTime exists (10 mins before)
+            if (parsedRestoreTime) {
+                const reminderTime = new Date(parsedRestoreTime.getTime() - 10 * 60 * 1000);
+                if (reminderTime > new Date()) {
+                    remindersToCreate.push({
+                        feeder: id,
+                        feederName: feeder.name,
+                        reminderType: "power_on",
+                        scheduledTime: reminderTime,
+                        reason: scheduleReason
+                    });
+                }
+            }
+
+            // Schedule maintenance start/end reminders if applicable
+            if (finalStatus === "maintenance") {
+                if (parsedMaintenanceStart) {
+                    const startReminderTime = new Date(parsedMaintenanceStart.getTime() - 10 * 60 * 1000);
+                    if (startReminderTime > new Date()) {
+                        remindersToCreate.push({
+                            feeder: id,
+                            feederName: feeder.name,
+                            reminderType: "maintenance_start",
+                            scheduledTime: startReminderTime,
+                            reason: scheduleReason
+                        });
+                    }
+                }
+                if (parsedMaintenanceEnd) {
+                    const endReminderTime = new Date(parsedMaintenanceEnd.getTime() - 10 * 60 * 1000);
+                    if (endReminderTime > new Date()) {
+                        remindersToCreate.push({
+                            feeder: id,
+                            feederName: feeder.name,
+                            reminderType: "maintenance_end",
+                            scheduledTime: endReminderTime,
+                            reason: scheduleReason
+                        });
+                    }
+                }
+            }
+
+            if (remindersToCreate.length > 0) {
+                await Reminder.insertMany(remindersToCreate);
+                console.log(`[Admin] Scheduled ${remindersToCreate.length} reminder(s) for feeder ${feeder.name}`);
+            }
+
+            // Determine event type based on status and reason
+            let eventType = null;
+            if (finalStatus === "on") {
+                eventType = "power_restored";
+            } else if (finalStatus === "off") {
+                eventType = "power_outage";
+            } else if (finalStatus === "maintenance") {
+                // Check reason to determine scheduled vs emergency
+                if (scheduleReason && (scheduleReason.toLowerCase().includes("emergency") || scheduleReason.toLowerCase().includes("urgent"))) {
+                    eventType = "emergency_maintenance";
+                } else {
+                    eventType = "scheduled_maintenance";
+                }
+            }
+
             const log = new PowerLog({
                 feeder: id,
                 feederName: feeder.name,
                 status: finalStatus,
+                eventType,
+                reason: scheduleReason,
                 updatedBy: req.user._id
             });
             await log.save();

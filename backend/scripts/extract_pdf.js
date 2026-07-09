@@ -23,8 +23,8 @@ if (!global.DOMMatrix) {
 }
 
 const run = async () => {
-    const pdfPath = path.join(__dirname, "../docs/kedco-master.pdf.pdf");
-    const outPath = path.join(__dirname, "../docs/extracted_pdf.txt");
+    const pdfPath = path.join(__dirname, "../../docs/kedco/KEDCO_MYTO_December_2025.pdf");
+    const outPath = path.join(__dirname, "../../docs/extracted_pdf.txt");
 
     if (!fs.existsSync(pdfPath)) {
         console.error("PDF not found at:", pdfPath);

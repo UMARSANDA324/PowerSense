@@ -12,6 +12,15 @@ const powerLogSchema = new mongoose.Schema({
         enum: ["on", "off", "maintenance"],
         required: true
     },
+    eventType: {
+        type: String,
+        enum: ["power_restored", "power_outage", "scheduled_maintenance", "emergency_maintenance", "manual_override"],
+        default: null
+    },
+    reason: {
+        type: String,
+        default: null
+    },
     timestamp: {
         type: Date,
         default: Date.now
