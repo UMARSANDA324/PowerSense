@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
-import { Activity, Clock, CheckCircle2, AlertCircle, ChevronRight, MapPin, ReceiptText, Bell, TrendingDown, TrendingUp, Lock } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Activity, Clock, CheckCircle2, AlertCircle, ChevronRight, MapPin, ReceiptText, Bell, TrendingDown, TrendingUp, Lock, Trophy, AlertTriangle, Star, Heart } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useDashboard } from "../context/DashboardProvider.jsx";
+import PowerCountdown from "../components/PowerCountdown.jsx";
 import { Link } from "react-router-dom";
 import notificationService from "../services/notificationService.js";
 import { getReports } from "../services/reportService.js";
@@ -9,6 +11,13 @@ import socket from "../services/socket";
 
 const Status = () => {
     const { user } = useAuth();
+    const userFeeder = user?.feeder;
+    const {
+        powerStatus,
+        dashboardData,
+        isDashboardLoading,
+        refreshPowerStatus,
+    } = useDashboard();
     const [activeRequests, setActiveRequests] = useState([]);
     const [monthlyHistory, setMonthlyHistory] = useState([]);
     const [reportHistory, setReportHistory] = useState([]);
@@ -91,6 +100,74 @@ const Status = () => {
     const resolvedCount = allReports.filter(r => r.status === "Resolved").length;
     const pendingCount = allReports.filter(r => r.status === "Pending").length;
 
+    // ===== ANALYTICS DERIVATIONS =====
+    // Best Performing Area (highest uptime, lowest risk)
+    const bestPerforming = useMemo(() => {
+        if (!dashboardData?.feederHealth || dashboardData.feederHealth.length === 0) return null;
+        return [...dashboardData.feederHealth].sort((a, b) => {
+            const uptimeA = a.uptimePercent || 0;
+            const uptimeB = b.uptimePercent || 0;
+            const riskA = a.riskScore || 100;
+            const riskB = b.riskScore || 100;
+            if (uptimeA !== uptimeB) return uptimeB - uptimeA;
+            return riskA - riskB;
+        })[0];
+    }, [dashboardData]);
+
+    // Most Affected Area (most incidents, highest risk)
+    const mostAffected = useMemo(() => {
+        if (!dashboardData?.feederHealth || dashboardData.feederHealth.length === 0) return null;
+        return [...dashboardData.feederHealth].sort((a, b) => {
+            const incidentsA = a.incidents || 0;
+            const incidentsB = b.incidents || 0;
+            const riskA = a.riskScore || 0;
+            const riskB = b.riskScore || 0;
+            if (incidentsA !== incidentsB) return incidentsB - incidentsA;
+            return riskB - riskA;
+        })[0];
+    }, [dashboardData]);
+
+    // Reliability Rating (for user's feeder or global)
+    const userFeederHealth = useMemo(() => {
+        if (!dashboardData || !userFeeder) return null;
+        return dashboardData.feederHealth?.find(
+            (f) => f.feeder?.toLowerCase() === userFeeder.toLowerCase() || 
+                   f.feederId?.toString() === userFeeder?.toString()
+        );
+    }, [dashboardData, userFeeder]);
+
+    const reliabilityScore = useMemo(() => {
+        if (userFeederHealth && userFeederHealth.riskScore !== undefined) {
+            return Math.max(0, 100 - userFeederHealth.riskScore);
+        }
+        return Math.max(0, 100 - (dashboardData?.globalRiskScore || 15));
+    }, [userFeederHealth, dashboardData]);
+
+    const reliabilityRating = useMemo(() => {
+        // Convert 0-100 score to 0-5 stars
+        const stars = Math.max(1, Math.min(5, Math.round((reliabilityScore / 100) * 5)));
+        
+        let label, description;
+        if (stars === 5) {
+            label = "Excellent";
+            description = "Your feeder is performing exceptionally well with minimal interruptions.";
+        } else if (stars === 4) {
+            label = "Good";
+            description = "Your feeder is operating reliably with only occasional issues.";
+        } else if (stars === 3) {
+            label = "Fair";
+            description = "Your feeder has some stability issues, monitor closely.";
+        } else if (stars === 2) {
+            label = "Poor";
+            description = "Your feeder has frequent issues, consider reporting problems.";
+        } else {
+            label = "Critical";
+            description = "Your feeder is experiencing severe stability problems.";
+        }
+        
+        return { stars, label, description };
+    }, [reliabilityScore]);
+
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString('en-US', {
             month: 'short',
@@ -164,8 +241,110 @@ const Status = () => {
                         </Link>
                     </div>
                 ) : (
-                    <>
-                        {/* Active Requests Section */}
+            <>
+                {/* Best Performing & Most Affected Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Best Performing Area */}
+                    <div className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-md">
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="bg-green-50 p-2 rounded-xl">
+                                <Trophy size={20} className="text-green-600" />
+                            </div>
+                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                                Best Performing Area
+                            </h3>
+                        </div>
+                        {bestPerforming ? (
+                            <>
+                                <h4 className="text-xl font-black text-slate-900 mb-2">
+                                    {bestPerforming.feeder || "No Feeder Name"}
+                                </h4>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-2xl font-black text-green-600">
+                                        {bestPerforming.uptimePercent !== undefined && bestPerforming.uptimePercent !== null 
+                                            ? `${bestPerforming.uptimePercent}%` 
+                                            : "92%"} Availability
+                                    </span>
+                                </div>
+                                <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700">
+                                    Very Stable
+                                </span>
+                            </>
+                        ) : (
+                            <p className="text-slate-500 font-medium">No data available</p>
+                        )}
+                    </div>
+
+                    {/* Most Affected Area */}
+                    <div className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-md">
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="bg-red-50 p-2 rounded-xl">
+                                <AlertTriangle size={20} className="text-red-600" />
+                            </div>
+                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                                Most Affected Area
+                            </h3>
+                        </div>
+                        {mostAffected ? (
+                            <>
+                                <h4 className="text-xl font-black text-slate-900 mb-2">
+                                    {mostAffected.feeder || "No Feeder Name"}
+                                </h4>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-2xl font-black text-red-600">
+                                        {mostAffected.incidents || 0} outages this month
+                                    </span>
+                                </div>
+                                <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700">
+                                    Needs Attention
+                                </span>
+                            </>
+                        ) : (
+                            <p className="text-slate-500 font-medium">No data available</p>
+                        )}
+                    </div>
+                </div>
+
+                {/* Reliability Rating */}
+                <div className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-md">
+                    <div className="flex items-center gap-2 mb-4">
+                        <div className="bg-yellow-50 p-2 rounded-xl">
+                            <Star size={20} className="text-yellow-600 fill-yellow-600" />
+                        </div>
+                        <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                            Reliability Rating
+                        </h3>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                        <div>
+                            <div className="flex items-center gap-1 mb-2">
+                                {[...Array(5)].map((_, i) => (
+                                    <Star
+                                        key={i}
+                                        size={24}
+                                        className={`${i < reliabilityRating.stars ? "text-yellow-500 fill-yellow-500" : "text-slate-200"}`}
+                                    />
+                                ))}
+                            </div>
+                            <h4 className="text-xl font-black text-slate-900 mb-1">
+                                {reliabilityRating.stars}/5 - {reliabilityRating.label}
+                            </h4>
+                            <p className="text-sm text-slate-500 font-medium">
+                                {reliabilityRating.description}
+                            </p>
+                        </div>
+                        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100/50 text-center sm:text-left">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                                Reliability Score
+                            </span>
+                            <span className="text-2xl font-black text-slate-900">
+                                {reliabilityScore}%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Active Requests Section */}
                 {activeRequests.length > 0 && (
                     <section>
                         <div className="flex items-center gap-2 mb-4">
@@ -228,7 +407,7 @@ const Status = () => {
                                     </div>
                                 </div>
                                 <p className="text-gray-600 font-medium">
-                                    No power outages recorded this month
+                                    No power events recorded this month
                                 </p>
                                 <p className="text-gray-400 text-sm mt-1">
                                     Great! Your area has had stable electricity supply.
@@ -236,35 +415,67 @@ const Status = () => {
                             </div>
                         ) : (
                             <div className="space-y-3">
-                                {monthlyHistory.map((item, idx) => (
-                                    <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 hover:bg-gray-100 transition">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`p-3 rounded-lg ${item.event === "Restored"
-                                                    ? "bg-green-100 text-green-600"
-                                                    : "bg-red-100 text-red-600"
-                                                }`}>
-                                                {item.event === "Restored" ?
-                                                    <TrendingUp size={18} /> :
-                                                    <TrendingDown size={18} />
-                                                }
+                                {monthlyHistory.map((item, idx) => {
+                                    // Determine event details based on eventType or status
+                                    let eventLabel = "Unknown Event";
+                                    let iconBg = "bg-gray-100 text-gray-600";
+                                    let badgeBg = "bg-gray-100 text-gray-700";
+                                    let icon = <Activity size={18} />;
+
+                                    if (item.eventType === "power_restored" || item.status === "on") {
+                                        eventLabel = "Power Restored";
+                                        iconBg = "bg-green-100 text-green-600";
+                                        badgeBg = "bg-green-100 text-green-700";
+                                        icon = <TrendingUp size={18} />;
+                                    } else if (item.eventType === "power_outage" || item.status === "off") {
+                                        eventLabel = "Power Outage";
+                                        iconBg = "bg-red-100 text-red-600";
+                                        badgeBg = "bg-red-100 text-red-700";
+                                        icon = <TrendingDown size={18} />;
+                                    } else if (item.eventType === "scheduled_maintenance") {
+                                        eventLabel = "Scheduled Maintenance";
+                                        iconBg = "bg-yellow-100 text-yellow-600";
+                                        badgeBg = "bg-yellow-100 text-yellow-700";
+                                        icon = <AlertCircle size={18} />;
+                                    } else if (item.eventType === "emergency_maintenance") {
+                                        eventLabel = "Emergency Maintenance";
+                                        iconBg = "bg-orange-100 text-orange-600";
+                                        badgeBg = "bg-orange-100 text-orange-700";
+                                        icon = <AlertTriangle size={18} />;
+                                    } else if (item.eventType === "manual_override") {
+                                        eventLabel = "Manual Override";
+                                        iconBg = "bg-purple-100 text-purple-600";
+                                        badgeBg = "bg-purple-100 text-purple-700";
+                                        icon = <Lock size={18} />;
+                                    }
+
+                                    const itemDate = new Date(item.timestamp);
+                                    return (
+                                        <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 hover:bg-gray-100 transition">
+                                            <div className="flex items-center gap-3">
+                                                <div className={iconBg}>
+                                                    {icon}
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-gray-800">
+                                                        {eventLabel}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {itemDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at {itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} {item.feederName ? `• ${item.feederName}` : ''}
+                                                    </p>
+                                                    {item.reason && (
+                                                        <p className="text-xs text-gray-400 mt-1">
+                                                            Reason: {item.reason}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p className="font-bold text-gray-800">
-                                                    {item.event === "Restored" ? "Power Restored" : "Power Disconnected"}
-                                                </p>
-                                                <p className="text-xs text-gray-500">
-                                                    {item.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at {item.time} {item.feeder ? `• ${item.feeder}` : ''}
-                                                </p>
-                                            </div>
+                                            <span className={`text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider ${badgeBg}`}>
+                                                {eventLabel.split(' ')[0]}
+                                            </span>
                                         </div>
-                                        <span className={`text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider ${item.event === "Restored"
-                                                ? "bg-green-100 text-green-700"
-                                                : "bg-red-100 text-red-700"
-                                            }`}>
-                                            {item.event}
-                                        </span>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </div>

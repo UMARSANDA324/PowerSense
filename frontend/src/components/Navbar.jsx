@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Bell, MapPin, Menu, X, Home, FileText, Activity, AlertTriangle, User, LogOut, AlertCircle, Shield, Clock, CheckCircle2, Gauge } from "lucide-react";
+import { Bell, MapPin, Menu, X, Home, FileText, Activity, AlertTriangle, User, LogOut, AlertCircle, Shield, Clock, CheckCircle2, Gauge, BrainCircuit } from "lucide-react";
 import { logout, getCurrentUser } from "../services/authService";
 import notificationService from "../services/notificationService";
 import socket from "../services/socket";
@@ -85,8 +85,10 @@ const Navbar = () => {
   const isAdmin = user && (user.role === "admin" || user.role === "super-admin");
 
   const sidebarLinks = [];
+  // sidebarLinks.push({ path: "/map", icon: <MapPin size={20} />, label: "Map" }); // Temporarily hidden for MVP
   if (isAdmin) {
     sidebarLinks.push({ path: "/admin-dashboard", icon: <Shield size={20} />, label: "Admin Panel" });
+    sidebarLinks.push({ path: "/ai-dashboard", icon: <BrainCircuit size={20} />, label: "AI Dashboard" });
   }
 
   if (user && user.role === "super-admin") {
@@ -143,6 +145,14 @@ const Navbar = () => {
                 </button>
               </>
             )}
+
+            {/* Desktop Map Link - Temporarily hidden for MVP */}
+            {/* <Link 
+              to="/map"
+              className="hidden sm:flex items-center gap-2 bg-gray-50 text-gray-700 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all border border-gray-100"
+            >
+              <MapPin size={16} /> Map
+            </Link> */}
 
             {!user && (
               <Link 

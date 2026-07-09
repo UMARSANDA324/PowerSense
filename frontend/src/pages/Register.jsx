@@ -298,6 +298,7 @@ const Register = () => {
                                 <option value="">Select LGA</option>
                                 {locations.lgas
                                     .filter(l => l.state?.name === formData.state)
+                                    .sort((a, b) => a.name.localeCompare(b.name))
                                     .map((lga) => (
                                         <option key={lga._id} value={lga.name}>
                                             {lga.name}
@@ -323,6 +324,7 @@ const Register = () => {
                                 <option value="">Select Area</option>
                                 {locations.wards
                                     .filter(w => w.lga?.name === formData.lga)
+                                    .sort((a, b) => a.name.localeCompare(b.name))
                                     .map((area) => (
                                         <option key={area._id} value={area.name}>
                                             {area.name}

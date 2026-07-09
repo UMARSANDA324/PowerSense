@@ -17,12 +17,12 @@ export default defineConfig({
     // Development proxy: forwards /api requests to local backend
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:5000',
+        target: 'http://127.0.0.1:5002',
         changeOrigin: true,
         secure: false,
       },
       '/socket.io': {
-        target: 'http://127.0.0.1:5000',
+        target: 'http://127.0.0.1:5002',
         ws: true,             // Enable WebSocket proxying for Socket.io in dev
         changeOrigin: true,
       }

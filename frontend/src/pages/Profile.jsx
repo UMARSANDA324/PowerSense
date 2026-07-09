@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, Settings, Shield, Bell, HelpCircle, LogOut, ChevronRight, MapPin, Smartphone, Mail, Edit3, X, Loader2, CheckCircle2 } from "lucide-react";
+import { User, Settings, Shield, Bell, HelpCircle, LogOut, ChevronRight, MapPin, Smartphone, Mail, Edit3, X, Loader2, CheckCircle2, Briefcase } from "lucide-react";
 import { getCurrentUser, logout, updateProfile, getCurrentUserFromApi } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 import locationService from "../services/locationService";
@@ -35,7 +35,9 @@ const Profile = () => {
         lga: user?.lga || "",
         ward: user?.ward || "",
         password: "",
-        notificationPreference: user?.notificationPreference || "push"
+        notificationPreference: user?.notificationPreference || "push",
+        businessModeEnabled: user?.businessModeEnabled || false,
+        businessType: user?.businessType || "retail"
     });
 
     // Update formData if user object changes (e.g. after profile edit)
@@ -49,7 +51,9 @@ const Profile = () => {
                 state: user.state || "Kano",
                 lga: user.lga || "",
                 ward: user.ward || "",
-                notificationPreference: user.notificationPreference || "push"
+                notificationPreference: user.notificationPreference || "push",
+                businessModeEnabled: user.businessModeEnabled || false,
+                businessType: user.businessType || "retail"
             }));
         }
     }, [user]);
@@ -105,7 +109,12 @@ const Profile = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
+
+        if (name === "businessModeEnabled") {
+            setFormData({ ...formData, [name]: checked });
+            return;
+        }
 
         // Phone number validation
         if (name === "phone") {
@@ -174,7 +183,9 @@ const Profile = () => {
             // Remove password if it is empty so we don't accidentally update it to empty
             const dataToUpdate = { 
                 ...formData,
-                feeder: detectedFeeder
+                feeder: detectedFeeder,
+                businessModeEnabled: formData.businessModeEnabled,
+                businessType: formData.businessType,
             };
             if (!dataToUpdate.password) {
                 delete dataToUpdate.password;
@@ -288,6 +299,20 @@ const Profile = () => {
                             </div>
                         </div>
                     )}
+                    <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
+                        <div className="text-blue-600">
+                            <Briefcase size={20} />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Business Mode</p>
+                            <p className="text-sm font-bold text-blue-700">
+                                {user?.businessModeEnabled ? `Enabled for ${user.businessType || 'business'}` : "Disabled"}
+                            </p>
+                            <p className="text-xs text-slate-400 mt-1">
+                                {user?.businessModeEnabled ? "Receive tailored energy continuity guidance." : "Enable Business Mode in profile settings."}
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Settings Menu Sections */}
@@ -420,6 +445,44 @@ const Profile = () => {
                                     />
                                 </div>
 
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Business Mode</label>
+                                            <p className="text-xs text-gray-400">Enable smarter alerts and continuity insights for your business.</p>
+                                        </div>
+                                        <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+                                            <input
+                                                type="checkbox"
+                                                name="businessModeEnabled"
+                                                checked={formData.businessModeEnabled}
+                                                onChange={handleChange}
+                                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            />
+                                            <span className="text-sm font-semibold text-slate-700">{formData.businessModeEnabled ? "Enabled" : "Disabled"}</span>
+                                        </label>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Business Type</label>
+                                        <select
+                                            name="businessType"
+                                            value={formData.businessType}
+                                            onChange={handleChange}
+                                            disabled={!formData.businessModeEnabled}
+                                            className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
+                                        >
+                                            <option value="retail">Retail Business</option>
+                                            <option value="manufacturing">Manufacturing</option>
+                                            <option value="hospitality">Hospitality</option>
+                                            <option value="office">Office / Services</option>
+                                            <option value="agriculture">Agriculture</option>
+                                            <option value="services">Local Services</option>
+                                            <option value="other">Other Business</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div>
                                     <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Notification Preference</label>
                                     <select
@@ -448,6 +511,7 @@ const Profile = () => {
                                             <option value="">Select LGA</option>
                                             {locations.lgas
                                                 .filter(l => l.state?.name === formData.state)
+                                                .sort((a, b) => a.name.localeCompare(b.name))
                                                 .map(lga => (
                                                     <option key={lga._id} value={lga.name}>{lga.name}</option>
                                                 ))}
@@ -465,6 +529,7 @@ const Profile = () => {
                                             <option value="">Select Area</option>
                                             {locations.wards
                                                 .filter(w => w.lga?.name === formData.lga)
+                                                .sort((a, b) => a.name.localeCompare(b.name))
                                                 .map(area => (
                                                     <option key={area._id} value={area.name}>{area.name}</option>
                                                 ))}

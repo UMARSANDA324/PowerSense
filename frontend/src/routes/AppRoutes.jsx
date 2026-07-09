@@ -11,8 +11,10 @@ import Register from "../pages/Register.jsx";
 import Login from "../pages/Login.jsx";
 import ForgotPassword from "../pages/ForgotPassword.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
+import AIDashboard from "../pages/AIDashboard.jsx";
 import AboutUs from "../pages/AboutUs.jsx";
 import SuperAdminDashboard from "../pages/SuperAdminDashboard.jsx";
+import MapPage from "../pages/MapPage.jsx";
 
 const AppRoutes = () => (
 	<Routes>
@@ -29,7 +31,9 @@ const AppRoutes = () => (
 		<Route path="/login" element={<Login />} />
 		<Route path="/forgot-password" element={<ForgotPassword />} />
 		<Route path="/dashboard" element={<Dashboard />} />
+		<Route path="/ai-dashboard" element={<AIDashboard />} />
 		<Route path="/about-us" element={<AboutUs />} />
+		{/* <Route path="/map" element={<MapPage />} /> Temporarily hidden for MVP */}
 		<Route path="*" element={<Home />} />
 	</Routes>
 );

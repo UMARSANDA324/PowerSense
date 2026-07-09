@@ -71,18 +71,27 @@ const SuperAdminDashboard = () => {
     const fetchSuperData = async (silent = false) => {
         if (!silent) setIsLoading(true);
         try {
-            const [statsData, usersData, locationsData, adminsData, feedersData] = await Promise.all([
+            const results = await Promise.allSettled([
                 adminService.getStats(),
                 adminService.getUsers(),
                 adminService.getLocations(),
                 adminService.getAllAdmins(),
                 adminService.getAllFeeders()
             ]);
-            setStats(statsData);
-            setUsers(usersData);
-            setLocations(locationsData);
-            setAdmins(adminsData);
-            setAllFeeders(feedersData);
+            const [statsRes, usersRes, locationsRes, adminsRes, feedersRes] = results;
+            if (statsRes.status === "fulfilled") setStats(statsRes.value);
+            if (usersRes.status === "fulfilled") setUsers(usersRes.value);
+            if (locationsRes.status === "fulfilled") setLocations(locationsRes.value);
+            if (adminsRes.status === "fulfilled") setAdmins(adminsRes.value);
+            if (feedersRes.status === "fulfilled") setAllFeeders(feedersRes.value);
+
+            const failed = results.filter(r => r.status === "rejected");
+            if (failed.length > 0) {
+                console.warn("SuperAdmin: Some fetches failed:", failed.map(f => f.reason?.message));
+                if (failed.length === results.length) {
+                    setMessage({ text: "Failed to sync system data", type: "error" });
+                }
+            }
         } catch (err) {
             console.error("SuperAdmin: Fetch error", err);
             setMessage({ text: "Failed to sync system data", type: "error" });
