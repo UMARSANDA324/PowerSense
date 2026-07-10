@@ -31,12 +31,23 @@ export const getSystemStats = async (req, res) => {
             return res.status(401).json({ message: "User context missing" });
         }
 
-        const feederQuery = await getFeederQuery(req.user);
-        const totalUsers = await User.countDocuments(feederQuery);
-        const pendingReports = await Report.countDocuments({ status: "Pending", ...feederQuery });
-        const totalReports = await Report.countDocuments(feederQuery);
+        // Get appropriate queries for users and reports
+        const userFeederQuery = req.user.role === "admin" 
+            ? await getFeederQuery(req.user, "assignedFeeders") 
+            : {};
+        
+        const reportFeederQuery = req.user.role === "admin" 
+            ? await getFeederQuery(req.user, "feeder") 
+            : {};
+        
+        // Run counts in parallel
+        const [totalUsers, pendingReports, totalReports] = await Promise.all([
+            User.countDocuments(userFeederQuery),
+            Report.countDocuments({ status: "Pending", ...reportFeederQuery }),
+            Report.countDocuments(reportFeederQuery)
+        ]);
 
-        // Fetch the most recent power status, prioritizing the user's assigned feeder if it's a regular admin
+        // Fetch the most recent power status
         let powerStatusQuery = {};
         if (req.user.role === "admin" && req.user.assignedFeeders?.length > 0) {
             powerStatusQuery = { feeder: { $in: req.user.assignedFeeders } };
@@ -44,7 +55,9 @@ export const getSystemStats = async (req, res) => {
 
         const powerStatus = await PowerStatus.findOne(powerStatusQuery)
             .sort({ updatedAt: -1 })
-            .populate("feeder", "name");
+            .select("feeder status isActive updatedAt lastUpdated")
+            .populate("feeder", "name")
+            .lean(); // Use lean() for faster queries
 
         res.json({
             totalUsers,
@@ -69,8 +82,14 @@ export const getAllUsers = async (req, res) => {
         if (!req.user) {
             return res.status(401).json({ message: "User context missing" });
         }
-        const feederQuery = await getFeederQuery(req.user);
-        const users = await User.find(feederQuery).select("-password").sort({ createdAt: -1 });
+        const userFeederQuery = req.user.role === "admin" 
+            ? await getFeederQuery(req.user, "assignedFeeders") 
+            : {};
+        
+        const users = await User.find(userFeederQuery)
+            .select("-password")
+            .sort({ createdAt: -1 })
+            .lean(); // Faster
         res.json(users);
     } catch (error) {
         console.error("Error in getAllUsers:", error);
@@ -178,25 +197,13 @@ export const getAllAdmins = async (req, res) => {
             .select("-password")
             .populate({
                 path: 'assignedFeeders',
-                match: { isActive: { $ne: false } }, // Only populate active feeders
-                populate: {
-                    path: 'wards',
-                    populate: {
-                        path: 'lga',
-                        populate: { path: 'state' }
-                    }
-                }
+                match: { isActive: { $ne: false } },
+                select: 'name _id' // Only get needed fields
             })
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
 
-        // Filter out null entries from assignedFeeders after population
-        const cleanedAdmins = admins.map(admin => {
-            const adminObj = admin.toObject();
-            adminObj.assignedFeeders = adminObj.assignedFeeders.filter(f => f !== null);
-            return adminObj;
-        });
-
-        res.json(cleanedAdmins);
+        res.json(admins);
     } catch (error) {
         console.error("Error in getAllAdmins:", error);
         res.status(500).json({ message: error.message });
@@ -210,14 +217,9 @@ export const getAllFeeders = async (req, res) => {
     try {
         console.log("Fetching all feeders...");
         const feeders = await Feeder.find({ isActive: { $ne: false } })
-            .populate({
-                path: 'wards',
-                populate: {
-                    path: 'lga',
-                    populate: { path: 'state' }
-                }
-            })
-            .sort({ name: 1 });
+            .select('name _id isAssigned') // Only select what frontend needs
+            .sort({ name: 1 })
+            .lean(); // Lean makes it faster
 
         console.log(`Successfully fetched ${feeders.length} feeders`);
         res.json(feeders);
@@ -323,27 +325,19 @@ export const getProfile = async (req, res) => {
         const user = await User.findById(req.user._id)
             .populate({
                 path: 'assignedFeeders',
-                match: { isActive: { $ne: false } }, // Only populate active feeders
-                populate: {
-                    path: 'wards',
-                    populate: {
-                        path: 'lga',
-                        populate: { path: 'state' }
-                    }
-                }
+                match: { isActive: { $ne: false } },
+                select: 'name _id' // Only get needed fields for frontend
             })
-            .select("-password");
+            .select("-password")
+            .lean();
 
         if (!user) {
             console.warn(`User profile not found: ${req.user._id}`);
             return res.status(404).json({ message: "User not found" });
         }
 
-        const userObj = user.toObject();
-        userObj.assignedFeeders = userObj.assignedFeeders.filter(f => f !== null);
-
         console.log(`Successfully fetched profile for: ${user.fullName}`);
-        res.json(userObj);
+        res.json(user);
     } catch (error) {
         console.error("Error in getProfile:", error);
         res.status(500).json({

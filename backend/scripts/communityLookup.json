@@ -1,0 +1,6533 @@
+{
+  "aawa": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_aawa",
+      "slug": "aawa"
+    }
+  ],
+  "abakur": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_abakur",
+      "slug": "abakur"
+    }
+  ],
+  "abbatuwa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_abbatuwa",
+      "slug": "abba-tuwa"
+    }
+  ],
+  "abuja": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_abuja",
+      "slug": "abuja"
+    }
+  ],
+  "aburawa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_aburawa",
+      "slug": "aburawa"
+    }
+  ],
+  "achika": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_achika",
+      "slug": "achika"
+    }
+  ],
+  "adakawa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_adakawa",
+      "slug": "adakawa"
+    }
+  ],
+  "adaraye": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_adaraye",
+      "slug": "adaraye"
+    }
+  ],
+  "agawa": [
+    {
+      "lga": "Garun Mallam",
+      "communityId": "b9b46c90-5660-4ec9-91ca-369f0d27793f",
+      "slug": "agawa"
+    }
+  ],
+  "agiwa": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_a_giwa",
+      "slug": "a-giwa"
+    }
+  ],
+  "airforcebase": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_airforcebase",
+      "slug": "airforce-base"
+    }
+  ],
+  "airportrd": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_airportrd",
+      "slug": "airport-rd."
+    }
+  ],
+  "ajingi": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_ajingi",
+      "slug": "ajingi"
+    }
+  ],
+  "ajumawa": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_ajumawa",
+      "slug": "ajumawa"
+    }
+  ],
+  "alajawa": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_alajawa",
+      "slug": "alajawa"
+    },
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_alajawa",
+      "slug": "alajawa"
+    },
+    {
+      "lga": "Shanono",
+      "communityId": "b7e3a165-2dec-4b9b-a093-33cea10c2618",
+      "slug": "alajawa"
+    }
+  ],
+  "albasu": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_albasu",
+      "slug": "albasu"
+    }
+  ],
+  "alhajisalihusarkist": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_alhaji_salihu_sarki_st.",
+      "slug": "alhaji-salihu-sarki-st."
+    }
+  ],
+  "alhrani": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_alhrani",
+      "slug": "alhrani"
+    }
+  ],
+  "aliyudandarmanrd": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_aliyu_dan_darman_rd.",
+      "slug": "aliyu-dan-darman-rd."
+    }
+  ],
+  "amarawa": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_amarawa",
+      "slug": "amarawa"
+    }
+  ],
+  "amarzakawa": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_amar_zakawa",
+      "slug": "amar-zakawa"
+    }
+  ],
+  "anadariya": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_anadariya",
+      "slug": "anadariya"
+    }
+  ],
+  "areacourt": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_area_court",
+      "slug": "area-court"
+    }
+  ],
+  "arzai": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_arzai",
+      "slug": "arzai"
+    }
+  ],
+  "ashtonrd": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_ashtonrd",
+      "slug": "ashton-rd."
+    }
+  ],
+  "audaga": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_audaga",
+      "slug": "audaga"
+    }
+  ],
+  "ayagi": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_ayagi",
+      "slug": "ayagi"
+    }
+  ],
+  "azore": [
+    {
+      "lga": "Minjibir",
+      "communityId": "minjibir_azore",
+      "slug": "azore"
+    }
+  ],
+  "baawa": [
+    {
+      "lga": "Kiru",
+      "communityId": "kiru_baawa",
+      "slug": "baawa"
+    }
+  ],
+  "babagoni": [
+    {
+      "lga": "Tarauni",
+      "communityId": "5144f03b-20eb-488d-8a3a-d3fb1f0fa9c7",
+      "slug": "baba-goni"
+    }
+  ],
+  "babawa": [
+    {
+      "lga": "Gezawa",
+      "communityId": "f8cb9b87-720d-42e9-b750-1431786b7cf5",
+      "slug": "babawa"
+    }
+  ],
+  "babbanruga": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_babbanruga",
+      "slug": "babban-ruga"
+    }
+  ],
+  "baburi": [
+    {
+      "lga": "Tudun Wada",
+      "communityId": "ace7a8c2-72fa-4bda-bb1a-3145de2764ca",
+      "slug": "baburi"
+    }
+  ],
+  "bachirawa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_bachirawa",
+      "slug": "bachirawa"
+    }
+  ],
+  "bacirawa": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_bacirawa",
+      "slug": "bacirawa"
+    }
+  ],
+  "badafi": [
+    {
+      "lga": "Kiru",
+      "communityId": "kiru_badafi",
+      "slug": "badafi"
+    }
+  ],
+  "badau": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_badau",
+      "slug": "badau"
+    }
+  ],
+  "badodo": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_badodo",
+      "slug": "badodo"
+    }
+  ],
+  "badume": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_badume",
+      "slug": "badume"
+    }
+  ],
+  "bafinruwa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_bafinruwa",
+      "slug": "bafin-ruwa"
+    }
+  ],
+  "bagari": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_bagari",
+      "slug": "bagari"
+    }
+  ],
+  "baguda": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_baguda",
+      "slug": "baguda"
+    }
+  ],
+  "bagujan": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_bagujan",
+      "slug": "bagujan"
+    }
+  ],
+  "bagwai": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_bagwai",
+      "slug": "bagwai"
+    }
+  ],
+  "bagwaro": [
+    {
+      "lga": "Takai",
+      "communityId": "b3ca9e88-1e98-4e21-a270-61aabdd24604",
+      "slug": "bagwaro"
+    }
+  ],
+  "baje": [
+    {
+      "lga": "Kunchi",
+      "communityId": "kunchi_baje",
+      "slug": "baje"
+    },
+    {
+      "lga": "Tsanyawa",
+      "communityId": "14364c90-8ac7-4fb5-87b1-08bba7a349bf",
+      "slug": "baje"
+    }
+  ],
+  "bakarari": [
+    {
+      "lga": "Makoda",
+      "communityId": "makoda_bakarari",
+      "slug": "bakarari"
+    }
+  ],
+  "bakarfa": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_bakarfa",
+      "slug": "bakarfa"
+    }
+  ],
+  "bakinruwa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_bakinruwa",
+      "slug": "bakin-ruwa"
+    }
+  ],
+  "balan": [
+    {
+      "lga": "Gaya",
+      "communityId": "7a0f1aa3-7f7a-4e4b-ae0c-8b52b4ba79c7",
+      "slug": "balan"
+    }
+  ],
+  "balare": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_balare",
+      "slug": "balare"
+    }
+  ],
+  "bambarawanasara": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_bambarawanasara",
+      "slug": "bambarawa-nasara"
+    }
+  ],
+  "bange": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_bange",
+      "slug": "bange"
+    }
+  ],
+  "bank": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_bank",
+      "slug": "bank"
+    }
+  ],
+  "bankaura": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_bankaura",
+      "slug": "bankaura"
+    }
+  ],
+  "barebari": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_barebari",
+      "slug": "barebari"
+    }
+  ],
+  "bari": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_bari",
+      "slug": "bari"
+    }
+  ],
+  "barkum": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_barkum",
+      "slug": "barkum"
+    }
+  ],
+  "barnawa": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_barnawa",
+      "slug": "barnawa"
+    }
+  ],
+  "bataiya": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_bataiya",
+      "slug": "bataiya"
+    }
+  ],
+  "bauchiyal": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_bauchi_yal.",
+      "slug": "bauchi-yal."
+    }
+  ],
+  "bebeji": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_bebeji",
+      "slug": "bebeji"
+    },
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_bebeji",
+      "slug": "bebeji"
+    }
+  ],
+  "bechi": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_bechi",
+      "slug": "bechi"
+    }
+  ],
+  "beguwa": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_beguwa",
+      "slug": "beguwa"
+    }
+  ],
+  "behun": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_behun",
+      "slug": "behun"
+    }
+  ],
+  "beli": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_beli",
+      "slug": "beli"
+    }
+  ],
+  "belli": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_belli",
+      "slug": "belli"
+    }
+  ],
+  "bichi": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_bichi",
+      "slug": "bichi"
+    }
+  ],
+  "bokabobarracks": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_bokabobarracks",
+      "slug": "bokabo-barracks"
+    }
+  ],
+  "bompai": [
+    {
+      "lga": "Nasarawa",
+      "communityId": "nasarawa_bompai",
+      "slug": "bompai"
+    }
+  ],
+  "bono": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_bono",
+      "slug": "bono"
+    }
+  ],
+  "btumau": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_btumau",
+      "slug": "b-tumau"
+    }
+  ],
+  "buda": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_buda",
+      "slug": "buda"
+    }
+  ],
+  "burburwa": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_burburwa",
+      "slug": "burburwa"
+    }
+  ],
+  "burji": [
+    {
+      "lga": "Madobi",
+      "communityId": "madobi_burji",
+      "slug": "burji"
+    }
+  ],
+  "burum": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_burum",
+      "slug": "burum"
+    }
+  ],
+  "burunburun": [
+    {
+      "lga": "Tudun Wada",
+      "communityId": "da576fa1-df32-4349-921d-176d468a206e",
+      "slug": "burun-burun"
+    }
+  ],
+  "butubutu": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_butubutu",
+      "slug": "butubutu"
+    }
+  ],
+  "cattlemarket": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_cattle_market",
+      "slug": "cattle-market"
+    }
+  ],
+  "challawa": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "29709119-9e37-4e2b-9bc4-571077daa2f7",
+      "slug": "challawa"
+    }
+  ],
+  "chararana": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_chararana",
+      "slug": "chararana"
+    }
+  ],
+  "chedi": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_chedi",
+      "slug": "chedi"
+    }
+  ],
+  "chediyaryangurasa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_chediyaryangurasa",
+      "slug": "chediyar-yangurasa"
+    }
+  ],
+  "chiranchi": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "6c9b4374-d703-4ba7-b7c2-bf684cb424d5",
+      "slug": "chiranchi"
+    }
+  ],
+  "chirin": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_chirin",
+      "slug": "chirin"
+    }
+  ],
+  "chiromawa": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_chiromawa",
+      "slug": "chiromawa"
+    },
+    {
+      "lga": "Garun Mallam",
+      "communityId": "5b30bf7f-df48-4348-bc17-4a2e2821a107",
+      "slug": "chiromawa"
+    },
+    {
+      "lga": "Madobi",
+      "communityId": "madobi_chiromawa",
+      "slug": "chiromawa"
+    }
+  ],
+  "chula": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_chula",
+      "slug": "chula"
+    }
+  ],
+  "churtabiki": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_churtabiki",
+      "slug": "churta-biki"
+    }
+  ],
+  "cilibiri": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_cilibiri",
+      "slug": "cilibiri"
+    }
+  ],
+  "ciromawa": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_ciromawa",
+      "slug": "ciromawa"
+    }
+  ],
+  "dabakwari": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_dabakwari",
+      "slug": "dabakwari"
+    }
+  ],
+  "dabirkarawa": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_dabirkarawa",
+      "slug": "dabir-karawa"
+    }
+  ],
+  "dadabo": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_dadabo",
+      "slug": "dadabo"
+    }
+  ],
+  "dadankaya": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_dadankaya",
+      "slug": "dadankaya"
+    }
+  ],
+  "dadarawa": [
+    {
+      "lga": "Tsanyawa",
+      "communityId": "d196e187-9227-41ad-8cbe-d94473de5d8d",
+      "slug": "dadarawa"
+    }
+  ],
+  "daddo": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_daddo",
+      "slug": "daddo"
+    }
+  ],
+  "daddudda": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_daddudda",
+      "slug": "daddudda"
+    }
+  ],
+  "dadinkowa": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_dadinkowa",
+      "slug": "dadinkowa"
+    }
+  ],
+  "dafawa": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_dafawa",
+      "slug": "dafawa"
+    }
+  ],
+  "dagaji": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_dagaji",
+      "slug": "dagaji"
+    }
+  ],
+  "daganda": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_daganda",
+      "slug": "daganda"
+    }
+  ],
+  "dagumawa": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_dagumawa",
+      "slug": "dagumawa"
+    }
+  ],
+  "daho": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_daho",
+      "slug": "daho"
+    }
+  ],
+  "dakata": [
+    {
+      "lga": "Nasarawa",
+      "communityId": "nasarawa_dakata",
+      "slug": "dakata"
+    }
+  ],
+  "dakwai": [
+    {
+      "lga": "Tsanyawa",
+      "communityId": "363c4954-8b44-4de5-9b4d-56694b7cd195",
+      "slug": "dakwai"
+    }
+  ],
+  "dal": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_dal",
+      "slug": "dal"
+    }
+  ],
+  "dala": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_dala",
+      "slug": "dala"
+    }
+  ],
+  "dalawa": [
+    {
+      "lga": "Tudun Wada",
+      "communityId": "1882e544-706a-432a-a78d-aba72a52eb9e",
+      "slug": "dalawa"
+    }
+  ],
+  "damargu": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_damargu",
+      "slug": "damargu"
+    }
+  ],
+  "damau": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_damau",
+      "slug": "damau"
+    }
+  ],
+  "damfami": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_damfami",
+      "slug": "damfami"
+    }
+  ],
+  "daminawa": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_daminawa",
+      "slug": "daminawa"
+    }
+  ],
+  "danbagina": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_danbagina",
+      "slug": "danbagina"
+    }
+  ],
+  "danbare": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "55c3d016-a65f-4b13-8f0d-e1a48e548325",
+      "slug": "danbare"
+    }
+  ],
+  "danbattaway": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_danbattaway",
+      "slug": "danbatta-way"
+    }
+  ],
+  "danbazau": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_danbazau",
+      "slug": "danbazau"
+    }
+  ],
+  "dandago": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "b940d56d-c716-429d-9e56-a3b60f87c06a",
+      "slug": "dandago"
+    }
+  ],
+  "dandalama": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_dandalama",
+      "slug": "dandalama"
+    }
+  ],
+  "dandalinturawa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_dandalinturawa",
+      "slug": "dandalin-turawa"
+    }
+  ],
+  "dandirshe": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_dandirshe",
+      "slug": "dandirshe"
+    }
+  ],
+  "dandoki": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_dandoki",
+      "slug": "dandoki"
+    }
+  ],
+  "dandunshi": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_dandunshi",
+      "slug": "dandunshi"
+    }
+  ],
+  "daneji": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "7bf3c442-85ae-4843-81ae-a396b80c6a58",
+      "slug": "daneji"
+    }
+  ],
+  "dangada": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_dangada",
+      "slug": "dangada"
+    }
+  ],
+  "dangora": [
+    {
+      "lga": "Kiru",
+      "communityId": "kiru_dangora",
+      "slug": "dangora"
+    }
+  ],
+  "dangwauro": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_dangwauro",
+      "slug": "dangwauro"
+    }
+  ],
+  "dangwaurohago": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_dan_gwauro_hago",
+      "slug": "dan-gwauro-hago"
+    }
+  ],
+  "dangwauroilliyasu": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_dan_gwauro_illiyasu",
+      "slug": "dan-gwauro-illiyasu"
+    }
+  ],
+  "danhassan": [
+    {
+      "lga": "Kura",
+      "communityId": "kura_dan-hassan",
+      "slug": "dan-hassan"
+    }
+  ],
+  "danisa": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_dan_isa",
+      "slug": "dan-isa"
+    }
+  ],
+  "dankunkuru": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_dankunkuru",
+      "slug": "dankunkuru"
+    }
+  ],
+  "danlasan": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_dan_lasan",
+      "slug": "dan-lasan"
+    }
+  ],
+  "danmaliki": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_dan_maliki",
+      "slug": "dan-maliki"
+    }
+  ],
+  "danratta": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_danratta",
+      "slug": "danratta"
+    }
+  ],
+  "dansambo": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_dan_sambo",
+      "slug": "dan-sambo"
+    }
+  ],
+  "dansoshiya": [
+    {
+      "lga": "Kiru",
+      "communityId": "kiru_dansoshiya",
+      "slug": "dansoshiya"
+    }
+  ],
+  "danya": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_danya",
+      "slug": "danya"
+    }
+  ],
+  "danzabuwa": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_danzabuwa",
+      "slug": "danzabuwa"
+    }
+  ],
+  "danzani": [
+    {
+      "lga": "Madobi",
+      "communityId": "madobi_danzani",
+      "slug": "danzani"
+    }
+  ],
+  "dariyarkudu": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_dariyarkudu",
+      "slug": "dariyar-kudu"
+    }
+  ],
+  "darki": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_darki",
+      "slug": "darki"
+    }
+  ],
+  "darmanawa": [
+    {
+      "lga": "Tarauni",
+      "communityId": "dd9d70fb-cc49-432e-943d-3f784c41feea",
+      "slug": "darmanawa"
+    }
+  ],
+  "dasandosan": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_dasandosan",
+      "slug": "dasan-dosan"
+    }
+  ],
+  "dashi": [
+    {
+      "lga": "Kiru",
+      "communityId": "kiru_dashi",
+      "slug": "dashi"
+    }
+  ],
+  "daura": [
+    {
+      "lga": "Karaye",
+      "communityId": "karaye_daura",
+      "slug": "daura"
+    }
+  ],
+  "daurawangabas": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_daurawangabas",
+      "slug": "daurawan-gabas"
+    }
+  ],
+  "daurawanyamma": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_daurawanyamma",
+      "slug": "daurawan-yamma"
+    }
+  ],
+  "dausayi": [
+    {
+      "lga": "Karaye",
+      "communityId": "karaye_dausayi",
+      "slug": "dausayi"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_dausayi",
+      "slug": "dausayi"
+    }
+  ],
+  "dawaki": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_dawaki",
+      "slug": "dawaki"
+    }
+  ],
+  "dawakindogo": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_dawakindogo",
+      "slug": "dawakin-dogo"
+    }
+  ],
+  "dawakinkudu": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_dawakinkudu",
+      "slug": "dawakin-kudu"
+    }
+  ],
+  "dawakji": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_dawakji",
+      "slug": "dawakji"
+    }
+  ],
+  "dawanau": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_dawanau",
+      "slug": "dawanau"
+    },
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_dawanau",
+      "slug": "dawanau"
+    }
+  ],
+  "ddorawa": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_ddorawa",
+      "slug": "d-dorawa"
+    }
+  ],
+  "ddundu": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_ddundu",
+      "slug": "d-dundu"
+    }
+  ],
+  "dederi": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_dederi",
+      "slug": "dederi"
+    }
+  ],
+  "dgulu": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_dgulu",
+      "slug": "d-gulu"
+    }
+  ],
+  "diggol": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_diggol",
+      "slug": "diggol"
+    }
+  ],
+  "dingin": [
+    {
+      "lga": "Minjibir",
+      "communityId": "minjibir_dingin",
+      "slug": "dingin"
+    }
+  ],
+  "diso": [
+    {
+      "lga": "Gwale",
+      "communityId": "26581217-010f-47eb-aa76-00bd3dfafb11",
+      "slug": "diso"
+    }
+  ],
+  "dnaguguwa": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_dnaguguwa",
+      "slug": "dnaguguwa"
+    }
+  ],
+  "dogonnama": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_dogonnama",
+      "slug": "dogon-nama"
+    }
+  ],
+  "doguwa": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_doguwa",
+      "slug": "doguwa"
+    }
+  ],
+  "doka": [
+    {
+      "lga": "Tofa",
+      "communityId": "bd2d6219-c472-40ee-959a-17963f64758e",
+      "slug": "doka"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_doka",
+      "slug": "doka"
+    }
+  ],
+  "dokadawa": [
+    {
+      "lga": "Tofa",
+      "communityId": "4a101c59-22a1-4c4a-a793-c84723634454",
+      "slug": "dokadawa"
+    }
+  ],
+  "dokoki": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_dokoki",
+      "slug": "dokoki"
+    }
+  ],
+  "dorayi": [
+    {
+      "lga": "Gwale",
+      "communityId": "4e1c97f7-6af1-411b-b017-3acebe0e272c",
+      "slug": "dorayi"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_dorayi",
+      "slug": "dorayi"
+    }
+  ],
+  "dugabau": [
+    {
+      "lga": "Kabo",
+      "communityId": "170f6af7-d3f1-4203-b60e-809332be54f3",
+      "slug": "dugabau"
+    }
+  ],
+  "dugajioil": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_dugaji_oil",
+      "slug": "dugaji-oil"
+    }
+  ],
+  "dugurawa": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_dugurawa",
+      "slug": "dugurawa"
+    }
+  ],
+  "duja": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_duja",
+      "slug": "duja"
+    }
+  ],
+  "dukawa": [
+    {
+      "lga": "Kura",
+      "communityId": "kura_dukawa",
+      "slug": "dukawa"
+    }
+  ],
+  "dukewa": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_dukewa",
+      "slug": "dukewa"
+    }
+  ],
+  "dukurawa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_dukurawa",
+      "slug": "dukurawa"
+    }
+  ],
+  "dumati": [
+    {
+      "lga": "Garun Mallam",
+      "communityId": "83931094-d5d0-413e-9e0d-23d7717d0ea2",
+      "slug": "dumati"
+    }
+  ],
+  "dumbulum": [
+    {
+      "lga": "Tsanyawa",
+      "communityId": "5d2417eb-83ef-448c-9f1a-0a9ba272b4b4",
+      "slug": "dumbulum"
+    }
+  ],
+  "dunawa": [
+    {
+      "lga": "Makoda",
+      "communityId": "makoda_dunawa",
+      "slug": "dunawa"
+    }
+  ],
+  "dundu": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_dundu",
+      "slug": "dundu"
+    }
+  ],
+  "dundun": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_dundun",
+      "slug": "dundun"
+    }
+  ],
+  "dungurawakwa": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_dungurawakwa",
+      "slug": "dungurawa-kwa"
+    }
+  ],
+  "dungurumi": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_dungurumi",
+      "slug": "dungurumi"
+    }
+  ],
+  "dunkwai": [
+    {
+      "lga": "Kunchi",
+      "communityId": "kunchi_dunkwai",
+      "slug": "dunkwai"
+    }
+  ],
+  "durawarsallau": [
+    {
+      "lga": "Garun Mallam",
+      "communityId": "fddcf1e8-fe93-4ce4-a8ff-ed84207d5e3c",
+      "slug": "durawar-sallau"
+    }
+  ],
+  "durba": [
+    {
+      "lga": "Kibiya",
+      "communityId": "kibiya_durba",
+      "slug": "durba"
+    }
+  ],
+  "durumawa": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_durumawa",
+      "slug": "durumawa"
+    }
+  ],
+  "dususu": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_dususu",
+      "slug": "dususu"
+    },
+    {
+      "lga": "Rano",
+      "communityId": "rano_dususu",
+      "slug": "dususu"
+    }
+  ],
+  "fadisonkard": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_fadi_sonka_rd.",
+      "slug": "fadi-sonka-rd."
+    }
+  ],
+  "fagawa": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_fagawa",
+      "slug": "fagawa"
+    },
+    {
+      "lga": "Shanono",
+      "communityId": "f9df5d4f-5832-4ef7-8bea-21e58a5b0099",
+      "slug": "fagawa"
+    }
+  ],
+  "faggea": [
+    {
+      "lga": "Fagge",
+      "communityId": "aed0ba53-dd48-4d66-ba42-3a76a0e3faa3",
+      "slug": "fagge-a"
+    }
+  ],
+  "faggeb": [
+    {
+      "lga": "Fagge",
+      "communityId": "a59ed666-60af-4eb8-b01b-297aba22d9f7",
+      "slug": "fagge-b"
+    }
+  ],
+  "faggec": [
+    {
+      "lga": "Fagge",
+      "communityId": "4f532ed8-6ed4-45ad-bee0-4bea221bb4b0",
+      "slug": "fagge-c"
+    }
+  ],
+  "fagged": [
+    {
+      "lga": "Fagge",
+      "communityId": "1cef005b-043f-40a4-b341-27658eb8b03d",
+      "slug": "fagge-d"
+    }
+  ],
+  "faggetakudu": [
+    {
+      "lga": "Fagge",
+      "communityId": "ca149763-1941-4630-bbeb-484ae3c8e941",
+      "slug": "fagge-takudu"
+    }
+  ],
+  "fagwalo": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_fagwalo",
+      "slug": "fagwalo"
+    }
+  ],
+  "fajewa": [
+    {
+      "lga": "Takai",
+      "communityId": "6bf2304b-6258-4112-b792-d804b3e55072",
+      "slug": "fajewa"
+    }
+  ],
+  "falali": [
+    {
+      "lga": "Takai",
+      "communityId": "8f5f8030-b386-4ef8-b196-c521d5ebdbea",
+      "slug": "falali"
+    }
+  ],
+  "falgore": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_falgore",
+      "slug": "falgore"
+    },
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_falgore",
+      "slug": "falgore"
+    }
+  ],
+  "falingo": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_falingo",
+      "slug": "falingo"
+    }
+  ],
+  "fammar": [
+    {
+      "lga": "Kibiya",
+      "communityId": "kibiya_fammar",
+      "slug": "fammar"
+    }
+  ],
+  "fanchi": [
+    {
+      "lga": "Kibiya",
+      "communityId": "kibiya_fanchi",
+      "slug": "fanchi"
+    }
+  ],
+  "fanisau": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_fanisau",
+      "slug": "fanisau"
+    }
+  ],
+  "fanyabo": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_fanyabo",
+      "slug": "fanyabo"
+    }
+  ],
+  "faragai": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_faragai",
+      "slug": "faragai"
+    }
+  ],
+  "faran": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_faran",
+      "slug": "faran"
+    }
+  ],
+  "farantama": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_farantama",
+      "slug": "farantama"
+    }
+  ],
+  "farawa": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_farawa",
+      "slug": "farawa"
+    }
+  ],
+  "farinruwa": [
+    {
+      "lga": "Shanono",
+      "communityId": "8d518382-75a9-43b9-b6b2-c966d53d3d33",
+      "slug": "farin-ruwa"
+    }
+  ],
+  "farsa": [
+    {
+      "lga": "Tsanyawa",
+      "communityId": "48651d67-5ceb-455d-b181-0a051fbbe302",
+      "slug": "farsa"
+    }
+  ],
+  "fassi": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_fassi",
+      "slug": "fassi"
+    }
+  ],
+  "fayamfayam": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_fayamfayam",
+      "slug": "fayam-fayam"
+    }
+  ],
+  "fdashi": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_fdashi",
+      "slug": "f-dashi"
+    }
+  ],
+  "figi": [
+    {
+      "lga": "Karaye",
+      "communityId": "karaye_figi",
+      "slug": "figi"
+    }
+  ],
+  "filindurimi": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_filindurimi",
+      "slug": "filin-durimi"
+    }
+  ],
+  "fiyaran": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_fiyaran",
+      "slug": "fiyaran"
+    }
+  ],
+  "fkawo": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_fkawo",
+      "slug": "f-kawo"
+    }
+  ],
+  "fofa": [
+    {
+      "lga": "Tofa",
+      "communityId": "1ae36dc1-b92d-425b-a1b3-b7d4b4e43735",
+      "slug": "fofa"
+    }
+  ],
+  "fogolawa": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_fogolawa",
+      "slug": "fogolawa"
+    }
+  ],
+  "fulatan": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_fulatan",
+      "slug": "fulatan"
+    },
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_fulatan",
+      "slug": "fulatan"
+    }
+  ],
+  "fuskaarewa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_fuskaarewa",
+      "slug": "fuska-arewa"
+    }
+  ],
+  "gabankomi": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_gaban_komi",
+      "slug": "gaban-komi"
+    }
+  ],
+  "gabasawa": [
+    {
+      "lga": "Gabasawa",
+      "communityId": "3bf1f20c-31ff-4c41-a432-caede5ea3102",
+      "slug": "gabasawa"
+    }
+  ],
+  "gabo": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_gabo",
+      "slug": "gabo"
+    }
+  ],
+  "gachi": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_gachi",
+      "slug": "gachi"
+    }
+  ],
+  "gadanya": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_gadanya",
+      "slug": "gadanya"
+    }
+  ],
+  "gafan": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_gafan",
+      "slug": "gafan"
+    }
+  ],
+  "gafasa": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_gafasa",
+      "slug": "gafasa"
+    }
+  ],
+  "gagarame": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_gagarame",
+      "slug": "gagarame"
+    }
+  ],
+  "gaida": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_gaida",
+      "slug": "gaida"
+    }
+  ],
+  "gajigi": [
+    {
+      "lga": "Sumaila",
+      "communityId": "b51a797c-9aa2-4578-92b1-d8c112b3bf19",
+      "slug": "gajigi"
+    }
+  ],
+  "galadanchi": [
+    {
+      "lga": "Gwale",
+      "communityId": "414c29ab-9b6e-4d06-8a35-896bf6028eab",
+      "slug": "galadanchi"
+    }
+  ],
+  "galadanci": [
+    {
+      "lga": "Minjibir",
+      "communityId": "minjibir_galadanci",
+      "slug": "galadanci"
+    }
+  ],
+  "galadima": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_galadima",
+      "slug": "galadima"
+    }
+  ],
+  "galawa": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_galawa",
+      "slug": "galawa"
+    }
+  ],
+  "galoru": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_galoru",
+      "slug": "galoru"
+    }
+  ],
+  "gama": [
+    {
+      "lga": "Nasarawa",
+      "communityId": "nasarawa_gama",
+      "slug": "gama"
+    }
+  ],
+  "gamawa": [
+    {
+      "lga": "Takai",
+      "communityId": "22b90385-f4fd-485a-b2c3-743eddbe69f7",
+      "slug": "gamawa"
+    }
+  ],
+  "gamoji": [
+    {
+      "lga": "Gaya",
+      "communityId": "a813e99d-764f-4c49-ac3d-f45be55c467a",
+      "slug": "gamoji"
+    }
+  ],
+  "ganakako": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_ganakako",
+      "slug": "ganakako"
+    }
+  ],
+  "gandu": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_gandu",
+      "slug": "gandu"
+    }
+  ],
+  "gani": [
+    {
+      "lga": "Sumaila",
+      "communityId": "83fc5dd5-ae22-43b3-a57d-56bb4d42cf6c",
+      "slug": "gani"
+    }
+  ],
+  "ganji": [
+    {
+      "lga": "Makoda",
+      "communityId": "makoda_ganji",
+      "slug": "ganji"
+    }
+  ],
+  "ganogumaka": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_ganogumaka",
+      "slug": "gano-gumaka"
+    }
+  ],
+  "garanga": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_garanga",
+      "slug": "garanga"
+    }
+  ],
+  "garejindanmaraya": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_garejindanmaraya",
+      "slug": "garejin-danmaraya"
+    }
+  ],
+  "gargai": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_gargai",
+      "slug": "gargai"
+    }
+  ],
+  "gari": [
+    {
+      "lga": "Kibiya",
+      "communityId": "kibiya_gari",
+      "slug": "gari"
+    }
+  ],
+  "gariko": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_gariko",
+      "slug": "gariko"
+    }
+  ],
+  "garinali": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_garin_ali",
+      "slug": "garin-ali"
+    }
+  ],
+  "garindo": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_garindo",
+      "slug": "garindo"
+    }
+  ],
+  "garindovillage": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_garindo_village",
+      "slug": "garindo-village"
+    }
+  ],
+  "garinlya": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_garinlya",
+      "slug": "garinlya"
+    }
+  ],
+  "garko": [
+    {
+      "lga": "Garko",
+      "communityId": "33f48036-7a9a-41c7-9822-6b482c5ec6f8",
+      "slug": "garko"
+    }
+  ],
+  "garo": [
+    {
+      "lga": "Kabo",
+      "communityId": "6b7df48b-2408-429f-a29a-cf752b627d0a",
+      "slug": "garo"
+    }
+  ],
+  "garudau": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_garu_dau",
+      "slug": "garu-dau"
+    }
+  ],
+  "garunbabba": [
+    {
+      "lga": "Garun Mallam",
+      "communityId": "d2a9f873-3e87-40d5-9f40-a1aa5c1f5c03",
+      "slug": "garun-babba"
+    }
+  ],
+  "garunbature": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_garunbature",
+      "slug": "garun-bature"
+    }
+  ],
+  "garunmallam": [
+    {
+      "lga": "Garun Mallam",
+      "communityId": "c4ae60b3-cd0b-4148-9592-0777a94d787d",
+      "slug": "garun-mallam"
+    }
+  ],
+  "gawo": [
+    {
+      "lga": "Gezawa",
+      "communityId": "6be369f6-7b58-4268-8935-ce169a6f9c82",
+      "slug": "gawo"
+    }
+  ],
+  "gawuna": [
+    {
+      "lga": "Nasarawa",
+      "communityId": "nasarawa_gawuna",
+      "slug": "gawuna"
+    }
+  ],
+  "gaya": [
+    {
+      "lga": "Gaya",
+      "communityId": "9250f358-79ad-4c4a-838d-be37a0be176d",
+      "slug": "gaya"
+    }
+  ],
+  "gayaarewa": [
+    {
+      "lga": "Gaya",
+      "communityId": "83c2d979-1310-4beb-ac70-128ed152541f",
+      "slug": "gaya-arewa"
+    }
+  ],
+  "gayakudu": [
+    {
+      "lga": "Gaya",
+      "communityId": "a55210a3-98fb-4a11-ae87-d8cdc506b1d5",
+      "slug": "gaya-kudu"
+    }
+  ],
+  "gayard": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_gaya_rd.",
+      "slug": "gaya-rd."
+    }
+  ],
+  "gayawa": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_gayawa",
+      "slug": "gayawa"
+    }
+  ],
+  "gazana": [
+    {
+      "lga": "Madobi",
+      "communityId": "madobi_gazana",
+      "slug": "gazana"
+    }
+  ],
+  "gazobi": [
+    {
+      "lga": "Tudun Wada",
+      "communityId": "856f8239-2a61-44cf-a448-8d7f42a69c2f",
+      "slug": "gazobi"
+    }
+  ],
+  "gediya": [
+    {
+      "lga": "Sumaila",
+      "communityId": "0de12e32-3351-4aa4-81ac-5df96f0dbdde",
+      "slug": "gediya"
+    }
+  ],
+  "gera": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_gera",
+      "slug": "gera"
+    }
+  ],
+  "getso": [
+    {
+      "lga": "Gwarzo",
+      "communityId": "1bf9038c-358f-4b3f-beef-c70be565ea78",
+      "slug": "getso"
+    }
+  ],
+  "gezawa": [
+    {
+      "lga": "Gezawa",
+      "communityId": "382fefb8-e9b9-4f5a-aea6-af761a93762a",
+      "slug": "gezawa"
+    }
+  ],
+  "ggquartersrd": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_g.g._quarters_rd.",
+      "slug": "g.g.-quarters-rd."
+    }
+  ],
+  "gidanbiskird": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_gidan_biski_rd.",
+      "slug": "gidan-biski-rd."
+    }
+  ],
+  "gidandanbuzu": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_gidandanbuzu",
+      "slug": "gidan-dan-buzu"
+    }
+  ],
+  "gidanjaro": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_gidanjaro",
+      "slug": "gidanjaro"
+    }
+  ],
+  "gidankukard": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_gidan_kuka_rd.",
+      "slug": "gidan-kuka-rd."
+    }
+  ],
+  "gingiya": [
+    {
+      "lga": "Kibiya",
+      "communityId": "kibiya_gingiya",
+      "slug": "gingiya"
+    }
+  ],
+  "giwarwan": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_giwarwan",
+      "slug": "giwarwan"
+    }
+  ],
+  "gmakera": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_gmakera",
+      "slug": "g-makera"
+    }
+  ],
+  "goburawa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_goburawa",
+      "slug": "goburawa"
+    }
+  ],
+  "goda": [
+    {
+      "lga": "Shanono",
+      "communityId": "a0cb95ff-c874-4f0a-96eb-6e5b0a84a964",
+      "slug": "goda"
+    }
+  ],
+  "goforo": [
+    {
+      "lga": "Gezawa",
+      "communityId": "86cc33c8-ed12-41a9-a15b-508e0eed64c3",
+      "slug": "goforo"
+    }
+  ],
+  "goget": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_goget",
+      "slug": "goget"
+    }
+  ],
+  "gogori": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_gogori",
+      "slug": "gogori"
+    }
+  ],
+  "gora": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_gora",
+      "slug": "gora"
+    },
+    {
+      "lga": "Madobi",
+      "communityId": "madobi_gora",
+      "slug": "gora"
+    }
+  ],
+  "gorabi": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_gorabi",
+      "slug": "gorabi"
+    }
+  ],
+  "gorondutse": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_gorondutse",
+      "slug": "goron-dutse"
+    },
+    {
+      "lga": "Gwale",
+      "communityId": "b140dccb-fc83-4a54-8d1c-52e42ba1857f",
+      "slug": "goron-dutse"
+    }
+  ],
+  "gozaki": [
+    {
+      "lga": "Tsanyawa",
+      "communityId": "1ad81f3c-fab7-40a2-885f-253f77ba1003",
+      "slug": "gozaki"
+    }
+  ],
+  "gshere": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_gshere",
+      "slug": "g-shere"
+    }
+  ],
+  "gude": [
+    {
+      "lga": "Kabo",
+      "communityId": "aaa74285-5fbf-44a0-b408-06989cb311c1",
+      "slug": "gude"
+    }
+  ],
+  "gulu": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_gulu",
+      "slug": "gulu"
+    }
+  ],
+  "gumaka": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_gumaka",
+      "slug": "gumaka"
+    }
+  ],
+  "guna": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_guna",
+      "slug": "guna"
+    }
+  ],
+  "gundutse": [
+    {
+      "lga": "Kura",
+      "communityId": "kura_gundutse",
+      "slug": "gundutse"
+    }
+  ],
+  "gunduwawa": [
+    {
+      "lga": "Shanono",
+      "communityId": "aecf6b05-43d0-4de1-8e56-925503427f8e",
+      "slug": "gunduwawa"
+    }
+  ],
+  "gunki": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_gunki",
+      "slug": "gunki"
+    }
+  ],
+  "gurdi": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_gurdi",
+      "slug": "gurdi"
+    }
+  ],
+  "gurduba": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_gurduba",
+      "slug": "gurduba"
+    }
+  ],
+  "guringawa": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_guringawa",
+      "slug": "guringawa"
+    }
+  ],
+  "gurjiya": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_gurjiya",
+      "slug": "gurjiya"
+    },
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_gurjiya",
+      "slug": "gurjiya"
+    },
+    {
+      "lga": "Garko",
+      "communityId": "75b1d2e5-35f1-4379-b096-f6f94f38e6ef",
+      "slug": "gurjiya"
+    },
+    {
+      "lga": "Minjibir",
+      "communityId": "minjibir_gurjiya",
+      "slug": "gurjiya"
+    }
+  ],
+  "gurun": [
+    {
+      "lga": "Tsanyawa",
+      "communityId": "830557db-6ea9-4d5e-82eb-d32be7bd8c80",
+      "slug": "gurun"
+    }
+  ],
+  "gwagwarandan": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_gwagwarandan",
+      "slug": "gwagwarandan"
+    }
+  ],
+  "gwagwarwa": [
+    {
+      "lga": "Nasarawa",
+      "communityId": "nasarawa_gwagwarwa",
+      "slug": "gwagwarwa"
+    }
+  ],
+  "gwalaiba": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_gwalaiba",
+      "slug": "gwalaiba"
+    }
+  ],
+  "gwale": [
+    {
+      "lga": "Gwale",
+      "communityId": "3ee865f4-0825-4547-a4f4-68c19010355c",
+      "slug": "gwale"
+    }
+  ],
+  "gwamma": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_gwamma",
+      "slug": "gwamma"
+    }
+  ],
+  "gwammaja": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_gwammaja",
+      "slug": "gwammaja"
+    }
+  ],
+  "gwanda": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_gwanda",
+      "slug": "gwanda"
+    }
+  ],
+  "gwaneri": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_gwaneri",
+      "slug": "gwaneri"
+    }
+  ],
+  "gwangwan": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_gwan_gwan",
+      "slug": "gwan-gwan"
+    }
+  ],
+  "gwarabjawa": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_gwarabjawa",
+      "slug": "gwarabjawa"
+    }
+  ],
+  "gware": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_gware",
+      "slug": "gware"
+    }
+  ],
+  "gwarmai": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_gwarmai",
+      "slug": "gwarmai"
+    },
+    {
+      "lga": "Kunchi",
+      "communityId": "kunchi_gwarmai",
+      "slug": "gwarmai"
+    }
+  ],
+  "gwarzo": [
+    {
+      "lga": "Gwarzo",
+      "communityId": "ed9c0846-1c0e-4cd4-9333-9fcc0e14325c",
+      "slug": "gwarzo"
+    }
+  ],
+  "gwarzord": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_gwarzord",
+      "slug": "gwarzo-rd."
+    }
+  ],
+  "gwauranmaje": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_gwauranmaje",
+      "slug": "gwauran-maje"
+    }
+  ],
+  "gwazaya": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_gwazaya",
+      "slug": "gwazaya"
+    }
+  ],
+  "gyadigyadi": [
+    {
+      "lga": "Tarauni",
+      "communityId": "6bd9ce88-9194-4c86-a4c0-e3dd4f73c52a",
+      "slug": "gyadi-gyadi"
+    }
+  ],
+  "gyaranya": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "73b08ca2-5b38-4f73-b7ec-fa37e3044bd6",
+      "slug": "gyaranya"
+    }
+  ],
+  "hagawa": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_hagawa",
+      "slug": "hagawa"
+    }
+  ],
+  "hajjcamp": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_hajjcamp",
+      "slug": "hajj-camp"
+    }
+  ],
+  "hajuratulislamiyya": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_hajuratulislamiyya",
+      "slug": "hajuratul-islamiyya"
+    }
+  ],
+  "hamdullahi": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_hamdullahi",
+      "slug": "hamdullahi"
+    }
+  ],
+  "hantsai": [
+    {
+      "lga": "Takai",
+      "communityId": "661a9e2b-a4b6-44f7-b02c-c005064c3022",
+      "slug": "hantsai"
+    }
+  ],
+  "hanyarfaringida": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_hanyar_farin_gida",
+      "slug": "hanyar-farin-gida"
+    }
+  ],
+  "hauri": [
+    {
+      "lga": "Shanono",
+      "communityId": "c18df41a-d39e-4929-920b-8feb56b30e1d",
+      "slug": "hauri"
+    }
+  ],
+  "hausawa": [
+    {
+      "lga": "Tarauni",
+      "communityId": "34fc5d18-a9ba-4d6a-bb66-4ae4a594894e",
+      "slug": "hausawa"
+    }
+  ],
+  "hauwade": [
+    {
+      "lga": "Kabo",
+      "communityId": "1ab66d93-7094-4113-9414-d0a2f704f10b",
+      "slug": "hauwade"
+    }
+  ],
+  "hawandawaki": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_hawandawaki",
+      "slug": "hawandawaki"
+    }
+  ],
+  "hazo": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_hazo",
+      "slug": "hazo"
+    }
+  ],
+  "health": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_health",
+      "slug": "health"
+    }
+  ],
+  "hoto": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_hoto",
+      "slug": "hoto"
+    }
+  ],
+  "hotoro": [
+    {
+      "lga": "Nasarawa",
+      "communityId": "nasarawa_hotoro",
+      "slug": "hotoro"
+    },
+    {
+      "lga": "Tarauni",
+      "communityId": "f3d2d5f0-27f0-40d3-a2a1-1048840b0b60",
+      "slug": "hotoro"
+    }
+  ],
+  "hugulawa": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_hugulawa",
+      "slug": "hugulawa"
+    }
+  ],
+  "hungusabuwa": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_hungusabuwa",
+      "slug": "hungu-sabuwa"
+    }
+  ],
+  "indabo": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_indabo",
+      "slug": "indabo"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_indabo",
+      "slug": "indabo"
+    },
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_indabo",
+      "slug": "indabo"
+    }
+  ],
+  "indabord": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_indabo_rd.",
+      "slug": "indabo-rd."
+    }
+  ],
+  "inecoffice": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_inec_office",
+      "slug": "inec-office"
+    }
+  ],
+  "inkyan": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_inkyan",
+      "slug": "inkyan"
+    }
+  ],
+  "inusawababba": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_inusawa_babba",
+      "slug": "inusawa-babba"
+    }
+  ],
+  "inusawakarawa": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_inusawa_karawa",
+      "slug": "inusawa-karawa"
+    }
+  ],
+  "islamiyyaschool": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_islamiyya_school",
+      "slug": "islamiyya-school"
+    }
+  ],
+  "isyakurabiuhousing": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_isyakurabiuhousing",
+      "slug": "isyaku-rabiu-housing"
+    }
+  ],
+  "iyarsarki": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_iyar_sarki",
+      "slug": "iyar-sarki"
+    }
+  ],
+  "iyawa": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_iyawa",
+      "slug": "iyawa"
+    }
+  ],
+  "jajaye": [
+    {
+      "lga": "Karaye",
+      "communityId": "karaye_jajaye",
+      "slug": "jajaye"
+    }
+  ],
+  "jajira": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_jajira",
+      "slug": "jajira"
+    }
+  ],
+  "jakara": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "d7fd64ab-cec8-475a-91b0-a15b1021df41",
+      "slug": "jakara"
+    }
+  ],
+  "jalabi": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_jalabi",
+      "slug": "jalabi"
+    }
+  ],
+  "jalli": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_jalli",
+      "slug": "jalli"
+    }
+  ],
+  "jallorawa": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_jallorawa",
+      "slug": "jallorawa"
+    }
+  ],
+  "jamaa": [
+    {
+      "lga": "Gwarzo",
+      "communityId": "edbb0651-ac2c-4d14-b0c8-ff0e9bdd6653",
+      "slug": "jama-a"
+    }
+  ],
+  "jandutse": [
+    {
+      "lga": "Tudun Wada",
+      "communityId": "6edd123b-ecef-4ff0-b491-adcd2a63fab2",
+      "slug": "jandutse"
+    }
+  ],
+  "jangefe": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_jangefe",
+      "slug": "jangefe"
+    },
+    {
+      "lga": "Tudun Wada",
+      "communityId": "61dc6590-bb7a-4a77-9108-2c62df92fc71",
+      "slug": "jangefe"
+    }
+  ],
+  "janguza": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_janguza",
+      "slug": "janguza"
+    }
+  ],
+  "janja": [
+    {
+      "lga": "Shanono",
+      "communityId": "7706e6b9-b987-455d-baed-80734e568e50",
+      "slug": "janja"
+    }
+  ],
+  "jarimawa": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_jarimawa",
+      "slug": "jarimawa"
+    }
+  ],
+  "jaroji": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_jaroji",
+      "slug": "jaroji"
+    }
+  ],
+  "jellorawa": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_jellorawa",
+      "slug": "jellorawa"
+    }
+  ],
+  "jibga": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_jibga",
+      "slug": "jibga"
+    }
+  ],
+  "jido": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_jido",
+      "slug": "jido"
+    }
+  ],
+  "jigar": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_jigar",
+      "slug": "jigar"
+    }
+  ],
+  "jigawa": [
+    {
+      "lga": "Gabasawa",
+      "communityId": "ea1fbef9-1a2d-499d-8f93-d01656a4dbf7",
+      "slug": "jigawa"
+    },
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_jigawa",
+      "slug": "jigawa"
+    },
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_jigawa",
+      "slug": "jigawa"
+    }
+  ],
+  "jili": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_jili",
+      "slug": "jili"
+    }
+  ],
+  "jirago": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_jirago",
+      "slug": "jirago"
+    }
+  ],
+  "jiyaiya": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_jiyaiya",
+      "slug": "jiyaiya"
+    }
+  ],
+  "jobawa": [
+    {
+      "lga": "Garun Mallam",
+      "communityId": "78ecf853-13dd-4a00-88c4-9524368fcfb7",
+      "slug": "jobawa"
+    }
+  ],
+  "jobenyamma": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_jobenyamma",
+      "slug": "joben-yamma"
+    }
+  ],
+  "jogana": [
+    {
+      "lga": "Gezawa",
+      "communityId": "a48f49ef-f010-487b-9c6b-1549ebb67d96",
+      "slug": "jogana"
+    }
+  ],
+  "jujinyanlabo": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_jujinyanlabo",
+      "slug": "jujin-yanlabo"
+    }
+  ],
+  "juli": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_juli",
+      "slug": "juli"
+    }
+  ],
+  "juma": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_juma",
+      "slug": "juma"
+    },
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_juma",
+      "slug": "juma"
+    }
+  ],
+  "jumard": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_juma_rd.",
+      "slug": "juma-rd."
+    }
+  ],
+  "jumardanpadal": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_jumar_dan_padal",
+      "slug": "jumar-dan-padal"
+    }
+  ],
+  "kabagiwa": [
+    {
+      "lga": "Tsanyawa",
+      "communityId": "fe7fbbe6-68fe-4ae1-80d9-3d9211dc9ca8",
+      "slug": "kabagiwa"
+    }
+  ],
+  "kabo": [
+    {
+      "lga": "Kabo",
+      "communityId": "e1b3acf7-2a12-4c11-bcee-132d28b1dbd6",
+      "slug": "kabo"
+    }
+  ],
+  "kabuga": [
+    {
+      "lga": "Gwale",
+      "communityId": "4d32b61f-21ee-4e98-8bab-74aba3a6d337",
+      "slug": "kabuga"
+    }
+  ],
+  "kabuwaya": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kabuwaya",
+      "slug": "kabuwaya"
+    }
+  ],
+  "kachako": [
+    {
+      "lga": "Takai",
+      "communityId": "b5e71795-4b22-4990-b347-26057f9d380d",
+      "slug": "kachako"
+    }
+  ],
+  "kadafa": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_kadafa",
+      "slug": "kadafa"
+    }
+  ],
+  "kadana": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_kadana",
+      "slug": "kadana"
+    }
+  ],
+  "kadandani": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_kadandani",
+      "slug": "kadandani"
+    }
+  ],
+  "kadangaru": [
+    {
+      "lga": "Kiru",
+      "communityId": "kiru_kadangaru",
+      "slug": "kadangaru"
+    }
+  ],
+  "kadawa": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_kadawa",
+      "slug": "kadawa"
+    },
+    {
+      "lga": "Tofa",
+      "communityId": "57611466-a1b5-42fc-a3cb-c45483460dce",
+      "slug": "kadawa"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_kadawa",
+      "slug": "kadawa"
+    }
+  ],
+  "kadigawa": [
+    {
+      "lga": "Kibiya",
+      "communityId": "kibiya_kadigawa",
+      "slug": "kadigawa"
+    }
+  ],
+  "kafinmalamai": [
+    {
+      "lga": "Garko",
+      "communityId": "5a2f7e31-1177-4810-ae62-c968bc4f514e",
+      "slug": "kafin-malamai"
+    }
+  ],
+  "kafinmalami": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_kafin_malami",
+      "slug": "kafin-malami"
+    }
+  ],
+  "kaiwa": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_kaiwa",
+      "slug": "kaiwa"
+    }
+  ],
+  "kakari": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_kakari",
+      "slug": "kakari"
+    }
+  ],
+  "kakurun": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_kakurun",
+      "slug": "kakurun"
+    }
+  ],
+  "kalako": [
+    {
+      "lga": "Karaye",
+      "communityId": "karaye_kalako",
+      "slug": "kalako"
+    }
+  ],
+  "kalambu": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_kalambu",
+      "slug": "kalambu"
+    }
+  ],
+  "kaleku": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_kaleku",
+      "slug": "kaleku"
+    }
+  ],
+  "kamagata": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_kamagata",
+      "slug": "kamagata"
+    }
+  ],
+  "kanawa": [
+    {
+      "lga": "Sumaila",
+      "communityId": "14e290c7-7426-43ab-af96-2a5e1da6de7e",
+      "slug": "kanawa"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_kanawa",
+      "slug": "kanawa"
+    }
+  ],
+  "kankanu": [
+    {
+      "lga": "Tudun Wada",
+      "communityId": "a5a8b08e-3a57-4180-9e5c-28e391f8464c",
+      "slug": "kankanu"
+    }
+  ],
+  "kankarofi": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_kan_karofi",
+      "slug": "kan-karofi"
+    }
+  ],
+  "kanostateuniversity": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_kano_state_university",
+      "slug": "kano-state-university"
+    }
+  ],
+  "kansuwa": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_kansuwa",
+      "slug": "kansuwa"
+    }
+  ],
+  "kanta": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_kanta",
+      "slug": "kanta"
+    }
+  ],
+  "kantama": [
+    {
+      "lga": "Minjibir",
+      "communityId": "minjibir_kantama",
+      "slug": "kantama"
+    }
+  ],
+  "kantsi": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_kantsi",
+      "slug": "kantsi"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_kantsi",
+      "slug": "kantsi"
+    }
+  ],
+  "kantudu": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kantudu",
+      "slug": "kantudu"
+    }
+  ],
+  "kanwa": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_kanwa",
+      "slug": "kanwa"
+    },
+    {
+      "lga": "Kabo",
+      "communityId": "3e98c4c3-1600-45c6-b791-f5a8c3cb2441",
+      "slug": "kanwa"
+    },
+    {
+      "lga": "Madobi",
+      "communityId": "madobi_kanwa",
+      "slug": "kanwa"
+    },
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_kanwa",
+      "slug": "kanwa"
+    }
+  ],
+  "kanya": [
+    {
+      "lga": "Kabo",
+      "communityId": "768310f5-1787-43aa-85eb-f076518e346d",
+      "slug": "kanya"
+    }
+  ],
+  "karamakama": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_karamakama",
+      "slug": "kara-makama"
+    }
+  ],
+  "karaye": [
+    {
+      "lga": "Karaye",
+      "communityId": "karaye_karaye",
+      "slug": "karaye"
+    }
+  ],
+  "karfi": [
+    {
+      "lga": "Kura",
+      "communityId": "kura_karfi",
+      "slug": "karfi"
+    }
+  ],
+  "karkasara": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "ward_kano_kumbotso_karkasara",
+      "slug": "karkasara"
+    }
+  ],
+  "karmami": [
+    {
+      "lga": "Gabasawa",
+      "communityId": "a91dbcf8-d5dd-4842-bd56-777218e495c8",
+      "slug": "karmami"
+    }
+  ],
+  "karnawa": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_karnawa",
+      "slug": "karnawa"
+    }
+  ],
+  "karo": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_karo",
+      "slug": "karo"
+    }
+  ],
+  "karofindala": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_karofindala",
+      "slug": "karofin-dala"
+    }
+  ],
+  "karofiyashi": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_karofi_yashi",
+      "slug": "karofi-yashi"
+    }
+  ],
+  "karshi": [
+    {
+      "lga": "Karaye",
+      "communityId": "karaye_karshi",
+      "slug": "karshi"
+    }
+  ],
+  "kasco": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_kasco",
+      "slug": "kasco"
+    }
+  ],
+  "katarkawa": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_katarkawa",
+      "slug": "katarkawa"
+    }
+  ],
+  "katsarduwa": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_katsarduwa",
+      "slug": "katsarduwa"
+    }
+  ],
+  "katsinard": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_katsinard",
+      "slug": "katsina-rd."
+    }
+  ],
+  "katsinawa": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_katsinawa",
+      "slug": "katsinawa"
+    },
+    {
+      "lga": "Kabo",
+      "communityId": "f2fff36d-ba4e-4799-9ebf-f40ec1a47387",
+      "slug": "katsinawa"
+    }
+  ],
+  "katumari": [
+    {
+      "lga": "Garko",
+      "communityId": "81c8de60-96c7-4e08-b2b5-2ccd65d5d991",
+      "slug": "katumari"
+    }
+  ],
+  "katurje": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_katurje",
+      "slug": "katurje"
+    }
+  ],
+  "kaukau": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_kaukau",
+      "slug": "kaukau"
+    }
+  ],
+  "kauranchi": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_kauranchi",
+      "slug": "kauranchi"
+    }
+  ],
+  "kausani": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_kausani",
+      "slug": "kausani"
+    }
+  ],
+  "kawaje": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_kawaje",
+      "slug": "kawaje"
+    }
+  ],
+  "kawaji": [
+    {
+      "lga": "Nasarawa",
+      "communityId": "nasarawa_kawaji",
+      "slug": "kawaji"
+    }
+  ],
+  "kawari": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_kawari",
+      "slug": "kawari"
+    }
+  ],
+  "kawo": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_kawo",
+      "slug": "kawo"
+    }
+  ],
+  "kaya": [
+    {
+      "lga": "Kunchi",
+      "communityId": "kunchi_kaya",
+      "slug": "kaya"
+    }
+  ],
+  "kayipanshekara": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_kayi_panshekara",
+      "slug": "kayi-panshekara"
+    }
+  ],
+  "kazurawa": [
+    {
+      "lga": "Gaya",
+      "communityId": "3f3af6d1-7731-49e3-ac77-fae26edc6aa8",
+      "slug": "kazurawa"
+    }
+  ],
+  "kcc": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kcc",
+      "slug": "k.c.c."
+    }
+  ],
+  "kera": [
+    {
+      "lga": "Garko",
+      "communityId": "8cd0d0b8-c5f9-4f1a-89cc-19bbfb04ab51",
+      "slug": "kera"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_kera",
+      "slug": "kera"
+    }
+  ],
+  "ketawa": [
+    {
+      "lga": "Gezawa",
+      "communityId": "30fbb9f6-6d21-432d-9c02-9f63d64d3da6",
+      "slug": "ketawa"
+    }
+  ],
+  "kibiya": [
+    {
+      "lga": "Kibiya",
+      "communityId": "kibiya_kibiya",
+      "slug": "kibiya"
+    }
+  ],
+  "kinchau": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_kinchau",
+      "slug": "kinchau"
+    }
+  ],
+  "kiru": [
+    {
+      "lga": "Kiru",
+      "communityId": "kiru_kiru",
+      "slug": "kiru"
+    }
+  ],
+  "kiyawa": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_kiyawa",
+      "slug": "kiyawa"
+    }
+  ],
+  "klunkwi": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_klunkwi",
+      "slug": "k-lunkwi"
+    }
+  ],
+  "kmazugal": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kmazugal",
+      "slug": "k-mazugal"
+    }
+  ],
+  "kofa": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_kofa",
+      "slug": "kofa"
+    }
+  ],
+  "kofarfada": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_kofar_fada",
+      "slug": "kofar-fada"
+    }
+  ],
+  "kofarkara": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_kofar_kara",
+      "slug": "kofar-kara"
+    }
+  ],
+  "kofarmata": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "67924cec-8f78-4b37-97f8-57858f173532",
+      "slug": "kofar-mata"
+    }
+  ],
+  "kofarmazugal": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kofarmazugal",
+      "slug": "kofar-mazugal"
+    },
+    {
+      "lga": "Kano Municipal",
+      "communityId": "d7924d18-a100-41a0-bc9e-89e58e1afcf9",
+      "slug": "kofar-mazugal"
+    }
+  ],
+  "kofarnaisa": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "f5a2357f-60ca-418f-ab8f-17060860ecee",
+      "slug": "kofar-naisa"
+    }
+  ],
+  "kofarruwa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kofarruwa",
+      "slug": "kofar-ruwa"
+    }
+  ],
+  "kofarruward": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kofarruward",
+      "slug": "kofar-ruwa-rd."
+    }
+  ],
+  "kofarwambai": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "2abebc31-9229-4723-b921-cdfe1a2c3a1d",
+      "slug": "kofar-wambai"
+    }
+  ],
+  "kofaryamma": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_kofar_yamma",
+      "slug": "kofar-yamma"
+    }
+  ],
+  "koga": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_koga",
+      "slug": "koga"
+    }
+  ],
+  "koguna": [
+    {
+      "lga": "Makoda",
+      "communityId": "makoda_koguna",
+      "slug": "koguna"
+    }
+  ],
+  "koki": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_koki",
+      "slug": "koki"
+    }
+  ],
+  "kokiqtrs": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kokiqtrs",
+      "slug": "koki-qtrs."
+    }
+  ],
+  "kokiya": [
+    {
+      "lga": "Shanono",
+      "communityId": "1d68341a-80c9-45ea-be2c-063199c0c0f0",
+      "slug": "kokiya"
+    }
+  ],
+  "kokotawa": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_kokotawa",
+      "slug": "kokotawa"
+    }
+  ],
+  "koranci": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_koranci",
+      "slug": "koranci"
+    }
+  ],
+  "kore": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_kore",
+      "slug": "kore"
+    }
+  ],
+  "korkari": [
+    {
+      "lga": "Gwarzo",
+      "communityId": "b0c4f5b2-7035-4cec-a02d-9493e7d3eadc",
+      "slug": "korkari"
+    }
+  ],
+  "kosawa": [
+    {
+      "lga": "Kura",
+      "communityId": "kura_kosawa",
+      "slug": "kosawa"
+    }
+  ],
+  "krinbo": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_krinbo",
+      "slug": "krinbo"
+    }
+  ],
+  "kruwa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kruwa",
+      "slug": "k-ruwa"
+    }
+  ],
+  "ksumaila": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_ksumaila",
+      "slug": "k-sumaila"
+    }
+  ],
+  "kubarachi": [
+    {
+      "lga": "Madobi",
+      "communityId": "madobi_kubarachi",
+      "slug": "kubarachi"
+    }
+  ],
+  "kududufawa": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_kududu_fawa",
+      "slug": "kududu-fawa"
+    }
+  ],
+  "kuiwedanmaura": [
+    {
+      "lga": "Garun Mallam",
+      "communityId": "7bd84a68-ed21-43eb-87a2-df8c530939fe",
+      "slug": "kuiwe-dan-maura"
+    }
+  ],
+  "kuka": [
+    {
+      "lga": "Takai",
+      "communityId": "c908fb88-37cd-4683-b30c-4bf80a6799b8",
+      "slug": "kuka"
+    }
+  ],
+  "kukardabi": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_kukar_dabi",
+      "slug": "kukar-dabi"
+    }
+  ],
+  "kuki": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_kuki",
+      "slug": "kuki"
+    }
+  ],
+  "kuku": [
+    {
+      "lga": "Kunchi",
+      "communityId": "kunchi_kuku",
+      "slug": "kuku"
+    }
+  ],
+  "kulkul": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kulkul",
+      "slug": "kulkul"
+    }
+  ],
+  "kumbotso": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "c8a9f27a-ae3d-487f-98af-7318ef6a0a0d",
+      "slug": "kumbotso"
+    }
+  ],
+  "kumurya": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_kumurya",
+      "slug": "kumurya"
+    }
+  ],
+  "kunchi": [
+    {
+      "lga": "Kunchi",
+      "communityId": "kunchi_kunchi",
+      "slug": "kunchi"
+    }
+  ],
+  "kundila": [
+    {
+      "lga": "Tarauni",
+      "communityId": "ward_kano_tarauni_kundila",
+      "slug": "kundila"
+    }
+  ],
+  "kundun": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_kundun",
+      "slug": "kundun"
+    }
+  ],
+  "kungu": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_kungu",
+      "slug": "kungu"
+    }
+  ],
+  "kunkura": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_kunkura",
+      "slug": "kunkura"
+    }
+  ],
+  "kunkurawa": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_kunkurawa",
+      "slug": "kunkurawa"
+    }
+  ],
+  "kunnawa": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_kunnawa",
+      "slug": "kunnawa"
+    }
+  ],
+  "kunya": [
+    {
+      "lga": "Minjibir",
+      "communityId": "minjibir_kunya",
+      "slug": "kunya"
+    }
+  ],
+  "kura": [
+    {
+      "lga": "Kura",
+      "communityId": "kura_kura",
+      "slug": "kura"
+    }
+  ],
+  "kureken": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_kure_ken",
+      "slug": "kure-ken"
+    }
+  ],
+  "kurmi": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "73c4d051-0543-45f2-a1ec-d3a0c5af8df7",
+      "slug": "kurmi"
+    }
+  ],
+  "kurnababbanlayi": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kurnababbanlayi",
+      "slug": "kurna-babban-layi"
+    }
+  ],
+  "kurnamakaranta": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kurnamakaranta",
+      "slug": "kurna-makaranta"
+    }
+  ],
+  "kusaba": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_kusaba",
+      "slug": "kusaba"
+    }
+  ],
+  "kutama": [
+    {
+      "lga": "Gwarzo",
+      "communityId": "6dcde49c-6c4e-4430-9055-1ce1aa778766",
+      "slug": "kutama"
+    }
+  ],
+  "kuyantainna": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_kuyan_ta_inna",
+      "slug": "kuyan-ta-inna"
+    }
+  ],
+  "kuyantasidi": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_kuyan_tasidi",
+      "slug": "kuyan-tasidi"
+    }
+  ],
+  "kwachiridikko": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kwachiridikko",
+      "slug": "kwachiri-dikko"
+    }
+  ],
+  "kwachirijube": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kwachirijube",
+      "slug": "kwachiri-jube"
+    }
+  ],
+  "kwagwarkaza": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_kwagwarkaza",
+      "slug": "kwagwar-kaza"
+    }
+  ],
+  "kwaika": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kwaika",
+      "slug": "k-waika"
+    }
+  ],
+  "kwajalawa": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_kwajalawa",
+      "slug": "kwajalawa"
+    }
+  ],
+  "kwajali": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_kwajali",
+      "slug": "kwajali"
+    }
+  ],
+  "kwakwaci": [
+    {
+      "lga": "Fagge",
+      "communityId": "670c8c12-00c1-41c4-932d-07b764042103",
+      "slug": "kwakwaci"
+    }
+  ],
+  "kwamarawa": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_kwamarawa",
+      "slug": "kwamarawa"
+    }
+  ],
+  "kwami": [
+    {
+      "lga": "Gwarzo",
+      "communityId": "985bbfce-f2b5-49c6-b504-dc4aa277c901",
+      "slug": "kwami"
+    },
+    {
+      "lga": "Tofa",
+      "communityId": "2584e381-207e-4bac-9e66-493d31288d53",
+      "slug": "kwami"
+    }
+  ],
+  "kwanarganduje": [
+    {
+      "lga": "Tarauni",
+      "communityId": "0acba826-db7a-4a16-9195-93278d92276c",
+      "slug": "kwanar-ganduje"
+    }
+  ],
+  "kwankwaso": [
+    {
+      "lga": "Madobi",
+      "communityId": "madobi_kwankwaso",
+      "slug": "kwankwaso"
+    }
+  ],
+  "kwanyawa": [
+    {
+      "lga": "Karaye",
+      "communityId": "karaye_kwanyawa",
+      "slug": "kwanyawa"
+    }
+  ],
+  "kwari": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_kwari",
+      "slug": "kwari"
+    }
+  ],
+  "kwarinakuya": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_kwarinakuya",
+      "slug": "kwarin-akuya"
+    }
+  ],
+  "kwaringogau": [
+    {
+      "lga": "Fagge",
+      "communityId": "e0df5097-7761-4fa5-8b3b-ac2789c807c8",
+      "slug": "kwarin-gogau"
+    }
+  ],
+  "kwas": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_kwas",
+      "slug": "kwas"
+    }
+  ],
+  "kwasauri": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_kwasauri",
+      "slug": "kwasauri"
+    }
+  ],
+  "kwidawa": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_kwidawa",
+      "slug": "kwidawa"
+    }
+  ],
+  "kyaberi": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_kyaberi",
+      "slug": "kyaberi"
+    }
+  ],
+  "kyaran": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_kyaran",
+      "slug": "kyaran"
+    }
+  ],
+  "kyauta": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_kyauta",
+      "slug": "kyauta"
+    }
+  ],
+  "ladimakole": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_ladimakole",
+      "slug": "ladimakole"
+    }
+  ],
+  "lafsu": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_lafsu",
+      "slug": "lafsu"
+    }
+  ],
+  "lajawa": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_lajawa",
+      "slug": "lajawa"
+    }
+  ],
+  "lakwaya": [
+    {
+      "lga": "Gwarzo",
+      "communityId": "008ba0aa-c675-4ec7-b25b-b147af0fca9b",
+      "slug": "lakwaya"
+    }
+  ],
+  "lambu": [
+    {
+      "lga": "Tofa",
+      "communityId": "6fcd9cdb-b437-4bbe-8f45-188758024f5c",
+      "slug": "lambu"
+    }
+  ],
+  "lamire": [
+    {
+      "lga": "Garko",
+      "communityId": "d545390f-05dc-4396-892b-aef4f6b92bea",
+      "slug": "lamire"
+    }
+  ],
+  "langwami": [
+    {
+      "lga": "Takai",
+      "communityId": "d59d8bb2-359d-495a-a2ba-2ff03cea69e6",
+      "slug": "langwami"
+    }
+  ],
+  "larau": [
+    {
+      "lga": "Gaya",
+      "communityId": "26b4b454-907c-419e-a111-d1e59a4caafe",
+      "slug": "larau"
+    }
+  ],
+  "layinalhajiabba": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_layin_alhaji_abba",
+      "slug": "layin-alhaji-abba"
+    }
+  ],
+  "libertyhotel": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_liberty_hotel",
+      "slug": "liberty-hotel"
+    }
+  ],
+  "limana": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_limana",
+      "slug": "limana"
+    }
+  ],
+  "limawa": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_limawa",
+      "slug": "limawa"
+    }
+  ],
+  "localgovernmentquarters": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_local_government_quarters",
+      "slug": "local-government-quarters"
+    }
+  ],
+  "localgovernmentsecretariat": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_local_government_secretariat",
+      "slug": "local-government-secretariat"
+    }
+  ],
+  "lungu": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_lungu",
+      "slug": "lungu"
+    }
+  ],
+  "mabarintaba": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_mabarintaba",
+      "slug": "mabarin-taba"
+    }
+  ],
+  "madaci": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_madaci",
+      "slug": "madaci"
+    }
+  ],
+  "madarin": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_madarin",
+      "slug": "madarin"
+    }
+  ],
+  "madigu": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_madigu",
+      "slug": "madigu"
+    }
+  ],
+  "madobi": [
+    {
+      "lga": "Madobi",
+      "communityId": "madobi_madobi",
+      "slug": "madobi"
+    }
+  ],
+  "madugawa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_madugawa",
+      "slug": "madugawa"
+    }
+  ],
+  "magami": [
+    {
+      "lga": "Sumaila",
+      "communityId": "e5c8c3b8-91a0-401f-85a2-aa7000988325",
+      "slug": "magami"
+    }
+  ],
+  "mahauta": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_mahauta",
+      "slug": "mahauta"
+    }
+  ],
+  "mahuta": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_mahuta",
+      "slug": "mahuta"
+    },
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_mahuta",
+      "slug": "mahuta"
+    }
+  ],
+  "maiadua": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_maiadua",
+      "slug": "mai-adua"
+    }
+  ],
+  "maida": [
+    {
+      "lga": "Garko",
+      "communityId": "433d4d02-983f-4432-92b3-6564415bfc17",
+      "slug": "maida"
+    },
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_maida",
+      "slug": "maida"
+    }
+  ],
+  "maidinawa": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_maidinawa",
+      "slug": "maidinawa"
+    }
+  ],
+  "maidugurird": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_maiduguri_rd.",
+      "slug": "maiduguri-rd."
+    }
+  ],
+  "maigari": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_maigari",
+      "slug": "maigari"
+    }
+  ],
+  "maigodo": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_maigodo",
+      "slug": "maigodo"
+    }
+  ],
+  "maikwadira": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_maikwadira",
+      "slug": "maikwadira"
+    }
+  ],
+  "maimakawa": [
+    {
+      "lga": "Gaya",
+      "communityId": "4468b6e7-34ac-4081-8efd-8a992527ce71",
+      "slug": "maimakawa"
+    }
+  ],
+  "mainika": [
+    {
+      "lga": "Gwarzo",
+      "communityId": "3f3914b5-8cb0-44e4-a99c-6d1b265672f9",
+      "slug": "mainika"
+    }
+  ],
+  "maitsidau": [
+    {
+      "lga": "Makoda",
+      "communityId": "makoda_maitsidau",
+      "slug": "maitsidau"
+    }
+  ],
+  "majingini": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_majingini",
+      "slug": "majin-gini"
+    }
+  ],
+  "makadi": [
+    {
+      "lga": "Garko",
+      "communityId": "d6946757-09fc-4450-b8f1-47e7491fecc3",
+      "slug": "makadi"
+    },
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_makadi",
+      "slug": "makadi"
+    }
+  ],
+  "makafindala": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_makafindala",
+      "slug": "makafin-dala"
+    }
+  ],
+  "makarfi": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_makarfi",
+      "slug": "makarfi"
+    }
+  ],
+  "makera": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_makera",
+      "slug": "makera"
+    }
+  ],
+  "makinruwa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_makinruwa",
+      "slug": "makin-ruwa"
+    }
+  ],
+  "makoda": [
+    {
+      "lga": "Makoda",
+      "communityId": "makoda_makoda",
+      "slug": "makoda"
+    }
+  ],
+  "makwanyawa": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_makwanyawa",
+      "slug": "makwanyawa"
+    }
+  ],
+  "malamawa": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_malamawa",
+      "slug": "malamawa"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_malamawa",
+      "slug": "malamawa"
+    }
+  ],
+  "malikawargaru": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_malikawargaru",
+      "slug": "malikawar-garu"
+    }
+  ],
+  "malikawrsarari": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_malikawrsarari",
+      "slug": "malikawr-sarari"
+    }
+  ],
+  "mallamaminukanoway": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_mallamaminukanoway",
+      "slug": "mallam-aminu-kano-way"
+    }
+  ],
+  "mandawari": [
+    {
+      "lga": "Gwale",
+      "communityId": "1ea6de6d-ad97-42a5-bb70-6a207bc8fa66",
+      "slug": "mandawari"
+    },
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_mandawari",
+      "slug": "mandawari"
+    }
+  ],
+  "mangari": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_mangari",
+      "slug": "mangari"
+    }
+  ],
+  "manladan": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_manladan",
+      "slug": "man-ladan"
+    }
+  ],
+  "manyanmata": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_manyan_mata",
+      "slug": "manyan-mata"
+    }
+  ],
+  "maraku": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_maraku",
+      "slug": "maraku"
+    },
+    {
+      "lga": "Kiru",
+      "communityId": "kiru_maraku",
+      "slug": "maraku"
+    }
+  ],
+  "marga": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_marga",
+      "slug": "marga"
+    }
+  ],
+  "mariri": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "52017fcc-f174-4a2e-add6-6df560951d7d",
+      "slug": "mariri"
+    }
+  ],
+  "markatarabbast": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_markatar_abba_st.",
+      "slug": "markatar-abba-st."
+    }
+  ],
+  "marke": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_marke",
+      "slug": "marke"
+    }
+  ],
+  "masaka": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_masaka",
+      "slug": "masaka"
+    }
+  ],
+  "mashe": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_mashe",
+      "slug": "mashe"
+    }
+  ],
+  "massanawa": [
+    {
+      "lga": "Kabo",
+      "communityId": "a40d3e50-a8f8-4630-a412-2ab2b27b85f5",
+      "slug": "massanawa"
+    }
+  ],
+  "masu": [
+    {
+      "lga": "Sumaila",
+      "communityId": "50a3e91e-861d-4334-b7a2-8170d39e9d25",
+      "slug": "masu"
+    }
+  ],
+  "matanfada": [
+    {
+      "lga": "Kunchi",
+      "communityId": "kunchi_matan-fada",
+      "slug": "matan-fada"
+    }
+  ],
+  "mayeima": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_mayeima",
+      "slug": "mayeima"
+    }
+  ],
+  "mazangudu": [
+    {
+      "lga": "Gabasawa",
+      "communityId": "7935e8b4-062f-4027-b6d3-59ce53d56241",
+      "slug": "mazangudu"
+    }
+  ],
+  "medicalhealthdepartment": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_medical_health_department",
+      "slug": "medical-health-department"
+    }
+  ],
+  "ministryofeducationzonaloffice": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_ministry_of_education_zonal_office",
+      "slug": "ministry-of-education-zonal-office"
+    }
+  ],
+  "minjibir": [
+    {
+      "lga": "Minjibir",
+      "communityId": "minjibir_minjibir",
+      "slug": "minjibir"
+    }
+  ],
+  "mmata": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_mmata",
+      "slug": "m.-mata"
+    }
+  ],
+  "modelsecondaryschool": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_model_secondary_school",
+      "slug": "model-secondary-school"
+    }
+  ],
+  "muchia": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_muchia",
+      "slug": "muchia"
+    }
+  ],
+  "muntsira": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_muntsira",
+      "slug": "muntsira"
+    }
+  ],
+  "murai": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_murai",
+      "slug": "murai"
+    }
+  ],
+  "muras": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_muras",
+      "slug": "muras"
+    }
+  ],
+  "murtalamohammedway": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_murtalamohammedway",
+      "slug": "murtala-mohammed-way"
+    }
+  ],
+  "mushuni": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_mushuni",
+      "slug": "mushuni"
+    }
+  ],
+  "naibawa": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "ef2f2969-b2d6-440c-af05-a5d08c41e07e",
+      "slug": "na-ibawa"
+    }
+  ],
+  "nariya": [
+    {
+      "lga": "Kibiya",
+      "communityId": "kibiya_nariya",
+      "slug": "nariya"
+    }
+  ],
+  "nasarawa": [
+    {
+      "lga": "Nasarawa",
+      "communityId": "nasarawa_nasarawa",
+      "slug": "nasarawa"
+    },
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_nasarawa",
+      "slug": "nasarawa"
+    }
+  ],
+  "nassarawa": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_nassarawa",
+      "slug": "nassarawa"
+    }
+  ],
+  "nitelofficebarracks": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_nitel_office_barracks",
+      "slug": "nitel-office-barracks"
+    }
+  ],
+  "nyscoffice": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_nysc_office",
+      "slug": "nysc-office"
+    }
+  ],
+  "orthopedichospital": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_orthopedichospital",
+      "slug": "orthopedic-hospital"
+    }
+  ],
+  "panada": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_panada",
+      "slug": "panada"
+    }
+  ],
+  "panshekara": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "2a3a67db-7671-46da-aef8-0bc9880319ec",
+      "slug": "panshekara"
+    }
+  ],
+  "pegi": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_pegi",
+      "slug": "pegi"
+    }
+  ],
+  "physiotherapysch": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_physiotherapysch",
+      "slug": "physiotherapy-sch."
+    }
+  ],
+  "polac": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_polac",
+      "slug": "polac"
+    }
+  ],
+  "police": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_police",
+      "slug": "police"
+    }
+  ],
+  "policebarracks": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_police_barracks",
+      "slug": "police-barracks"
+    }
+  ],
+  "policestation": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_policestation",
+      "slug": "police-station"
+    },
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_police_station",
+      "slug": "police-station"
+    }
+  ],
+  "postoffice": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_post_office",
+      "slug": "post-office"
+    }
+  ],
+  "prisonyard": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_prisonyard",
+      "slug": "prison-yard"
+    }
+  ],
+  "raba": [
+    {
+      "lga": "Garko",
+      "communityId": "c308f666-628b-4de8-8700-8fd7daf2f155",
+      "slug": "raba"
+    },
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_raba",
+      "slug": "raba"
+    }
+  ],
+  "rade": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_rade",
+      "slug": "rade"
+    }
+  ],
+  "rafinmallam": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_rafin_mallam",
+      "slug": "rafin-mallam"
+    }
+  ],
+  "ragada": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_ragada",
+      "slug": "ragada"
+    }
+  ],
+  "rahama": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_rahama",
+      "slug": "rahama"
+    }
+  ],
+  "raminyantifa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_raminyantifa",
+      "slug": "ramin-yantifa"
+    }
+  ],
+  "rangaza": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_rangaza",
+      "slug": "rangaza"
+    }
+  ],
+  "ranka": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_ranka",
+      "slug": "ranka"
+    }
+  ],
+  "rano": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_rano",
+      "slug": "rano"
+    }
+  ],
+  "ranta": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_ranta",
+      "slug": "ranta"
+    }
+  ],
+  "rehabilitationcentre": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_rehabilitation_centre",
+      "slug": "rehabilitation-centre"
+    }
+  ],
+  "rigarduka": [
+    {
+      "lga": "Kura",
+      "communityId": "kura_rigar-duka",
+      "slug": "rigar-duka"
+    }
+  ],
+  "rije": [
+    {
+      "lga": "Gwarzo",
+      "communityId": "8b31eae4-574c-4a50-8725-2eb16d4e1e0d",
+      "slug": "rije"
+    }
+  ],
+  "rijiyabiyli": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_rijiyabiyli",
+      "slug": "rijiya-biyli"
+    }
+  ],
+  "rijiyaitudu": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_rijiyaitudu",
+      "slug": "rijiya-itudu"
+    }
+  ],
+  "rijiyardinya": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_rijiyar_dinya",
+      "slug": "rijiyar-dinya"
+    }
+  ],
+  "rijiyarlemo": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_rijiyarlemo",
+      "slug": "rijiyar-lemo"
+    },
+    {
+      "lga": "Fagge",
+      "communityId": "86423491-0734-4653-aefc-8c067bda0132",
+      "slug": "rijiyar-lemo"
+    },
+    {
+      "lga": "Gwale",
+      "communityId": "86c35640-2a85-42c1-b60d-58f083a9e969",
+      "slug": "rijiyar-lemo"
+    }
+  ],
+  "rijiyarzaki": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_rijiyar_zaki",
+      "slug": "rijiyar-zaki"
+    }
+  ],
+  "rikadawa": [
+    {
+      "lga": "Madobi",
+      "communityId": "madobi_rikadawa",
+      "slug": "rikadawa"
+    }
+  ],
+  "rimaye": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_rimaye",
+      "slug": "rimaye"
+    }
+  ],
+  "rimi": [
+    {
+      "lga": "Sumaila",
+      "communityId": "6843f483-0842-4b45-9843-efa30278a0aa",
+      "slug": "rimi"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_rimi",
+      "slug": "rimi"
+    }
+  ],
+  "rimigata": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_rimi_gata",
+      "slug": "rimi-gata"
+    }
+  ],
+  "riminbai": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_riminbai",
+      "slug": "riminbai"
+    }
+  ],
+  "rimingado": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_rimin_gado",
+      "slug": "rimin-gado"
+    }
+  ],
+  "rimizakara": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_rimi_zakara",
+      "slug": "rimi-zakara"
+    }
+  ],
+  "rinji": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_rinji",
+      "slug": "rinji"
+    },
+    {
+      "lga": "Tofa",
+      "communityId": "78b82baa-1384-43e6-88c2-93cdedf03b3e",
+      "slug": "rinji"
+    }
+  ],
+  "ririwai": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_ririwai",
+      "slug": "ririwai"
+    }
+  ],
+  "rogo": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_rogo",
+      "slug": "rogo"
+    }
+  ],
+  "romo": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_romo",
+      "slug": "romo"
+    }
+  ],
+  "rugurugu": [
+    {
+      "lga": "Tudun Wada",
+      "communityId": "fce92c8e-5fcf-4021-95de-9fbe749a40b7",
+      "slug": "rugurugu"
+    }
+  ],
+  "rumi": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_rumi",
+      "slug": "rumi"
+    }
+  ],
+  "rumo": [
+    {
+      "lga": "Sumaila",
+      "communityId": "ea3e127c-6498-4c79-915f-5018ec28a013",
+      "slug": "rumo"
+    }
+  ],
+  "runa": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_runa",
+      "slug": "runa"
+    }
+  ],
+  "runfa": [
+    {
+      "lga": "Minjibir",
+      "communityId": "minjibir_runfa",
+      "slug": "runfa"
+    }
+  ],
+  "runji": [
+    {
+      "lga": "Tsanyawa",
+      "communityId": "cae19517-d57c-4258-b35e-e119dc305d13",
+      "slug": "runji"
+    }
+  ],
+  "runkusawa": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_runkusawa",
+      "slug": "runkusawa"
+    }
+  ],
+  "rurum": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_rurum",
+      "slug": "rurum"
+    }
+  ],
+  "ruwanbago": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_ruwanbago",
+      "slug": "ruwanbago"
+    }
+  ],
+  "ruwantsa": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_ruwantsa",
+      "slug": "ruwantsa"
+    }
+  ],
+  "sabo": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_sabo",
+      "slug": "sabo"
+    }
+  ],
+  "sabonbirni": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_sabonbirni",
+      "slug": "sabon-birni"
+    }
+  ],
+  "sabongari": [
+    {
+      "lga": "Gwale",
+      "communityId": "ab134260-914a-4a28-91e4-04f82723eef2",
+      "slug": "sabon-gari"
+    },
+    {
+      "lga": "Gwarzo",
+      "communityId": "245af4ff-26d1-4adb-85fb-359526328885",
+      "slug": "sabon-gari"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_sabon_gari",
+      "slug": "sabon-gari"
+    },
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_sabon_gari",
+      "slug": "sabon-gari"
+    }
+  ],
+  "sabongarieast": [
+    {
+      "lga": "Fagge",
+      "communityId": "1e6795f5-742b-4ba6-80dd-101baf81b523",
+      "slug": "sabon-gari-east"
+    }
+  ],
+  "sabongarijuniorsecondaryschool": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_sabon_gari_junior_secondary_school",
+      "slug": "sabon-gari-junior-secondary-school"
+    }
+  ],
+  "sabongariwest": [
+    {
+      "lga": "Fagge",
+      "communityId": "1cd6ce7a-3b92-477a-bd81-1f8d1f7601c0",
+      "slug": "sabon-gari-west"
+    }
+  ],
+  "sabonkwara": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_sabonkwara",
+      "slug": "sabon-kwara"
+    }
+  ],
+  "sabonruwa": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_sabonruwa",
+      "slug": "sabon-ruwa"
+    },
+    {
+      "lga": "Makoda",
+      "communityId": "makoda_sabon-ruwa",
+      "slug": "sabon-ruwa"
+    }
+  ],
+  "sabuwar": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_sabuwar",
+      "slug": "sabuwar"
+    }
+  ],
+  "saji": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_saji",
+      "slug": "saji"
+    }
+  ],
+  "sakalawa": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_sakalawa",
+      "slug": "sakalawa"
+    }
+  ],
+  "sakaratsa": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_sakaratsa",
+      "slug": "sakaratsa"
+    }
+  ],
+  "sakau": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_sakau",
+      "slug": "sakau"
+    }
+  ],
+  "sakwayaline": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_sakwayaline",
+      "slug": "sakwaya-line"
+    }
+  ],
+  "sakwayard": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_sakwayard",
+      "slug": "sakwaya-rd."
+    }
+  ],
+  "sallari": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "ward_kano_kumbotso_sallari",
+      "slug": "sallari"
+    }
+  ],
+  "samegu": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_samegu",
+      "slug": "samegu"
+    }
+  ],
+  "sanakur": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_sanakur",
+      "slug": "sanakur"
+    }
+  ],
+  "sanda": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_sanda",
+      "slug": "sanda"
+    }
+  ],
+  "sanka": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_sanka",
+      "slug": "sanka"
+    }
+  ],
+  "sansan": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_sansan",
+      "slug": "sansan"
+    }
+  ],
+  "santarlungu": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_santarlungu",
+      "slug": "santar-lungu"
+    }
+  ],
+  "santolo": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_santolo",
+      "slug": "santolo"
+    }
+  ],
+  "sarai": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_sarai",
+      "slug": "sarai"
+    }
+  ],
+  "sararingezawa": [
+    {
+      "lga": "Gezawa",
+      "communityId": "0f444301-5bb5-4adc-aaac-10ce76285d82",
+      "slug": "sararin-gezawa"
+    }
+  ],
+  "sararinkadai": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_sararinkadai",
+      "slug": "sararin-kadai"
+    }
+  ],
+  "saresare": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_saresare",
+      "slug": "sare-sare"
+    }
+  ],
+  "sarkiniya": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_sarkiniya",
+      "slug": "sarkin-iya"
+    }
+  ],
+  "sarkinshanu": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_sarkin_shanu",
+      "slug": "sarkin-shanu"
+    }
+  ],
+  "satame": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_satame",
+      "slug": "satame"
+    }
+  ],
+  "satigal": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_satigal",
+      "slug": "satigal"
+    }
+  ],
+  "sayasaya": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_sayasaya",
+      "slug": "sayasaya"
+    }
+  ],
+  "saye": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_saye",
+      "slug": "saye"
+    }
+  ],
+  "shafawa": [
+    {
+      "lga": "Kura",
+      "communityId": "kura_shafawa",
+      "slug": "shafawa"
+    }
+  ],
+  "shagariquarters": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_shagari_quarters",
+      "slug": "shagari-quarters"
+    }
+  ],
+  "shagariquartersa": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_shagari_quarters_a",
+      "slug": "shagari-quarters-a"
+    }
+  ],
+  "shagogo": [
+    {
+      "lga": "Gaya",
+      "communityId": "ff0e8ccb-ba62-44a7-89d3-fa1229c1bca2",
+      "slug": "shagogo"
+    }
+  ],
+  "shahuchi": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "0c02ec14-214b-4f86-94f2-6d73f5917ebd",
+      "slug": "shahuchi"
+    }
+  ],
+  "shamakawa": [
+    {
+      "lga": "Kunchi",
+      "communityId": "kunchi_shamakawa",
+      "slug": "shamakawa"
+    }
+  ],
+  "shanono": [
+    {
+      "lga": "Shanono",
+      "communityId": "a7454cd8-1b23-420e-9b01-b1bd43570693",
+      "slug": "shanono"
+    }
+  ],
+  "sharkakiya": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_sharkakiya",
+      "slug": "sharkakiya"
+    }
+  ],
+  "shekaarewa": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "ward_kano_kumbotso_shekaarewa",
+      "slug": "sheka-arewa"
+    }
+  ],
+  "shekabaranda": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "ward_kano_kumbotso_shekabaranda",
+      "slug": "sheka-baranda"
+    }
+  ],
+  "shekagabas": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "ward_kano_kumbotso_shekagabas",
+      "slug": "sheka-gabas"
+    }
+  ],
+  "shekagidankaji": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "ward_kano_kumbotso_shekagidankaji",
+      "slug": "sheka-gidan-kaji"
+    }
+  ],
+  "shekagidanleda": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "ward_kano_kumbotso_shekagidanleda",
+      "slug": "sheka-gidan-leda"
+    }
+  ],
+  "shekarbarde": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "3d268ff0-73ee-4a17-9743-89b1c7afc5aa",
+      "slug": "shekar-barde"
+    }
+  ],
+  "shekarmadaki": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "1914ffd9-640e-40a0-b78c-80f963c5b4b7",
+      "slug": "shekar-madaki"
+    }
+  ],
+  "shekasabuwarabuja": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "ward_kano_kumbotso_shekasabuwarabuja",
+      "slug": "sheka-sabuwar-abuja"
+    }
+  ],
+  "shiburu": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_shiburu",
+      "slug": "shiburu"
+    }
+  ],
+  "shike": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_shike",
+      "slug": "shike"
+    }
+  ],
+  "shingi": [
+    {
+      "lga": "Kibiya",
+      "communityId": "kibiya_shingi",
+      "slug": "shingi"
+    }
+  ],
+  "shirawa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_shirawa",
+      "slug": "shirawa"
+    }
+  ],
+  "shiye": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_shiye",
+      "slug": "shiye"
+    }
+  ],
+  "shuwaki": [
+    {
+      "lga": "Kunchi",
+      "communityId": "kunchi_shuwaki",
+      "slug": "shuwaki"
+    }
+  ],
+  "sitti": [
+    {
+      "lga": "Sumaila",
+      "communityId": "83b683b4-5a35-4dad-88dd-fd0b5ef432d6",
+      "slug": "sitti"
+    }
+  ],
+  "specialprimaryschool": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_special_primary_school",
+      "slug": "special-primary-school"
+    }
+  ],
+  "stateprimaryeducationboard": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_state_primary_education_board",
+      "slug": "state-primary-education-board"
+    }
+  ],
+  "sumaila": [
+    {
+      "lga": "Sumaila",
+      "communityId": "5e6d018e-38bc-4887-bc05-9cb412f2262d",
+      "slug": "sumaila"
+    }
+  ],
+  "sumana": [
+    {
+      "lga": "Tudun Wada",
+      "communityId": "7bb1439b-98d4-4b11-9aeb-28b88e09656e",
+      "slug": "sumana"
+    }
+  ],
+  "sumsum": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_sumsum",
+      "slug": "sum-sum"
+    }
+  ],
+  "surutwawa": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_surutwawa",
+      "slug": "surutwawa"
+    }
+  ],
+  "tabo": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_tabo",
+      "slug": "tabo"
+    }
+  ],
+  "tagwaye": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_tagwaye",
+      "slug": "tagwaye"
+    }
+  ],
+  "tagwayengida": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_tagwayengida",
+      "slug": "tagwayen-gida"
+    }
+  ],
+  "takai": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_takai",
+      "slug": "takai"
+    },
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_takai",
+      "slug": "takai"
+    },
+    {
+      "lga": "Takai",
+      "communityId": "e8877e6c-d08d-4ab7-9258-748a231b0de7",
+      "slug": "takai"
+    }
+  ],
+  "tamawa": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_tamawa",
+      "slug": "tamawa"
+    }
+  ],
+  "tamburawa": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_tamburawa",
+      "slug": "tamburawa"
+    },
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_tamburawa",
+      "slug": "tamburawa"
+    }
+  ],
+  "tamburawagabas": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_tamburawa_gabas",
+      "slug": "tamburawa-gabas"
+    }
+  ],
+  "tanagar": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_tanagar",
+      "slug": "tanagar"
+    }
+  ],
+  "tanalafiya": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_tanalafiya",
+      "slug": "tanalafiya"
+    }
+  ],
+  "tangaji": [
+    {
+      "lga": "Makoda",
+      "communityId": "makoda_tangaji",
+      "slug": "tangaji"
+    }
+  ],
+  "tarai": [
+    {
+      "lga": "Kibiya",
+      "communityId": "kibiya_tarai",
+      "slug": "tarai"
+    }
+  ],
+  "tarauni": [
+    {
+      "lga": "Tarauni",
+      "communityId": "7298a44c-c477-4533-90b6-32009da29e0e",
+      "slug": "tarauni"
+    }
+  ],
+  "tarda": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_tarda",
+      "slug": "tarda"
+    }
+  ],
+  "tariwa": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_tariwa",
+      "slug": "tariwa"
+    }
+  ],
+  "tartofa": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_tartofa",
+      "slug": "tar-tofa"
+    }
+  ],
+  "tattarawa": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_tattarawa",
+      "slug": "tattarawa"
+    }
+  ],
+  "tfulari": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_tfulari",
+      "slug": "t-fulari"
+    }
+  ],
+  "tgabas": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_tgabas",
+      "slug": "t-gabas"
+    }
+  ],
+  "tilanbawa": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_tilanbawa",
+      "slug": "tilanbawa"
+    }
+  ],
+  "tinki": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_tinki",
+      "slug": "tinki"
+    }
+  ],
+  "titindanrimi": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_titindanrimi",
+      "slug": "titin-dan-rimi"
+    }
+  ],
+  "tofa": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_tofa",
+      "slug": "tofa"
+    },
+    {
+      "lga": "Tofa",
+      "communityId": "c76c75cf-cbd5-4666-93a2-ba6f3a808136",
+      "slug": "tofa"
+    }
+  ],
+  "token": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_token",
+      "slug": "token"
+    }
+  ],
+  "torankawa": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_torankawa",
+      "slug": "torankawa"
+    }
+  ],
+  "toranke": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_toranke",
+      "slug": "toranke"
+    }
+  ],
+  "totalpetrol": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_total_petrol",
+      "slug": "total-petrol"
+    }
+  ],
+  "tropicalcommercial": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_tropical_commercial",
+      "slug": "tropical-commercial"
+    }
+  ],
+  "tsakuwa": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_tsakuwa",
+      "slug": "tsakuwa"
+    },
+    {
+      "lga": "Minjibir",
+      "communityId": "minjibir_tsakuwa",
+      "slug": "tsakuwa"
+    }
+  ],
+  "tsakuwadal": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_tsakuwadal",
+      "slug": "tsakuwadal"
+    }
+  ],
+  "tsalle": [
+    {
+      "lga": "Gezawa",
+      "communityId": "f235db96-faf0-4b38-95de-1154c08579c4",
+      "slug": "tsalle"
+    }
+  ],
+  "tsamabaki": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_tsamabaki",
+      "slug": "tsamabaki"
+    }
+  ],
+  "tsangaya": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_tsangaya",
+      "slug": "tsangaya"
+    }
+  ],
+  "tsanyawa": [
+    {
+      "lga": "Tsanyawa",
+      "communityId": "a3cd97a4-9480-4601-bf84-bd206fb7d0af",
+      "slug": "tsanyawa"
+    }
+  ],
+  "tsaudawa": [
+    {
+      "lga": "Kiru",
+      "communityId": "kiru_tsaudawa",
+      "slug": "tsaudawa"
+    }
+  ],
+  "tsauni": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_tsauni",
+      "slug": "tsauni"
+    }
+  ],
+  "tsaure": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_tsaure",
+      "slug": "tsaure"
+    },
+    {
+      "lga": "Rano",
+      "communityId": "rano_tsaure",
+      "slug": "tsaure"
+    },
+    {
+      "lga": "Shanono",
+      "communityId": "5d3b6029-55c8-4cd8-aa90-a3fe9544705d",
+      "slug": "tsaure"
+    }
+  ],
+  "tsohuwarkasuwa": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_tsohuwar_kasuwa",
+      "slug": "tsohuwar-kasuwa"
+    }
+  ],
+  "tsohuwarrogo": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_tsohuwarrogo",
+      "slug": "tsohuwar-rogo"
+    }
+  ],
+  "tudunfulani": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_tudun_fulani",
+      "slug": "tudun-fulani"
+    }
+  ],
+  "tudungali": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_tudungali",
+      "slug": "tudungali"
+    }
+  ],
+  "tudunmalamlabbo": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_tudunmalamlabbo",
+      "slug": "tudun-malam-labbo"
+    }
+  ],
+  "tudunmurtala": [
+    {
+      "lga": "Nasarawa",
+      "communityId": "nasarawa_tudun-murtala",
+      "slug": "tudun-murtala"
+    }
+  ],
+  "tudunnufawa": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "c7a3e18b-ad9c-4317-8572-1dbe6e189abf",
+      "slug": "tudun-nufawa"
+    }
+  ],
+  "tudunwada": [
+    {
+      "lga": "Nasarawa",
+      "communityId": "nasarawa_tudun-wada",
+      "slug": "tudun-wada"
+    },
+    {
+      "lga": "Takai",
+      "communityId": "f39f370d-41a5-4997-a4c0-fb9731d6b55c",
+      "slug": "tudun-wada"
+    },
+    {
+      "lga": "Tudun Wada",
+      "communityId": "c08200da-19e1-45d2-852a-3278647bb638",
+      "slug": "tudun-wada"
+    }
+  ],
+  "tudunyola": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_tudunyola",
+      "slug": "tudun-yola"
+    }
+  ],
+  "tugugu": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_tugugu",
+      "slug": "tugugu"
+    }
+  ],
+  "tuji": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_tuji",
+      "slug": "tuji"
+    }
+  ],
+  "tukubi": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_tukubi",
+      "slug": "tukubi"
+    }
+  ],
+  "tum": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_tum",
+      "slug": "tum"
+    }
+  ],
+  "tumbau": [
+    {
+      "lga": "Gezawa",
+      "communityId": "1aa3ef6f-f919-4c11-9f0e-85b9831a5231",
+      "slug": "tumbau"
+    }
+  ],
+  "tumfefi": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_tumfefi",
+      "slug": "tumfefi"
+    }
+  ],
+  "turawa": [
+    {
+      "lga": "Karaye",
+      "communityId": "karaye_turawa",
+      "slug": "turawa"
+    }
+  ],
+  "udbroad": [
+    {
+      "lga": "Tarauni",
+      "communityId": "bc6267ab-7137-4f6f-9c8c-0e74a320032f",
+      "slug": "udb-road"
+    }
+  ],
+  "uguwarsundu": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_uguwar_sundu",
+      "slug": "uguwar-sundu"
+    }
+  ],
+  "umarawa": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_umarawa",
+      "slug": "umarawa"
+    }
+  ],
+  "umasama": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_umasama",
+      "slug": "u-masama"
+    }
+  ],
+  "umasawa": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_umasawa",
+      "slug": "umasawa"
+    }
+  ],
+  "unbulu": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_unbulu",
+      "slug": "unbulu"
+    }
+  ],
+  "ungmakera": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_ung_makera",
+      "slug": "ung.-makera"
+    }
+  ],
+  "unguwarfulani": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_unguwar_fulani",
+      "slug": "unguwar-fulani"
+    }
+  ],
+  "unguwarkoko": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_unguwar_koko",
+      "slug": "unguwar-koko"
+    }
+  ],
+  "unguwarrimi": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "a7083457-673f-4d74-87c3-996b9d1b0203",
+      "slug": "unguwar-rimi"
+    }
+  ],
+  "unguwaryamu": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_unguwar_yamu",
+      "slug": "unguwar-yamu"
+    }
+  ],
+  "unguwauku": [
+    {
+      "lga": "Tarauni",
+      "communityId": "1716c255-e5d4-4c58-81e1-ffef2ed7733b",
+      "slug": "unguwa-uku"
+    },
+    {
+      "lga": "Tarauni",
+      "communityId": "ward_kano_tarauni_unguwauku1",
+      "slug": "unguwa-uku-1"
+    }
+  ],
+  "unguwauku1": [
+    {
+      "lga": "Tarauni",
+      "communityId": "ward_kano_tarauni_unguwauku1",
+      "slug": "unguwa-uku-1"
+    }
+  ],
+  "ungwanrimi": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_ungwan_rimi",
+      "slug": "ungwan-rimi"
+    }
+  ],
+  "ungwanwaimma": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_ungwanwaimma",
+      "slug": "ungwan-waimma"
+    }
+  ],
+  "ungwarbai": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_ungwarbai",
+      "slug": "ungwar-bai"
+    }
+  ],
+  "ungwarduniya": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_ungwarduniya",
+      "slug": "ungwar-duniya"
+    }
+  ],
+  "ungwarjobenkun": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_ungwarjobenkun",
+      "slug": "ungwar-jobenkun"
+    }
+  ],
+  "ungwarrimi": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_ungwarrimi",
+      "slug": "ungwar-rimi"
+    }
+  ],
+  "ungwartsohonsarki": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_ungwartsohonsarki",
+      "slug": "ungwar-tsohon-sarki"
+    }
+  ],
+  "urimi": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_u_rimi",
+      "slug": "u-rimi"
+    }
+  ],
+  "utai": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_utai",
+      "slug": "utai"
+    }
+  ],
+  "utanko": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_utanko",
+      "slug": "u-tanko"
+    }
+  ],
+  "uturai": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_uturai",
+      "slug": "u-turai"
+    }
+  ],
+  "wachani": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_wachani",
+      "slug": "wachani"
+    }
+  ],
+  "waika": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_waika",
+      "slug": "waika"
+    }
+  ],
+  "wailare": [
+    {
+      "lga": "Gabasawa",
+      "communityId": "8896dd46-33b1-4674-a751-9fb0db21b5f9",
+      "slug": "wailare"
+    }
+  ],
+  "wailari": [
+    {
+      "lga": "Gwale",
+      "communityId": "24d98bfc-3a8d-4753-8083-c67f94acf194",
+      "slug": "wailari"
+    },
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_wailari",
+      "slug": "wailari"
+    }
+  ],
+  "waire": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_waire",
+      "slug": "waire"
+    }
+  ],
+  "wak": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_wak",
+      "slug": "wak"
+    }
+  ],
+  "wakilinarewa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_wakilinarewa",
+      "slug": "wakilin-arewa"
+    }
+  ],
+  "walawa": [
+    {
+      "lga": "Kabo",
+      "communityId": "46e74e33-2f99-46a9-a86a-da1ee415384b",
+      "slug": "walawa"
+    }
+  ],
+  "wambantu": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_wambantu",
+      "slug": "wambantu"
+    }
+  ],
+  "wangara": [
+    {
+      "lga": "Gezawa",
+      "communityId": "ec671426-19bc-41bf-b5f9-1b44eb61d931",
+      "slug": "wangara"
+    },
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_wangara",
+      "slug": "wangara"
+    }
+  ],
+  "warawa": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_warawa",
+      "slug": "warawa"
+    }
+  ],
+  "warkai": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_warkai",
+      "slug": "warkai"
+    }
+  ],
+  "wasai": [
+    {
+      "lga": "Minjibir",
+      "communityId": "minjibir_wasai",
+      "slug": "wasai"
+    }
+  ],
+  "wasarde": [
+    {
+      "lga": "Gabasawa",
+      "communityId": "84ef7d8d-348a-4da1-8584-24ab0ac4ed79",
+      "slug": "wasarde"
+    }
+  ],
+  "washord": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_washo_rd.",
+      "slug": "washo-rd."
+    }
+  ],
+  "watari": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_watari",
+      "slug": "watari"
+    }
+  ],
+  "weeklymarket": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_weekly_market",
+      "slug": "weekly-market"
+    }
+  ],
+  "weeklymotorpart": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_weekly_motor_part",
+      "slug": "weekly-motor-part"
+    }
+  ],
+  "womencenter": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_women_center",
+      "slug": "women-center"
+    }
+  ],
+  "wreca": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_wreca",
+      "slug": "wreca"
+    }
+  ],
+  "wudil": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_wudil",
+      "slug": "wudil"
+    }
+  ],
+  "wudilawa": [
+    {
+      "lga": "Gaya",
+      "communityId": "5207e86d-2069-4956-9c65-cc7fc17de2aa",
+      "slug": "wudilawa"
+    }
+  ],
+  "wudilcompanyhealth": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_wudil_company_health",
+      "slug": "wudil-company-health"
+    }
+  ],
+  "wudilcomprehensivehealth": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_wudil_comprehensive_health",
+      "slug": "wudil-comprehensive-health"
+    }
+  ],
+  "wudillgeducationdept": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_wudil_l.g._education_dept.",
+      "slug": "wudil-l.g.-education-dept."
+    }
+  ],
+  "wudilruralcommunities": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_wudil_rural_communities",
+      "slug": "wudil-rural-communities"
+    }
+  ],
+  "wujanare": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_wujanare",
+      "slug": "wujanare"
+    }
+  ],
+  "wurobagga": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_wurobagga",
+      "slug": "wuro-bagga"
+    }
+  ],
+  "yadakunya": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_yada_kunya",
+      "slug": "yada-kunya"
+    }
+  ],
+  "yadakwari": [
+    {
+      "lga": "Garun Mallam",
+      "communityId": "a2bb924d-e89e-4432-a0d2-1a2887ef2de9",
+      "slug": "yadakwari"
+    }
+  ],
+  "yado": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_yado",
+      "slug": "yado"
+    }
+  ],
+  "yak": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_yak",
+      "slug": "yak"
+    }
+  ],
+  "yakasai": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "a5e113d2-7518-48f9-947b-e89902e44dfd",
+      "slug": "yakasai"
+    },
+    {
+      "lga": "Kura",
+      "communityId": "kura_yakasai",
+      "slug": "yakasai"
+    }
+  ],
+  "yako": [
+    {
+      "lga": "Kiru",
+      "communityId": "kiru_yako",
+      "slug": "yako"
+    }
+  ],
+  "yakun": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_yakun",
+      "slug": "yakun"
+    }
+  ],
+  "yalwa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_yalwa",
+      "slug": "yalwa"
+    },
+    {
+      "lga": "Kura",
+      "communityId": "kura_yalwa",
+      "slug": "yalwa"
+    },
+    {
+      "lga": "Rano",
+      "communityId": "rano_yalwa",
+      "slug": "yalwa"
+    },
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_yalwa",
+      "slug": "yalwa"
+    }
+  ],
+  "yamawa": [
+    {
+      "lga": "Makoda",
+      "communityId": "makoda_yamawa",
+      "slug": "yamawa"
+    }
+  ],
+  "yambawa": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_yambawa",
+      "slug": "yambawa"
+    }
+  ],
+  "yammali": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_yammali",
+      "slug": "yammali"
+    }
+  ],
+  "yammata": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_yammata",
+      "slug": "yammata"
+    }
+  ],
+  "yammawa": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_yammawa",
+      "slug": "yam-mawa"
+    }
+  ],
+  "yanabawa": [
+    {
+      "lga": "Garun Mallam",
+      "communityId": "1b181853-0322-4066-b60a-109c7ff472f8",
+      "slug": "yan-abawa"
+    }
+  ],
+  "yanali": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_yan_ali",
+      "slug": "yan-ali"
+    }
+  ],
+  "yanbarci": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_yanbarci",
+      "slug": "yanbarci"
+    }
+  ],
+  "yanbundu": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_yanbundu",
+      "slug": "yan-bundu"
+    }
+  ],
+  "yandadi": [
+    {
+      "lga": "Kunchi",
+      "communityId": "kunchi_yandadi",
+      "slug": "yandadi"
+    }
+  ],
+  "yandalla": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_yan_dalla",
+      "slug": "yan-dalla"
+    }
+  ],
+  "yandutse": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_yandutse",
+      "slug": "yandutse"
+    }
+  ],
+  "yanfari": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_yanfari",
+      "slug": "yanfari"
+    }
+  ],
+  "yangadi": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_yangadi",
+      "slug": "yan-gadi"
+    }
+  ],
+  "yangizo": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_yangizo",
+      "slug": "yangizo"
+    }
+  ],
+  "yango": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_yango",
+      "slug": "yango"
+    },
+    {
+      "lga": "Tofa",
+      "communityId": "f5cccffa-b89c-44ad-aa17-32b3e1344a7c",
+      "slug": "yango"
+    }
+  ],
+  "yangoro": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_yan_goro",
+      "slug": "yan-goro"
+    }
+  ],
+  "yangwarzo": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_yangwarzo",
+      "slug": "yan-gwarzo"
+    }
+  ],
+  "yankanchi": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_yankanchi",
+      "slug": "yankanchi"
+    }
+  ],
+  "yankatifa": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_yankatifa",
+      "slug": "yan-katifa"
+    }
+  ],
+  "yankatsare": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_yankatsare",
+      "slug": "yankatsare"
+    }
+  ],
+  "yankuni": [
+    {
+      "lga": "Rimin Gado",
+      "communityId": "rimin_gado_yan_kuni",
+      "slug": "yan-kuni"
+    }
+  ],
+  "yankusa": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_yankusa",
+      "slug": "yankusa"
+    }
+  ],
+  "yanlada": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_yanlada",
+      "slug": "yanlada"
+    }
+  ],
+  "yanlami": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_yanlami",
+      "slug": "yan-lami"
+    }
+  ],
+  "yanmata": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_yanmata",
+      "slug": "yanmata"
+    }
+  ],
+  "yanrutu": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_yanrutu",
+      "slug": "yanrutu"
+    }
+  ],
+  "yanshana": [
+    {
+      "lga": "Kumbotso",
+      "communityId": "community_kano_kumbotso_yanshana",
+      "slug": "yanshana"
+    }
+  ],
+  "yanshere": [
+    {
+      "lga": "Bebeji",
+      "communityId": "ward_kano_bebeji_yanshere",
+      "slug": "yanshere"
+    }
+  ],
+  "yantandu": [
+    {
+      "lga": "Dala",
+      "communityId": "community_kano_dala_yan_tandu",
+      "slug": "yan-tandu"
+    },
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_yantandu",
+      "slug": "yantandu"
+    }
+  ],
+  "yantofa": [
+    {
+      "lga": "Warawa",
+      "communityId": "community_kano_warawa_yan_tofa",
+      "slug": "yan-tofa"
+    }
+  ],
+  "yanwawa": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_yanwawa",
+      "slug": "yanwawa"
+    }
+  ],
+  "yargay": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_yargay",
+      "slug": "yargay"
+    }
+  ],
+  "yarimawa": [
+    {
+      "lga": "Tofa",
+      "communityId": "aff91cc9-1102-43c0-82b2-9c75a8a0dd23",
+      "slug": "yarimawa"
+    }
+  ],
+  "yarka": [
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_yarka",
+      "slug": "yarka"
+    }
+  ],
+  "yarkasuwamararraba": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_yarkasuwamararraba",
+      "slug": "yarkasuwa-mararraba"
+    }
+  ],
+  "yartofa": [
+    {
+      "lga": "Bagwai",
+      "communityId": "ward_kano_bagwai_yartofa",
+      "slug": "yar-tofa"
+    }
+  ],
+  "yaura": [
+    {
+      "lga": "Albasu",
+      "communityId": "ward_kano_albasu_yaura",
+      "slug": "yaura"
+    }
+  ],
+  "yauta": [
+    {
+      "lga": "Gabasawa",
+      "communityId": "37c25847-7b51-4c8f-a89d-c8e4d4ca2967",
+      "slug": "yauta"
+    }
+  ],
+  "yelwa": [
+    {
+      "lga": "Dawakin Tofa",
+      "communityId": "ward_kano_dawakintofa_yelwa",
+      "slug": "yelwa"
+    }
+  ],
+  "yola": [
+    {
+      "lga": "Karaye",
+      "communityId": "karaye_yola",
+      "slug": "yola"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_yola",
+      "slug": "yola"
+    }
+  ],
+  "yumbu": [
+    {
+      "lga": "Gabasawa",
+      "communityId": "05f98380-cbeb-4837-9359-a2b03fc61698",
+      "slug": "yumbu"
+    }
+  ],
+  "zago": [
+    {
+      "lga": "Danbatta",
+      "communityId": "ward_kano_danbatta_zago",
+      "slug": "zago"
+    },
+    {
+      "lga": "Makoda",
+      "communityId": "makoda_zago",
+      "slug": "zago"
+    }
+  ],
+  "zagongulya": [
+    {
+      "lga": "Ajingi",
+      "communityId": "ward_kano_ajingi_zagongulya",
+      "slug": "zagon-gulya"
+    }
+  ],
+  "zaitawa": [
+    {
+      "lga": "Kano Municipal",
+      "communityId": "2c76b6bb-74a2-46ac-a8df-f1da5abd5b2d",
+      "slug": "zaitawa"
+    }
+  ],
+  "zakarawa": [
+    {
+      "lga": "Garko",
+      "communityId": "f6dbefad-7c5b-4ea9-b96f-fc8f73f1ae9a",
+      "slug": "zakarawa"
+    }
+  ],
+  "zakirai": [
+    {
+      "lga": "Gabasawa",
+      "communityId": "d2136d97-a959-4829-a51a-e0c8e0f4dc77",
+      "slug": "zakirai"
+    }
+  ],
+  "zambur": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_zambur",
+      "slug": "zambur"
+    }
+  ],
+  "zamfarawa": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_zamfarawa",
+      "slug": "zamfarawa"
+    }
+  ],
+  "zanga": [
+    {
+      "lga": "Bunkure",
+      "communityId": "ward_kano_bunkure_zanga",
+      "slug": "zanga"
+    }
+  ],
+  "zango": [
+    {
+      "lga": "Garun Mallam",
+      "communityId": "cb7aa1b9-475e-4113-8e08-0a70e7fd80a9",
+      "slug": "zango"
+    },
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_zango",
+      "slug": "zango"
+    },
+    {
+      "lga": "Wudil",
+      "communityId": "community_kano_wudil_zango",
+      "slug": "zango"
+    }
+  ],
+  "zangonbarebari": [
+    {
+      "lga": "Dala",
+      "communityId": "ward_kano_dala_zangonbarebari",
+      "slug": "zangon-bare-bari"
+    }
+  ],
+  "zanyau": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_zanyau",
+      "slug": "zanyau"
+    }
+  ],
+  "zarewa": [
+    {
+      "lga": "Rogo",
+      "communityId": "rogo_zarewa",
+      "slug": "zarewa"
+    }
+  ],
+  "zariaroadzooroad": [
+    {
+      "lga": "Tarauni",
+      "communityId": "ward_kano_tarauni_zariaroadzooroad",
+      "slug": "zaria-road-zoo-road"
+    }
+  ],
+  "zauradanbaba": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_zaura_dan_baba",
+      "slug": "zaura-dan-baba"
+    }
+  ],
+  "zbabba": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_z_babba",
+      "slug": "z-babba"
+    }
+  ],
+  "zenabi": [
+    {
+      "lga": "Doguwa",
+      "communityId": "ward_kano_doguwa_zenabi",
+      "slug": "zenabi"
+    }
+  ],
+  "zikaya": [
+    {
+      "lga": "Ungogo",
+      "communityId": "community_kano_ungogo_zikaya",
+      "slug": "zikaya"
+    }
+  ],
+  "zogarawa": [
+    {
+      "lga": "Dawakin Kudu",
+      "communityId": "ward_kano_dawakinkudu_zogarawa",
+      "slug": "zogarawa"
+    }
+  ],
+  "zongonkaya": [
+    {
+      "lga": "Tarauni",
+      "communityId": "367cadbf-0caa-43c7-b956-d53dfe74a7f6",
+      "slug": "zongon-kaya"
+    }
+  ],
+  "zugachi": [
+    {
+      "lga": "Gabasawa",
+      "communityId": "9af110df-bf2f-47cd-8e36-fb1b15e70676",
+      "slug": "zugachi"
+    }
+  ],
+  "zukumi": [
+    {
+      "lga": "Bichi",
+      "communityId": "ward_kano_bichi_zukumi",
+      "slug": "zukumi"
+    }
+  ],
+  "zurgu": [
+    {
+      "lga": "Rano",
+      "communityId": "rano_zurgu",
+      "slug": "zurgu"
+    }
+  ]
+}

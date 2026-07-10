@@ -1,0 +1,52 @@
+[
+  {
+    "feeder": "BANK ROAD CLUB",
+    "reason": "Unable to compute coordinates",
+    "lineNumber": 4
+  },
+  {
+    "feeder": "DR BALA BUK",
+    "reason": "Unable to compute coordinates",
+    "lineNumber": 9
+  },
+  {
+    "feeder": "WUDIL COMMERCIAL WUDIL",
+    "reason": "Unable to compute coordinates",
+    "lineNumber": 23
+  },
+  {
+    "feeder": "WUDIL WUDL",
+    "reason": "Unable to compute coordinates",
+    "lineNumber": 66
+  },
+  {
+    "feeder": "RIJIYAR ZAKI TAMBURAWA",
+    "reason": "Unable to compute coordinates",
+    "lineNumber": 111
+  },
+  {
+    "feeder": "MAKAMA WUDIL",
+    "reason": "Unable to compute coordinates",
+    "lineNumber": 139
+  },
+  {
+    "feeder": "GANO WUDIL",
+    "reason": "Unable to compute coordinates",
+    "lineNumber": 160
+  },
+  {
+    "feeder": "WATARI BICHI",
+    "reason": "Unable to compute coordinates",
+    "lineNumber": 166
+  },
+  {
+    "feeder": "FANISAU BUKAVU",
+    "reason": "Unable to compute coordinates",
+    "lineNumber": 169
+  },
+  {
+    "feeder": "GARKO WUDIL",
+    "reason": "Unable to compute coordinates",
+    "lineNumber": 196
+  }
+]

@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "generated_at": "2026-07-01T10:27:31.600Z",
+    "import_blocked": true,
+    "source": "validation_only"
+  },
+  "lgas_added": 7,
+  "communities_imported": 0,
+  "duplicate_lgas": [],
+  "duplicate_communities_removed": [],
+  "cross_lga_duplicate_names": [],
+  "wrong_lga_records_found": [],
+  "invalid_records": [],
+  "missing_ids": [],
+  "validation_errors": [
+    {
+      "type": "tarauni_incomplete_data",
+      "lga": "Tarauni",
+      "message": "No existing Tarauni communities were found in the project database; import blocked to avoid fabricating data."
+    },
+    {
+      "type": "missing_communities",
+      "message": "No community data was provided for the requested LGAs. Import blocked to avoid fabricating communities."
+    }
+  ],
+  "tarauni_validation": {
+    "existing_communities_found": 0,
+    "warning": "Tarauni data appears incomplete; no existing project communities were found for this LGA."
+  },
+  "lookup_index_generated": false,
+  "dataset_validation": "FAILED",
+  "validation_passed": false,
+  "lgas": [
+    {
+      "lga_name": "Shanono",
+      "lga_id": "lga_shanono",
+      "communities": []
+    },
+    {
+      "lga_name": "Sumaila",
+      "lga_id": "lga_sumaila",
+      "communities": []
+    },
+    {
+      "lga_name": "Takai",
+      "lga_id": "lga_takai",
+      "communities": []
+    },
+    {
+      "lga_name": "Tarauni",
+      "lga_id": "lga_tarauni",
+      "communities": []
+    },
+    {
+      "lga_name": "Tofa",
+      "lga_id": "lga_tofa",
+      "communities": []
+    },
+    {
+      "lga_name": "Tsanyawa",
+      "lga_id": "lga_tsanyawa",
+      "communities": []
+    },
+    {
+      "lga_name": "Tudun Wada",
+      "lga_id": "lga_tudun_wada",
+      "communities": []
+    }
+  ]
+}

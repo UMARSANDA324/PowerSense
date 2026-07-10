@@ -1,0 +1,2566 @@
+{
+  "metadata": {
+    "generatedAt": "2026-07-01T00:00:00Z",
+    "source": "power-sense-kano-master-community-list",
+    "description": "Single source of truth for Kano LGA community import. Communities are normalized and ready for import."
+  },
+  "lgas": [
+    {
+      "lga_name": "Ajingi",
+      "lga_id": "lga_ajingi",
+      "communities": [
+        {
+          "name": "Ajingi"
+        },
+        {
+          "name": "Balare"
+        },
+        {
+          "name": "Chula"
+        },
+        {
+          "name": "Dabir-Karawa"
+        },
+        {
+          "name": "Dagaji"
+        },
+        {
+          "name": "Dundun"
+        },
+        {
+          "name": "Fagawa"
+        },
+        {
+          "name": "Fulatan"
+        },
+        {
+          "name": "Gafasa"
+        },
+        {
+          "name": "Gurduba"
+        },
+        {
+          "name": "Jiyaiya"
+        },
+        {
+          "name": "Kara Makama"
+        },
+        {
+          "name": "Kunkurawa"
+        },
+        {
+          "name": "Kwari"
+        },
+        {
+          "name": "Kyaberi"
+        },
+        {
+          "name": "Sakalawa"
+        },
+        {
+          "name": "Toranke"
+        },
+        {
+          "name": "Ungwar Bai"
+        },
+        {
+          "name": "Yanwawa"
+        },
+        {
+          "name": "Zagon Gulya"
+        }
+      ]
+    },
+    {
+      "lga_name": "Albasu",
+      "lga_id": "lga_albasu",
+      "communities": [
+        {
+          "name": "Albasu"
+        },
+        {
+          "name": "Bataiya"
+        },
+        {
+          "name": "Burburwa"
+        },
+        {
+          "name": "Chararana"
+        },
+        {
+          "name": "Cilibiri"
+        },
+        {
+          "name": "Daho"
+        },
+        {
+          "name": "Duja"
+        },
+        {
+          "name": "Faragai"
+        },
+        {
+          "name": "Farantama"
+        },
+        {
+          "name": "Gagarame"
+        },
+        {
+          "name": "Gwagwarandan"
+        },
+        {
+          "name": "Hamdullahi"
+        },
+        {
+          "name": "Hungu Sabuwa"
+        },
+        {
+          "name": "Jigar"
+        },
+        {
+          "name": "Jirago"
+        },
+        {
+          "name": "K/Sumaila"
+        },
+        {
+          "name": "Koga"
+        },
+        {
+          "name": "Mangari"
+        },
+        {
+          "name": "Panada"
+        },
+        {
+          "name": "Sayasaya"
+        },
+        {
+          "name": "Tsangaya"
+        },
+        {
+          "name": "Yaura"
+        }
+      ]
+    },
+    {
+      "lga_name": "Bagwai",
+      "lga_id": "lga_bagwai",
+      "communities": [
+        {
+          "name": "Alajawa"
+        },
+        {
+          "name": "Badodo"
+        },
+        {
+          "name": "Bagwai"
+        },
+        {
+          "name": "Daddudda"
+        },
+        {
+          "name": "Dangada"
+        },
+        {
+          "name": "Dugurawa"
+        },
+        {
+          "name": "Gadanya"
+        },
+        {
+          "name": "Galawa"
+        },
+        {
+          "name": "Gogori"
+        },
+        {
+          "name": "Gurdi"
+        },
+        {
+          "name": "Jarimawa"
+        },
+        {
+          "name": "Joben-Yamma"
+        },
+        {
+          "name": "Kiyawa"
+        },
+        {
+          "name": "Kwajali"
+        },
+        {
+          "name": "Majin Gini"
+        },
+        {
+          "name": "Riminbai"
+        },
+        {
+          "name": "Romo"
+        },
+        {
+          "name": "Santar Lungu"
+        },
+        {
+          "name": "Sare Sare"
+        },
+        {
+          "name": "Sarkin Iya"
+        },
+        {
+          "name": "Ungwan Waimma"
+        },
+        {
+          "name": "Wuro Bagga"
+        },
+        {
+          "name": "Yar Tofa"
+        }
+      ]
+    },
+    {
+      "lga_name": "Bebeji",
+      "lga_id": "lga_bebeji",
+      "communities": [
+        {
+          "name": "Anadariya"
+        },
+        {
+          "name": "Baguda"
+        },
+        {
+          "name": "Bebeji"
+        },
+        {
+          "name": "Churta Biki"
+        },
+        {
+          "name": "Damau"
+        },
+        {
+          "name": "Dawakin Dogo"
+        },
+        {
+          "name": "Durumawa"
+        },
+        {
+          "name": "Gargai"
+        },
+        {
+          "name": "Gunki"
+        },
+        {
+          "name": "Gwarmai"
+        },
+        {
+          "name": "Jibga"
+        },
+        {
+          "name": "Kofa"
+        },
+        {
+          "name": "Kuki"
+        },
+        {
+          "name": "Rahama"
+        },
+        {
+          "name": "Ranka"
+        },
+        {
+          "name": "Ranta"
+        },
+        {
+          "name": "Tariwa"
+        },
+        {
+          "name": "Wak"
+        },
+        {
+          "name": "Yak"
+        },
+        {
+          "name": "Yakun"
+        },
+        {
+          "name": "Yanshere"
+        }
+      ]
+    },
+    {
+      "lga_name": "Bichi",
+      "lga_id": "lga_bichi",
+      "communities": [
+        {
+          "name": "Aawa"
+        },
+        {
+          "name": "Abakur"
+        },
+        {
+          "name": "Badume"
+        },
+        {
+          "name": "Beguwa"
+        },
+        {
+          "name": "Belli"
+        },
+        {
+          "name": "Bichi"
+        },
+        {
+          "name": "Chiromawa"
+        },
+        {
+          "name": "D/Dorawa"
+        },
+        {
+          "name": "Daddo"
+        },
+        {
+          "name": "Damargu"
+        },
+        {
+          "name": "Daminawa"
+        },
+        {
+          "name": "Danzabuwa"
+        },
+        {
+          "name": "Dokoki"
+        },
+        {
+          "name": "Fagwalo"
+        },
+        {
+          "name": "Garun Bature"
+        },
+        {
+          "name": "Hagawa"
+        },
+        {
+          "name": "Hugulawa"
+        },
+        {
+          "name": "Iyawa"
+        },
+        {
+          "name": "Kakari"
+        },
+        {
+          "name": "Kaukau"
+        },
+        {
+          "name": "Kawaje"
+        },
+        {
+          "name": "Kungu"
+        },
+        {
+          "name": "Kwamarawa"
+        },
+        {
+          "name": "Kyauta"
+        },
+        {
+          "name": "Malikawar Garu"
+        },
+        {
+          "name": "Malikawr Sarari"
+        },
+        {
+          "name": "Marga"
+        },
+        {
+          "name": "Muntsira"
+        },
+        {
+          "name": "Rimaye"
+        },
+        {
+          "name": "Sabo"
+        },
+        {
+          "name": "Sanakur"
+        },
+        {
+          "name": "Saye"
+        },
+        {
+          "name": "Sum Sum"
+        },
+        {
+          "name": "Tinki"
+        },
+        {
+          "name": "Tsaure"
+        },
+        {
+          "name": "Tukubi"
+        },
+        {
+          "name": "Waire"
+        },
+        {
+          "name": "Yan Bundu"
+        },
+        {
+          "name": "Yan Gwarzo"
+        },
+        {
+          "name": "Yan Lami"
+        },
+        {
+          "name": "Yandutse"
+        },
+        {
+          "name": "Zukumi"
+        }
+      ]
+    },
+    {
+      "lga_name": "Bunkure",
+      "lga_id": "lga_bunkure",
+      "communities": [
+        {
+          "name": "Barkum"
+        },
+        {
+          "name": "Bono"
+        },
+        {
+          "name": "Chirin"
+        },
+        {
+          "name": "D/Dundu"
+        },
+        {
+          "name": "Dundu"
+        },
+        {
+          "name": "Dususu"
+        },
+        {
+          "name": "Falingo"
+        },
+        {
+          "name": "Gabo"
+        },
+        {
+          "name": "Gafan"
+        },
+        {
+          "name": "Garanga"
+        },
+        {
+          "name": "Gora"
+        },
+        {
+          "name": "Gurjiya"
+        },
+        {
+          "name": "Gwamma"
+        },
+        {
+          "name": "Gwaneri"
+        },
+        {
+          "name": "Jalabi"
+        },
+        {
+          "name": "Jallorawa"
+        },
+        {
+          "name": "Jaroji"
+        },
+        {
+          "name": "Karnawa"
+        },
+        {
+          "name": "Kokotawa"
+        },
+        {
+          "name": "Kumurya"
+        },
+        {
+          "name": "Sabon Ruwa"
+        },
+        {
+          "name": "Satigal"
+        },
+        {
+          "name": "Shiye"
+        },
+        {
+          "name": "Tsamabaki"
+        },
+        {
+          "name": "Tudungali"
+        },
+        {
+          "name": "Tugugu"
+        },
+        {
+          "name": "Zanga"
+        }
+      ]
+    },
+    {
+      "lga_name": "Dala",
+      "lga_id": "lga_dala",
+      "communities": [
+        {
+          "name": "Abba Tuwa"
+        },
+        {
+          "name": "Adakawa"
+        },
+        {
+          "name": "Airforce Base"
+        },
+        {
+          "name": "Airport Rd."
+        },
+        {
+          "name": "Arzai"
+        },
+        {
+          "name": "Ashton Rd."
+        },
+        {
+          "name": "Ayagi"
+        },
+        {
+          "name": "Bachirawa"
+        },
+        {
+          "name": "Madigu"
+        },
+        {
+          "name": "Bakin Ruwa"
+        },
+        {
+          "name": "Bokabo Barracks"
+        },
+        {
+          "name": "Chediyar Yangurasa"
+        },
+        {
+          "name": "Daganda"
+        },
+        {
+          "name": "Dala"
+        },
+        {
+          "name": "Dandalin Turawa"
+        },
+        {
+          "name": "Danbatta Way"
+        },
+        {
+          "name": "Danbazau"
+        },
+        {
+          "name": "Dandirshe"
+        },
+        {
+          "name": "Daurawan Yamma"
+        },
+        {
+          "name": "Daurawan Gabas"
+        },
+        {
+          "name": "Dawanau"
+        },
+        {
+          "name": "Dogon Nama"
+        },
+        {
+          "name": "Sanka"
+        },
+        {
+          "name": "Dukurawa"
+        },
+        {
+          "name": "Filin Durimi"
+        },
+        {
+          "name": "Garejin Danmaraya"
+        },
+        {
+          "name": "Gidan Dan Buzu"
+        },
+        {
+          "name": "Goburawa"
+        },
+        {
+          "name": "Goron Dutse"
+        },
+        {
+          "name": "Gwammaja"
+        },
+        {
+          "name": "Gwarzo Rd."
+        },
+        {
+          "name": "Hajj Camp"
+        },
+        {
+          "name": "Hajuratul Islamiyya"
+        },
+        {
+          "name": "Isyaku Rabiu Housing"
+        },
+        {
+          "name": "Jujin Yanlabo"
+        },
+        {
+          "name": "K.C.C."
+        },
+        {
+          "name": "K/Mazugal"
+        },
+        {
+          "name": "K/Ruwa"
+        },
+        {
+          "name": "Kabuwaya"
+        },
+        {
+          "name": "Kantudu"
+        },
+        {
+          "name": "Karofin Dala"
+        },
+        {
+          "name": "Katsina Rd."
+        },
+        {
+          "name": "Kofar Mazugal"
+        },
+        {
+          "name": "Kofar Ruwa"
+        },
+        {
+          "name": "Kofar Ruwa Rd."
+        },
+        {
+          "name": "Koki"
+        },
+        {
+          "name": "Koki Qtrs."
+        },
+        {
+          "name": "Kulkul"
+        },
+        {
+          "name": "Kurna Babban Layi"
+        },
+        {
+          "name": "Kurna Makaranta"
+        },
+        {
+          "name": "Kwachiri Dikko"
+        },
+        {
+          "name": "Kwachiri Jube"
+        },
+        {
+          "name": "Kwarin Akuya"
+        },
+        {
+          "name": "Madugawa"
+        },
+        {
+          "name": "Mai Adua"
+        },
+        {
+          "name": "Makafin Dala"
+        },
+        {
+          "name": "Makin Ruwa"
+        },
+        {
+          "name": "Mallam Aminu Kano Way"
+        },
+        {
+          "name": "Masaka"
+        },
+        {
+          "name": "Mayeima"
+        },
+        {
+          "name": "Rijiyar Lemo"
+        },
+        {
+          "name": "Murtala Mohammed Way"
+        },
+        {
+          "name": "Orthopedic Hospital"
+        },
+        {
+          "name": "Physiotherapy Sch."
+        },
+        {
+          "name": "Police Station"
+        },
+        {
+          "name": "Prison Yard"
+        },
+        {
+          "name": "Ramin Yantifa"
+        },
+        {
+          "name": "Rijiya Biyli"
+        },
+        {
+          "name": "Rijiya Itudu"
+        },
+        {
+          "name": "Sabon Birni"
+        },
+        {
+          "name": "Sakwaya Rd."
+        },
+        {
+          "name": "Sakwaya Line"
+        },
+        {
+          "name": "Sararin Kadai"
+        },
+        {
+          "name": "Shirawa"
+        },
+        {
+          "name": "T/Fulari"
+        },
+        {
+          "name": "Tagwayen Gida"
+        },
+        {
+          "name": "Titin Dan Rimi"
+        },
+        {
+          "name": "Tudun Malam Labbo"
+        },
+        {
+          "name": "Wakilin Arewa"
+        },
+        {
+          "name": "Yalwa"
+        },
+        {
+          "name": "Yan Gadi"
+        },
+        {
+          "name": "Yan Katifa"
+        },
+        {
+          "name": "Yammata"
+        },
+        {
+          "name": "Yantandu"
+        },
+        {
+          "name": "Yarkasuwa Mararraba"
+        },
+        {
+          "name": "Zangon Bare-Bari"
+        }
+      ]
+    },
+    {
+      "lga_name": "Dala Rural",
+      "lga_id": "lga_dala_rural",
+      "communities": [
+        {
+          "name": "Aburawa"
+        },
+        {
+          "name": "Bafin/Ruwa"
+        },
+        {
+          "name": "Dadankaya"
+        },
+        {
+          "name": "Dandunshi"
+        },
+        {
+          "name": "Fuska Arewa"
+        },
+        {
+          "name": "Gandu"
+        },
+        {
+          "name": "K/Lunkwi"
+        },
+        {
+          "name": "K/Waika"
+        },
+        {
+          "name": "Man/Ladan"
+        },
+        {
+          "name": "Tudun Yola"
+        },
+        {
+          "name": "Waika"
+        },
+        {
+          "name": "Yalwa"
+        },
+        {
+          "name": "Yan/Tandu"
+        }
+      ]
+    },
+    {
+      "lga_name": "Danbatta",
+      "lga_id": "lga_danbatta",
+      "communities": [
+        {
+          "name": "Ajumawa"
+        },
+        {
+          "name": "Barebari"
+        },
+        {
+          "name": "Danratta"
+        },
+        {
+          "name": "Danya"
+        },
+        {
+          "name": "Diggol"
+        },
+        {
+          "name": "Dukewa"
+        },
+        {
+          "name": "Dungurumi"
+        },
+        {
+          "name": "F/Dashi"
+        },
+        {
+          "name": "Fayam-Fayam"
+        },
+        {
+          "name": "Fogolawa"
+        },
+        {
+          "name": "Galoru"
+        },
+        {
+          "name": "Gwalaiba"
+        },
+        {
+          "name": "Gwanda"
+        },
+        {
+          "name": "Gwarabjawa"
+        },
+        {
+          "name": "Gwauran Maje"
+        },
+        {
+          "name": "Hazo"
+        },
+        {
+          "name": "Kadandani"
+        },
+        {
+          "name": "Katsarduwa"
+        },
+        {
+          "name": "Kore"
+        },
+        {
+          "name": "Kwasauri"
+        },
+        {
+          "name": "Mahuta"
+        },
+        {
+          "name": "Nassarawa"
+        },
+        {
+          "name": "Rade"
+        },
+        {
+          "name": "Ruwantsa"
+        },
+        {
+          "name": "Sansan"
+        },
+        {
+          "name": "Satame"
+        },
+        {
+          "name": "Tabo"
+        },
+        {
+          "name": "Takai"
+        },
+        {
+          "name": "Yam Mawa"
+        },
+        {
+          "name": "Yambawa"
+        },
+        {
+          "name": "Yanlada"
+        },
+        {
+          "name": "Zago"
+        }
+      ]
+    },
+    {
+      "lga_name": "Dawakin Kudu",
+      "lga_id": "lga_dawakin_kudu",
+      "communities": [
+        {
+          "name": "Behun"
+        },
+        {
+          "name": "Dabakwari"
+        },
+        {
+          "name": "Danbagina"
+        },
+        {
+          "name": "Dasan Dosan"
+        },
+        {
+          "name": "Dawaki"
+        },
+        {
+          "name": "Dawakin Kudu"
+        },
+        {
+          "name": "Dawakji"
+        },
+        {
+          "name": "Gano Gumaka"
+        },
+        {
+          "name": "Gurjiya"
+        },
+        {
+          "name": "Jido"
+        },
+        {
+          "name": "Kadawa"
+        },
+        {
+          "name": "Kamagata"
+        },
+        {
+          "name": "Kantsi"
+        },
+        {
+          "name": "Kanwa"
+        },
+        {
+          "name": "Kwagwar Kaza"
+        },
+        {
+          "name": "M. Mata"
+        },
+        {
+          "name": "Mabarin Taba"
+        },
+        {
+          "name": "Muras"
+        },
+        {
+          "name": "Runa"
+        },
+        {
+          "name": "Santolo"
+        },
+        {
+          "name": "Sarai"
+        },
+        {
+          "name": "T/Gabas"
+        },
+        {
+          "name": "Takai"
+        },
+        {
+          "name": "Tamburawa"
+        },
+        {
+          "name": "Tanagar"
+        },
+        {
+          "name": "Tar Tofa"
+        },
+        {
+          "name": "Tsakuwa"
+        },
+        {
+          "name": "Ungwar Duniya"
+        },
+        {
+          "name": "Yanbarci"
+        },
+        {
+          "name": "Yanfari"
+        },
+        {
+          "name": "Yankatsare"
+        },
+        {
+          "name": "Yargay"
+        },
+        {
+          "name": "Zogarawa"
+        }
+      ]
+    },
+    {
+      "lga_name": "Dawakin Tofa",
+      "lga_id": "lga_dawakin_tofa",
+      "communities": [
+        {
+          "name": "Alajawa"
+        },
+        {
+          "name": "B/Tumau"
+        },
+        {
+          "name": "Babban Ruga"
+        },
+        {
+          "name": "Badau"
+        },
+        {
+          "name": "Bagari"
+        },
+        {
+          "name": "Bambarawa Nasara"
+        },
+        {
+          "name": "Bankaura"
+        },
+        {
+          "name": "Chedi"
+        },
+        {
+          "name": "Dandalama"
+        },
+        {
+          "name": "Dawanau"
+        },
+        {
+          "name": "Dnaguguwa"
+        },
+        {
+          "name": "Dungurawa Kwa"
+        },
+        {
+          "name": "F/Kawo"
+        },
+        {
+          "name": "Jalli"
+        },
+        {
+          "name": "Kaleku"
+        },
+        {
+          "name": "Kunnawa"
+        },
+        {
+          "name": "Kwidawa"
+        },
+        {
+          "name": "Marke"
+        },
+        {
+          "name": "Rumi"
+        },
+        {
+          "name": "Sharkakiya"
+        },
+        {
+          "name": "Tattarawa"
+        },
+        {
+          "name": "Tumfefi"
+        },
+        {
+          "name": "Ungwar Jobenkun"
+        },
+        {
+          "name": "Ungwar Rimi"
+        },
+        {
+          "name": "Yanrutu"
+        },
+        {
+          "name": "Yelwa"
+        }
+      ]
+    },
+    {
+      "lga_name": "Doguwa",
+      "lga_id": "lga_doguwa",
+      "communities": [
+        {
+          "name": "Bakarfa"
+        },
+        {
+          "name": "Bebeji"
+        },
+        {
+          "name": "Dadabo"
+        },
+        {
+          "name": "Dadinkowa"
+        },
+        {
+          "name": "Dandoki"
+        },
+        {
+          "name": "Dariyar Kudu"
+        },
+        {
+          "name": "Doguwa"
+        },
+        {
+          "name": "Falgore"
+        },
+        {
+          "name": "Fanyabo"
+        },
+        {
+          "name": "G/Makera"
+        },
+        {
+          "name": "G/Shere"
+        },
+        {
+          "name": "Jangefe"
+        },
+        {
+          "name": "Katsinawa"
+        },
+        {
+          "name": "Lungu"
+        },
+        {
+          "name": "Mahuta"
+        },
+        {
+          "name": "Maigodo"
+        },
+        {
+          "name": "Maikwadira"
+        },
+        {
+          "name": "Makarfi"
+        },
+        {
+          "name": "Malamawa"
+        },
+        {
+          "name": "Maraku"
+        },
+        {
+          "name": "Muchia"
+        },
+        {
+          "name": "Murai"
+        },
+        {
+          "name": "Pegi"
+        },
+        {
+          "name": "Ragada"
+        },
+        {
+          "name": "Ririwai"
+        },
+        {
+          "name": "Sabon Kwara"
+        },
+        {
+          "name": "Sabuwar"
+        },
+        {
+          "name": "Shiburu"
+        },
+        {
+          "name": "Surutwawa"
+        },
+        {
+          "name": "Tagwaye"
+        },
+        {
+          "name": "Tanalafiya"
+        },
+        {
+          "name": "Tilanbawa"
+        },
+        {
+          "name": "Tsauni"
+        },
+        {
+          "name": "U/Masama"
+        },
+        {
+          "name": "U/Tanko"
+        },
+        {
+          "name": "U/Turai"
+        },
+        {
+          "name": "Ungwar Tsohon-Sarki"
+        },
+        {
+          "name": "Zenabi"
+        }
+      ]
+    },
+    {
+      "lga_name": "Fagge",
+      "lga_id": "lga_fagge",
+      "communities": []
+    },
+    {
+      "lga_name": "Gabasawa",
+      "lga_id": "lga_gabasawa",
+      "communities": []
+    },
+    {
+      "lga_name": "Garko",
+      "lga_id": "lga_garko",
+      "communities": []
+    },
+    {
+      "lga_name": "Garum Mallam",
+      "lga_id": "lga_garum_mallam",
+      "communities": []
+    },
+    {
+      "lga_name": "Gaya",
+      "lga_id": "lga_gaya",
+      "communities": []
+    },
+    {
+      "lga_name": "Gezawa",
+      "lga_id": "lga_gezawa",
+      "communities": []
+    },
+    {
+      "lga_name": "Gwale",
+      "lga_id": "lga_gwale",
+      "communities": []
+    },
+    {
+      "lga_name": "Gwarzo",
+      "lga_id": "lga_gwarzo",
+      "communities": []
+    },
+    {
+      "lga_name": "Kabo",
+      "lga_id": "lga_kabo",
+      "communities": []
+    },
+    {
+      "lga_name": "Kano Municipal",
+      "lga_id": "lga_kano_municipal",
+      "communities": []
+    },
+    {
+      "lga_name": "Karaye",
+      "lga_id": "lga_karaye",
+      "communities": [
+        {
+          "name": "Karaye"
+        },
+        {
+          "name": "Daura"
+        },
+        {
+          "name": "Dausayi"
+        },
+        {
+          "name": "Figi"
+        },
+        {
+          "name": "Jajaye"
+        },
+        {
+          "name": "Kalako"
+        },
+        {
+          "name": "Karshi"
+        },
+        {
+          "name": "Kwanyawa"
+        },
+        {
+          "name": "Turawa"
+        },
+        {
+          "name": "Yola"
+        }
+      ]
+    },
+    {
+      "lga_name": "Kibiya",
+      "lga_id": "lga_kibiya",
+      "communities": [
+        {
+          "name": "Kibiya"
+        },
+        {
+          "name": "Durba"
+        },
+        {
+          "name": "Fammar"
+        },
+        {
+          "name": "Fanchi"
+        },
+        {
+          "name": "Gari"
+        },
+        {
+          "name": "Gingiya"
+        },
+        {
+          "name": "Kadigawa"
+        },
+        {
+          "name": "Nariya"
+        },
+        {
+          "name": "Shingi"
+        },
+        {
+          "name": "Tarai"
+        }
+      ]
+    },
+    {
+      "lga_name": "Kiru",
+      "lga_id": "lga_kiru",
+      "communities": [
+        {
+          "name": "Kiru"
+        },
+        {
+          "name": "Baawa"
+        },
+        {
+          "name": "Badafi"
+        },
+        {
+          "name": "Dangora"
+        },
+        {
+          "name": "Dansoshiya"
+        },
+        {
+          "name": "Dashi"
+        },
+        {
+          "name": "Kadangaru"
+        },
+        {
+          "name": "Maraku"
+        },
+        {
+          "name": "Tsaudawa"
+        },
+        {
+          "name": "Yako"
+        }
+      ]
+    },
+    {
+      "lga_name": "Kumbotso",
+      "lga_id": "lga_kumbotso",
+      "communities": [
+        {
+          "name": "Bechi"
+        },
+        {
+          "name": "Challawa"
+        },
+        {
+          "name": "Damfami"
+        },
+        {
+          "name": "Dan Gwauro Hago"
+        },
+        {
+          "name": "Dan Gwauro Illiyasu"
+        },
+        {
+          "name": "Dan Maliki"
+        },
+        {
+          "name": "Danbare"
+        },
+        {
+          "name": "Dangwauro"
+        },
+        {
+          "name": "Farawa"
+        },
+        {
+          "name": "Gaida"
+        },
+        {
+          "name": "Guringawa"
+        },
+        {
+          "name": "Gwazaya"
+        },
+        {
+          "name": "Hawandawaki"
+        },
+        {
+          "name": "Kayi Panshekara"
+        },
+        {
+          "name": "Krinbo"
+        },
+        {
+          "name": "Kumbotso"
+        },
+        {
+          "name": "Kure Ken"
+        },
+        {
+          "name": "Kusaba"
+        },
+        {
+          "name": "Kuyan Ta Inna"
+        },
+        {
+          "name": "Kuyan Tasidi"
+        },
+        {
+          "name": "Limana"
+        },
+        {
+          "name": "Maidinawa"
+        },
+        {
+          "name": "Mariri"
+        },
+        {
+          "name": "Panshekara"
+        },
+        {
+          "name": "Runkusawa"
+        },
+        {
+          "name": "Samegu"
+        },
+        {
+          "name": "Sarkin Shanu"
+        },
+        {
+          "name": "Shekar Barde"
+        },
+        {
+          "name": "Shekar Madaki"
+        },
+        {
+          "name": "Tamburawa"
+        },
+        {
+          "name": "U/Rimi"
+        },
+        {
+          "name": "Umarawa"
+        },
+        {
+          "name": "Unguwar Yamu"
+        },
+        {
+          "name": "Wailari"
+        },
+        {
+          "name": "Yankusa"
+        },
+        {
+          "name": "Yanshana"
+        }
+      ]
+    },
+    {
+      "lga_name": "Kunchi",
+      "lga_id": "lga_kunchi",
+      "communities": [
+        {
+          "name": "Kunchi"
+        },
+        {
+          "name": "Baje"
+        },
+        {
+          "name": "Gwarmai"
+        },
+        {
+          "name": "Kuku"
+        },
+        {
+          "name": "Kaya"
+        },
+        {
+          "name": "Matan Fada"
+        },
+        {
+          "name": "Shamakawa"
+        },
+        {
+          "name": "Shuwaki"
+        },
+        {
+          "name": "Yandadi"
+        },
+        {
+          "name": "Dunkwai"
+        }
+      ]
+    },
+    {
+      "lga_name": "Kura",
+      "lga_id": "lga_kura",
+      "communities": [
+        {
+          "name": "Kura"
+        },
+        {
+          "name": "Dan Hassan"
+        },
+        {
+          "name": "Dukawa"
+        },
+        {
+          "name": "Gundutse"
+        },
+        {
+          "name": "Karfi"
+        },
+        {
+          "name": "Kosawa"
+        },
+        {
+          "name": "Rigar Duka"
+        },
+        {
+          "name": "Shafawa"
+        },
+        {
+          "name": "Yakasai"
+        },
+        {
+          "name": "Yalwa"
+        }
+      ]
+    },
+    {
+      "lga_name": "Madobi",
+      "lga_id": "lga_madobi",
+      "communities": [
+        {
+          "name": "Madobi"
+        },
+        {
+          "name": "Burji"
+        },
+        {
+          "name": "Chiromawa"
+        },
+        {
+          "name": "Danzani"
+        },
+        {
+          "name": "Gazana"
+        },
+        {
+          "name": "Gora"
+        },
+        {
+          "name": "Kanwa"
+        },
+        {
+          "name": "Kubarachi"
+        },
+        {
+          "name": "Kwankwaso"
+        },
+        {
+          "name": "Rikadawa"
+        }
+      ]
+    },
+    {
+      "lga_name": "Makoda",
+      "lga_id": "lga_makoda",
+      "communities": [
+        {
+          "name": "Makoda"
+        },
+        {
+          "name": "Bakarari"
+        },
+        {
+          "name": "Dunawa"
+        },
+        {
+          "name": "Ganji"
+        },
+        {
+          "name": "Koguna"
+        },
+        {
+          "name": "Maitsidau"
+        },
+        {
+          "name": "Sabon Ruwa"
+        },
+        {
+          "name": "Tangaji"
+        },
+        {
+          "name": "Yamawa"
+        },
+        {
+          "name": "Zago"
+        }
+      ]
+    },
+    {
+      "lga_name": "Minjibir",
+      "lga_id": "lga_minjibir",
+      "communities": [
+        {
+          "name": "Minjibir"
+        },
+        {
+          "name": "Azore"
+        },
+        {
+          "name": "Dingin"
+        },
+        {
+          "name": "Galadanci"
+        },
+        {
+          "name": "Gurjiya"
+        },
+        {
+          "name": "Kantama"
+        },
+        {
+          "name": "Kunya"
+        },
+        {
+          "name": "Runfa"
+        },
+        {
+          "name": "Tsakuwa"
+        },
+        {
+          "name": "Wasai"
+        }
+      ]
+    },
+    {
+      "lga_name": "Nasarawa",
+      "lga_id": "lga_nasarawa",
+      "communities": [
+        {
+          "name": "Bompai"
+        },
+        {
+          "name": "Dakata"
+        },
+        {
+          "name": "Gama"
+        },
+        {
+          "name": "Gawuna"
+        },
+        {
+          "name": "Hotoro"
+        },
+        {
+          "name": "Kawaji"
+        },
+        {
+          "name": "Tudun Murtala"
+        },
+        {
+          "name": "Tudun Wada"
+        },
+        {
+          "name": "Gwagwarwa"
+        },
+        {
+          "name": "Nasarawa"
+        }
+      ]
+    },
+    {
+      "lga_name": "Rano",
+      "lga_id": "lga_rano",
+      "communities": [
+        {
+          "name": "Barnawa"
+        },
+        {
+          "name": "Burum"
+        },
+        {
+          "name": "Dususu"
+        },
+        {
+          "name": "Faran"
+        },
+        {
+          "name": "Fassi"
+        },
+        {
+          "name": "Fiyaran"
+        },
+        {
+          "name": "Gorabi"
+        },
+        {
+          "name": "Jellorawa"
+        },
+        {
+          "name": "Juma"
+        },
+        {
+          "name": "Kaiwa"
+        },
+        {
+          "name": "Kalambu"
+        },
+        {
+          "name": "Kundun"
+        },
+        {
+          "name": "Kunkura"
+        },
+        {
+          "name": "Lafsu"
+        },
+        {
+          "name": "Madaci"
+        },
+        {
+          "name": "Mashe"
+        },
+        {
+          "name": "Rano"
+        },
+        {
+          "name": "Rurum"
+        },
+        {
+          "name": "Saji"
+        },
+        {
+          "name": "Sanda"
+        },
+        {
+          "name": "Shike"
+        },
+        {
+          "name": "Tofa"
+        },
+        {
+          "name": "Torankawa"
+        },
+        {
+          "name": "Tsaure"
+        },
+        {
+          "name": "Tum"
+        },
+        {
+          "name": "Yado"
+        },
+        {
+          "name": "Yalwa"
+        },
+        {
+          "name": "Yankanchi"
+        },
+        {
+          "name": "Zambur"
+        },
+        {
+          "name": "Zanyau"
+        },
+        {
+          "name": "Zurgu"
+        }
+      ]
+    },
+    {
+      "lga_name": "Rimin Gado",
+      "lga_id": "lga_rimin_gado",
+      "communities": [
+        {
+          "name": "Butubutu"
+        },
+        {
+          "name": "D/Gulu"
+        },
+        {
+          "name": "Dan Isa"
+        },
+        {
+          "name": "Gulu"
+        },
+        {
+          "name": "Indabo"
+        },
+        {
+          "name": "Janguza"
+        },
+        {
+          "name": "Jili"
+        },
+        {
+          "name": "Juli"
+        },
+        {
+          "name": "Karofi Yashi"
+        },
+        {
+          "name": "Maigari"
+        },
+        {
+          "name": "Rimin Gado"
+        },
+        {
+          "name": "Rinji"
+        },
+        {
+          "name": "Sakaratsa"
+        },
+        {
+          "name": "Tamawa"
+        },
+        {
+          "name": "Tuji"
+        },
+        {
+          "name": "Ungwan Rimi"
+        },
+        {
+          "name": "Wangara"
+        },
+        {
+          "name": "Yalwa"
+        },
+        {
+          "name": "Yan Kuni"
+        },
+        {
+          "name": "Yango"
+        }
+      ]
+    },
+    {
+      "lga_name": "Rogo",
+      "lga_id": "lga_rogo",
+      "communities": [
+        {
+          "name": "Bari"
+        },
+        {
+          "name": "Beli"
+        },
+        {
+          "name": "Dan Sambo"
+        },
+        {
+          "name": "Dederi"
+        },
+        {
+          "name": "Falgore"
+        },
+        {
+          "name": "Fulatan"
+        },
+        {
+          "name": "Gidanjaro"
+        },
+        {
+          "name": "Gwan Gwan"
+        },
+        {
+          "name": "Kadafa"
+        },
+        {
+          "name": "Kadana"
+        },
+        {
+          "name": "Makwanyawa"
+        },
+        {
+          "name": "Nasarawa"
+        },
+        {
+          "name": "Rogo"
+        },
+        {
+          "name": "Ruwanbago"
+        },
+        {
+          "name": "Tsohuwar/Rogo"
+        },
+        {
+          "name": "Uguwar Sundu"
+        },
+        {
+          "name": "Ung. Makera"
+        },
+        {
+          "name": "Yammali"
+        },
+        {
+          "name": "Zamfarawa"
+        },
+        {
+          "name": "Zarewa"
+        }
+      ]
+    },
+    {
+      "lga_name": "Shanono",
+      "lga_id": "lga_shanono",
+      "communities": []
+    },
+    {
+      "lga_name": "Sumaila",
+      "lga_id": "lga_sumaila",
+      "communities": []
+    },
+    {
+      "lga_name": "Takai",
+      "lga_id": "lga_takai",
+      "communities": []
+    },
+    {
+      "lga_name": "Tarauni",
+      "lga_id": "lga_tarauni",
+      "communities": []
+    },
+    {
+      "lga_name": "Tofa",
+      "lga_id": "lga_tofa",
+      "communities": []
+    },
+    {
+      "lga_name": "Tsanyawa",
+      "lga_id": "lga_tsanyawa",
+      "communities": []
+    },
+    {
+      "lga_name": "Tudun Wada",
+      "lga_id": "lga_tudun_wada",
+      "communities": []
+    },
+    {
+      "lga_name": "Ungogo",
+      "lga_id": "lga_ungogo",
+      "communities": [
+        {
+          "name": "Adaraye"
+        },
+        {
+          "name": "Alhrani"
+        },
+        {
+          "name": "Amar Zakawa"
+        },
+        {
+          "name": "Bacirawa"
+        },
+        {
+          "name": "Bagujan"
+        },
+        {
+          "name": "Ciromawa"
+        },
+        {
+          "name": "Dankunkuru"
+        },
+        {
+          "name": "Dausayi"
+        },
+        {
+          "name": "Doka"
+        },
+        {
+          "name": "Dorayi"
+        },
+        {
+          "name": "Fanisau"
+        },
+        {
+          "name": "Garinlya"
+        },
+        {
+          "name": "Gayawa"
+        },
+        {
+          "name": "Gera"
+        },
+        {
+          "name": "Hoto"
+        },
+        {
+          "name": "Indabo"
+        },
+        {
+          "name": "Inkyan"
+        },
+        {
+          "name": "Inusawa Babba"
+        },
+        {
+          "name": "Inusawa Karawa"
+        },
+        {
+          "name": "Jajira"
+        },
+        {
+          "name": "Kadawa"
+        },
+        {
+          "name": "Kakurun"
+        },
+        {
+          "name": "Kanawa"
+        },
+        {
+          "name": "Kansuwa"
+        },
+        {
+          "name": "Kantsi"
+        },
+        {
+          "name": "Karo"
+        },
+        {
+          "name": "Kauranchi"
+        },
+        {
+          "name": "Kawari"
+        },
+        {
+          "name": "Kera"
+        },
+        {
+          "name": "Koranci"
+        },
+        {
+          "name": "Kududu Fawa"
+        },
+        {
+          "name": "Kwajalawa"
+        },
+        {
+          "name": "Kyaran"
+        },
+        {
+          "name": "Malamawa"
+        },
+        {
+          "name": "Mushuni"
+        },
+        {
+          "name": "Rafin Mallam"
+        },
+        {
+          "name": "Rangaza"
+        },
+        {
+          "name": "Rijiyar Dinya"
+        },
+        {
+          "name": "Rijiyar Zaki"
+        },
+        {
+          "name": "Rimi"
+        },
+        {
+          "name": "Rimi Gata"
+        },
+        {
+          "name": "Rimi Zakara"
+        },
+        {
+          "name": "Sabon Gari"
+        },
+        {
+          "name": "Tarda"
+        },
+        {
+          "name": "Tudun Fulani"
+        },
+        {
+          "name": "Umasawa"
+        },
+        {
+          "name": "Wachani"
+        },
+        {
+          "name": "Watari"
+        },
+        {
+          "name": "Wujanare"
+        },
+        {
+          "name": "Yada Kunya"
+        },
+        {
+          "name": "Yan Ali"
+        },
+        {
+          "name": "Yanmata"
+        },
+        {
+          "name": "Yola"
+        },
+        {
+          "name": "Z/Babba"
+        },
+        {
+          "name": "Zango"
+        },
+        {
+          "name": "Zaura Dan Baba"
+        },
+        {
+          "name": "Zikaya"
+        }
+      ]
+    },
+    {
+      "lga_name": "Warawa",
+      "lga_id": "lga_warawa",
+      "communities": [
+        {
+          "name": "A'Giwa"
+        },
+        {
+          "name": "Madarin"
+        },
+        {
+          "name": "Amarawa"
+        },
+        {
+          "name": "Manyan Mata"
+        },
+        {
+          "name": "Dan Lasan"
+        },
+        {
+          "name": "Tamburawa Gabas"
+        },
+        {
+          "name": "Galadima"
+        },
+        {
+          "name": "Token"
+        },
+        {
+          "name": "Ganakako"
+        },
+        {
+          "name": "Wambantu"
+        },
+        {
+          "name": "Garu Dau"
+        },
+        {
+          "name": "Warawa"
+        },
+        {
+          "name": "Giwarwan"
+        },
+        {
+          "name": "Warkai"
+        },
+        {
+          "name": "Goget"
+        },
+        {
+          "name": "Yan-Dalla"
+        },
+        {
+          "name": "Gumaka"
+        },
+        {
+          "name": "Yan-Tofa"
+        },
+        {
+          "name": "Jigawa"
+        },
+        {
+          "name": "Yangizo"
+        },
+        {
+          "name": "Kanta"
+        },
+        {
+          "name": "Kanwa"
+        },
+        {
+          "name": "Katarkawa"
+        },
+        {
+          "name": "Kinchau"
+        },
+        {
+          "name": "Ladimakole"
+        },
+        {
+          "name": "Limawa"
+        }
+      ]
+    },
+    {
+      "lga_name": "Wudil",
+      "lga_id": "lga_wudil",
+      "communities": [
+        {
+          "name": "Unguwar Fulani"
+        },
+        {
+          "name": "Abuja"
+        },
+        {
+          "name": "Aliyu Dan Darman Rd."
+        },
+        {
+          "name": "Dafawa"
+        },
+        {
+          "name": "Kofar Kara"
+        },
+        {
+          "name": "Medical Health Department"
+        },
+        {
+          "name": "NYSC Office"
+        },
+        {
+          "name": "Special Primary School"
+        },
+        {
+          "name": "Weekly Market"
+        },
+        {
+          "name": "Sabon Gari"
+        },
+        {
+          "name": "Alhaji Salihu Sarki St."
+        },
+        {
+          "name": "Gidan Kuka Rd."
+        },
+        {
+          "name": "Maiduguri Rd."
+        },
+        {
+          "name": "Sabon Gari Junior Secondary School"
+        },
+        {
+          "name": "Yan Goro"
+        },
+        {
+          "name": "Juma Rd."
+        },
+        {
+          "name": "Area Court"
+        },
+        {
+          "name": "Gaya Rd."
+        },
+        {
+          "name": "Gidan Biski Rd."
+        },
+        {
+          "name": "Hanyar Farin Gida"
+        },
+        {
+          "name": "INEC Office"
+        },
+        {
+          "name": "Liberty Hotel"
+        },
+        {
+          "name": "Markatar Abba St."
+        },
+        {
+          "name": "Washo Rd."
+        },
+        {
+          "name": "Kofar Fada"
+        },
+        {
+          "name": "Gaban Komi"
+        },
+        {
+          "name": "Islamiyya School"
+        },
+        {
+          "name": "Kan Karofi"
+        },
+        {
+          "name": "Kofar Yamma"
+        },
+        {
+          "name": "Kukar Dabi"
+        },
+        {
+          "name": "Layin Alhaji Abba"
+        },
+        {
+          "name": "Mahauta"
+        },
+        {
+          "name": "Model Secondary School"
+        },
+        {
+          "name": "Police Station"
+        },
+        {
+          "name": "Tropical Commercial"
+        },
+        {
+          "name": "Bank"
+        },
+        {
+          "name": "Tsohuwar Kasuwa"
+        },
+        {
+          "name": "Unguwar Koko"
+        },
+        {
+          "name": "Women Center"
+        },
+        {
+          "name": "Wudil L.G. Education Dept."
+        },
+        {
+          "name": "Zango"
+        },
+        {
+          "name": "Kano State University"
+        },
+        {
+          "name": "Cattle Market"
+        },
+        {
+          "name": "Weekly Motor Part"
+        },
+        {
+          "name": "Wudil Comprehensive Health"
+        },
+        {
+          "name": "Health"
+        },
+        {
+          "name": "Bauchi Yal."
+        },
+        {
+          "name": "Fadi Sonka Rd."
+        },
+        {
+          "name": "G.G. Quarters Rd."
+        },
+        {
+          "name": "Gachi"
+        },
+        {
+          "name": "Local Government Quarters"
+        },
+        {
+          "name": "Rehabilitation Centre"
+        },
+        {
+          "name": "Total Petrol"
+        },
+        {
+          "name": "Wudil Company Health"
+        },
+        {
+          "name": "Local Government Secretariat"
+        },
+        {
+          "name": "Dugaji Oil"
+        },
+        {
+          "name": "Iyar Sarki"
+        },
+        {
+          "name": "KASCO"
+        },
+        {
+          "name": "Ministry of Education Zonal Office"
+        },
+        {
+          "name": "Unbulu"
+        },
+        {
+          "name": "Garindo"
+        },
+        {
+          "name": "Garindo Village"
+        },
+        {
+          "name": "Polac"
+        },
+        {
+          "name": "WRECA"
+        },
+        {
+          "name": "Police Barracks"
+        },
+        {
+          "name": "Police"
+        },
+        {
+          "name": "Post Office"
+        },
+        {
+          "name": "NITEL Office Barracks"
+        },
+        {
+          "name": "Jigawa"
+        },
+        {
+          "name": "Indabo Rd."
+        },
+        {
+          "name": "Juma Rd."
+        },
+        {
+          "name": "Katurje"
+        },
+        {
+          "name": "Jumar Dan Padal"
+        },
+        {
+          "name": "Shagari Quarters"
+        },
+        {
+          "name": "Sakau"
+        },
+        {
+          "name": "Shagari Quarters A"
+        },
+        {
+          "name": "State Primary Education Board"
+        },
+        {
+          "name": "Wudil (Rural Communities)"
+        },
+        {
+          "name": "Achika"
+        },
+        {
+          "name": "Audaga"
+        },
+        {
+          "name": "Bange"
+        },
+        {
+          "name": "Buda"
+        },
+        {
+          "name": "Dagumawa"
+        },
+        {
+          "name": "Dal"
+        },
+        {
+          "name": "Darki"
+        },
+        {
+          "name": "Gariko"
+        },
+        {
+          "name": "Garin Ali"
+        },
+        {
+          "name": "Guna"
+        },
+        {
+          "name": "Gware"
+        },
+        {
+          "name": "Indabo"
+        },
+        {
+          "name": "Juma"
+        },
+        {
+          "name": "Kafin Malami"
+        },
+        {
+          "name": "Kausani"
+        },
+        {
+          "name": "Kawo"
+        },
+        {
+          "name": "Kwas"
+        },
+        {
+          "name": "Lajawa"
+        },
+        {
+          "name": "Maida"
+        },
+        {
+          "name": "Makadi"
+        },
+        {
+          "name": "Makera"
+        },
+        {
+          "name": "Mandawari"
+        },
+        {
+          "name": "Raba"
+        },
+        {
+          "name": "Tsakuwadal"
+        },
+        {
+          "name": "Utai"
+        },
+        {
+          "name": "Wudil"
+        },
+        {
+          "name": "Yarka"
+        }
+      ]
+    }
+  ]
+}

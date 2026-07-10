@@ -68,9 +68,10 @@ export const getAccessibleFeeders = async (user) => {
 /**
  * Build a MongoDB query filter for feeder-based access control
  * @param {Object} user - The authenticated user object
+ * @param {string} [fieldName] - The field name to filter on (default: "feeder")
  * @returns {Promise<Object>} - MongoDB query object
  */
-export const getFeederQuery = async (user) => {
+export const getFeederQuery = async (user, fieldName = "feeder") => {
   // Super admin: no filter
   if (user.role === "super-admin") {
     return {};
@@ -78,11 +79,28 @@ export const getFeederQuery = async (user) => {
 
   // Regular admin: filter by assigned feeders
   if (user.role === "admin") {
-    const feederNames = await getAccessibleFeeders(user);
-    if (feederNames.length === 0) {
-      return { feeder: { $in: [] } }; // No access
+    if (!user.assignedFeeders || user.assignedFeeders.length === 0) {
+      return { _id: null };
     }
-    return { feeder: { $in: feederNames } };
+    
+    // Get feeder IDs (since assignedFeeders are ObjectIds)
+    const feederIds = user.assignedFeeders;
+    const feeders = await Feeder.find({ _id: { $in: feederIds } }).select('name _id');
+    const feederNames = feeders.map(f => f.name);
+    
+    // Build query based on field name type
+    if (fieldName === "feeder") {
+      // For reports: filter by feeder name
+      return { [fieldName]: { $in: feederNames } };
+    } else if (fieldName === "assignedFeeders") {
+      // For users: filter by assigned feeders (ObjectIds)
+      return { [fieldName]: { $in: feederIds } };
+    }
+    // Default: try both name and ID
+    return { $or: [
+      { [fieldName]: { $in: feederNames } },
+      { [fieldName]: { $in: feederIds } }
+    ]};
   }
 
   // Regular users: no records

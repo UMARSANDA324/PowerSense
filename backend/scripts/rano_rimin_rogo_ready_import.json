@@ -1,0 +1,588 @@
+[
+  {
+    "lga_name": "Rano",
+    "lga_id": "lga_rano",
+    "communities": [
+      {
+        "original_name": "Barnawa",
+        "name": "Barnawa",
+        "id": "rano_barnawa",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Burum",
+        "name": "Burum",
+        "id": "rano_burum",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Dususu",
+        "name": "Dususu",
+        "id": "rano_dususu",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Faran",
+        "name": "Faran",
+        "id": "rano_faran",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Fassi",
+        "name": "Fassi",
+        "id": "rano_fassi",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Fiyaran",
+        "name": "Fiyaran",
+        "id": "rano_fiyaran",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Gorabi",
+        "name": "Gorabi",
+        "id": "rano_gorabi",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Jellorawa",
+        "name": "Jellorawa",
+        "id": "rano_jellorawa",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Juma",
+        "name": "Juma",
+        "id": "rano_juma",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Kaiwa",
+        "name": "Kaiwa",
+        "id": "rano_kaiwa",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Kalambu",
+        "name": "Kalambu",
+        "id": "rano_kalambu",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Kundun",
+        "name": "Kundun",
+        "id": "rano_kundun",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Kunkura",
+        "name": "Kunkura",
+        "id": "rano_kunkura",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Lafsu",
+        "name": "Lafsu",
+        "id": "rano_lafsu",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Madaci",
+        "name": "Madaci",
+        "id": "rano_madaci",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Mashe",
+        "name": "Mashe",
+        "id": "rano_mashe",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Rano",
+        "name": "Rano",
+        "id": "rano_rano",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Rurum",
+        "name": "Rurum",
+        "id": "rano_rurum",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Saji",
+        "name": "Saji",
+        "id": "rano_saji",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Sanda",
+        "name": "Sanda",
+        "id": "rano_sanda",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Shike",
+        "name": "Shike",
+        "id": "rano_shike",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Tofa",
+        "name": "Tofa",
+        "id": "rano_tofa",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Torankawa",
+        "name": "Torankawa",
+        "id": "rano_torankawa",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Tsaure",
+        "name": "Tsaure",
+        "id": "rano_tsaure",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Tum",
+        "name": "Tum",
+        "id": "rano_tum",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Yado",
+        "name": "Yado",
+        "id": "rano_yado",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Yalwa",
+        "name": "Yalwa",
+        "id": "rano_yalwa",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Yankanchi",
+        "name": "Yankanchi",
+        "id": "rano_yankanchi",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Zambur",
+        "name": "Zambur",
+        "id": "rano_zambur",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Zanyau",
+        "name": "Zanyau",
+        "id": "rano_zanyau",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Zurgu",
+        "name": "Zurgu",
+        "id": "rano_zurgu",
+        "lga_id": "lga_rano",
+        "latitude": null,
+        "longitude": null
+      }
+    ]
+  },
+  {
+    "lga_name": "Rimin Gado",
+    "lga_id": "lga_rimin_gado",
+    "communities": [
+      {
+        "original_name": "Butubutu",
+        "name": "Butubutu",
+        "id": "rimin_gado_butubutu",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "D/Gulu",
+        "name": "D/Gulu",
+        "id": "rimin_gado_dgulu",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Dan Isa",
+        "name": "Dan Isa",
+        "id": "rimin_gado_dan_isa",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Gulu",
+        "name": "Gulu",
+        "id": "rimin_gado_gulu",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Indabo",
+        "name": "Indabo",
+        "id": "rimin_gado_indabo",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Janguza",
+        "name": "Janguza",
+        "id": "rimin_gado_janguza",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Jili",
+        "name": "Jili",
+        "id": "rimin_gado_jili",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Juli",
+        "name": "Juli",
+        "id": "rimin_gado_juli",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Karofi Yashi",
+        "name": "Karofi Yashi",
+        "id": "rimin_gado_karofi_yashi",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Maigari",
+        "name": "Maigari",
+        "id": "rimin_gado_maigari",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Rimin Gado",
+        "name": "Rimin Gado",
+        "id": "rimin_gado_rimin_gado",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Rinji",
+        "name": "Rinji",
+        "id": "rimin_gado_rinji",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Sakaratsa",
+        "name": "Sakaratsa",
+        "id": "rimin_gado_sakaratsa",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Tamawa",
+        "name": "Tamawa",
+        "id": "rimin_gado_tamawa",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Tuji",
+        "name": "Tuji",
+        "id": "rimin_gado_tuji",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Ungwan Rimi",
+        "name": "Ungwan Rimi",
+        "id": "rimin_gado_ungwan_rimi",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Wangara",
+        "name": "Wangara",
+        "id": "rimin_gado_wangara",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Yalwa",
+        "name": "Yalwa",
+        "id": "rimin_gado_yalwa",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Yan Kuni",
+        "name": "Yan Kuni",
+        "id": "rimin_gado_yan_kuni",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Yango",
+        "name": "Yango",
+        "id": "rimin_gado_yango",
+        "lga_id": "lga_rimin_gado",
+        "latitude": null,
+        "longitude": null
+      }
+    ]
+  },
+  {
+    "lga_name": "Rogo",
+    "lga_id": "lga_rogo",
+    "communities": [
+      {
+        "original_name": "Bari",
+        "name": "Bari",
+        "id": "rogo_bari",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Beli",
+        "name": "Beli",
+        "id": "rogo_beli",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Dan Sambo",
+        "name": "Dan Sambo",
+        "id": "rogo_dan_sambo",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Dederi",
+        "name": "Dederi",
+        "id": "rogo_dederi",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Falgore",
+        "name": "Falgore",
+        "id": "rogo_falgore",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Fulatan",
+        "name": "Fulatan",
+        "id": "rogo_fulatan",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Gidanjaro",
+        "name": "Gidanjaro",
+        "id": "rogo_gidanjaro",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Gwan Gwan",
+        "name": "Gwan Gwan",
+        "id": "rogo_gwan_gwan",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Kadafa",
+        "name": "Kadafa",
+        "id": "rogo_kadafa",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Kadana",
+        "name": "Kadana",
+        "id": "rogo_kadana",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Makwanyawa",
+        "name": "Makwanyawa",
+        "id": "rogo_makwanyawa",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Nasarawa",
+        "name": "Nasarawa",
+        "id": "rogo_nasarawa",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Rogo",
+        "name": "Rogo",
+        "id": "rogo_rogo",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Ruwanbago",
+        "name": "Ruwanbago",
+        "id": "rogo_ruwanbago",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Tsohuwar/Rogo",
+        "name": "Tsohuwar/Rogo",
+        "id": "rogo_tsohuwarrogo",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Uguwar Sundu",
+        "name": "Uguwar Sundu",
+        "id": "rogo_uguwar_sundu",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Ung. Makera",
+        "name": "Ung. Makera",
+        "id": "rogo_ung_makera",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Yammali",
+        "name": "Yammali",
+        "id": "rogo_yammali",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Zamfarawa",
+        "name": "Zamfarawa",
+        "id": "rogo_zamfarawa",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      },
+      {
+        "original_name": "Zarewa",
+        "name": "Zarewa",
+        "id": "rogo_zarewa",
+        "lga_id": "lga_rogo",
+        "latitude": null,
+        "longitude": null
+      }
+    ]
+  }
+]

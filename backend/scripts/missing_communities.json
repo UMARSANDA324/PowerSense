@@ -1,0 +1,182 @@
+[
+  {
+    "feeder": "AHMADU BELLO CLUB",
+    "location": "AHMADU BELLO WAYAND MURTALA MUHD WAY KANO",
+    "lineNumber": 1
+  },
+  {
+    "feeder": "AUDU BAKO CLUB",
+    "location": "AHMADU BELLO WAYAND MURTALA MUHD WAY KANO",
+    "lineNumber": 3
+  },
+  {
+    "feeder": "BOMPAI BRISCOE",
+    "location": "BOMPAI ROAD KANO",
+    "lineNumber": 5
+  },
+  {
+    "feeder": "DALA FOODS GONGONI",
+    "location": "SHARADA INDUSTRIAL KANO",
+    "lineNumber": 8
+  },
+  {
+    "feeder": "GWARZO ROAD  GWARZO ROAD BUK",
+    "location": "",
+    "lineNumber": 14
+  },
+  {
+    "feeder": "LAMBISA FARM CENTER",
+    "location": "HOTORO GRA, MAIDUGURI ROAD, KANO",
+    "lineNumber": 16
+  },
+  {
+    "feeder": "MAIMALARI BRISCOE",
+    "location": "MAIMALARI BOMPAI KANO",
+    "lineNumber": 17
+  },
+  {
+    "feeder": "TOKARAWA DAKATA",
+    "location": "FRANCE ROAD, KANO",
+    "lineNumber": 22
+  },
+  {
+    "feeder": "YUSUF ROAD BRISCOE",
+    "location": "YUSUF ROAD KANO",
+    "lineNumber": 24
+  },
+  {
+    "feeder": "ANGELS KUMBOTSO",
+    "location": "SHARADA INDUSTRIAL AREA",
+    "lineNumber": 26
+  },
+  {
+    "feeder": "ATM KUMBOTSO",
+    "location": "CHALLAWA INDUSTRIAL AREA",
+    "lineNumber": 27
+  },
+  {
+    "feeder": "CBN DAN AGUNDI",
+    "location": "ADO BAYERO MALL, BRISTOL HOTEL,STATE ROAD, AUDU BAKO WAY AND POST OFFICE ROAD KANO",
+    "lineNumber": 30
+  },
+  {
+    "feeder": "CLUB DAN AGUNDI TS KANO CLUB",
+    "location": "",
+    "lineNumber": 32
+  },
+  {
+    "feeder": "DAN AGUNDI 2 DAN AGUNDI TS DAN AGUNDI",
+    "location": ", BUK ROAD, KANO",
+    "lineNumber": 35
+  },
+  {
+    "feeder": "DANGOTE KUMBOTSO",
+    "location": "SHARADA INDUSTRIAL AREA",
+    "lineNumber": 36
+  },
+  {
+    "feeder": "MAMUDA KUMBOTSO",
+    "location": "CHALLAWA INDUSTRIAL AREA",
+    "lineNumber": 50
+  },
+  {
+    "feeder": "NB CERAMIC DANGORA",
+    "location": "NB CERAMIC CO K/DANGORA, ZARIA ROAD KANO",
+    "lineNumber": 52
+  },
+  {
+    "feeder": "RICE FIELD TAMBURAWA",
+    "location": "GWARZO ROAD, INDUSTRIAL AREA",
+    "lineNumber": 55
+  },
+  {
+    "feeder": "SHARADA BATA KUMBOTSO TS SHARADA BATA",
+    "location": "",
+    "lineNumber": 59
+  },
+  {
+    "feeder": "SPANISH 1 KUMBOTSO",
+    "location": "SHARADA INDUSTRIAL AREA",
+    "lineNumber": 61
+  },
+  {
+    "feeder": "SPANISH 2 KUMBOTSO",
+    "location": "SHARADA INDUSTRIAL AREA",
+    "lineNumber": 62
+  },
+  {
+    "feeder": "ZARIA ROAD DAN AGUNDI",
+    "location": "AKTH,NA'IBAWA, ZARIA ROAD KANO",
+    "lineNumber": 67
+  },
+  {
+    "feeder": "AJASA DAN AGUNDI",
+    "location": "KANO TRADE FARE, ZOO ROAD AND AJASA",
+    "lineNumber": 70
+  },
+  {
+    "feeder": "KARKASARA ZARIA ROAD",
+    "location": "KARKASARA, HASSAN GWARZO SECONDARY AND ROYAL CITY ESTATE.",
+    "lineNumber": 86
+  },
+  {
+    "feeder": "IDH DAKATA",
+    "location": "FRANCE ROAD, KANO",
+    "lineNumber": 107
+  },
+  {
+    "feeder": "BICHI TOWN BICHI",
+    "location": "BICHI MINI STADIUM, HAGAGAWA, FCE BICHI ROAD AND BICHI GENERAL HOSPITALS.",
+    "lineNumber": 115
+  },
+  {
+    "feeder": "FAGGE IDH",
+    "location": "FAGGE AND KOFAR WAMBAI AND ZAGE AREA.",
+    "lineNumber": 121
+  },
+  {
+    "feeder": "KANO ROAD IBB WAY",
+    "location": "IBB WAY, GORON GIDA AND RAFIN DADI",
+    "lineNumber": 130
+  },
+  {
+    "feeder": "KOFAR NAISA DAN AGUNDI",
+    "location": "KOFAR NAISA, GSS GWALE ROAD AND FILIN MUSHE.",
+    "lineNumber": 132
+  },
+  {
+    "feeder": "PANSHEKARA CHALAWA",
+    "location": "PANSHEKARA AND KUMBOTSO AREA.",
+    "lineNumber": 147
+  },
+  {
+    "feeder": "TIGA LAW SCHOOL",
+    "location": "BEBEJI AND TIGA TOWN.",
+    "lineNumber": 151
+  },
+  {
+    "feeder": "GAIDA KUMBOTSO",
+    "location": "GAIDA AND ZAWACHIKI HOUSING ESTATE.",
+    "lineNumber": 159
+  },
+  {
+    "feeder": "HON. ABUBAKAR BICHI",
+    "location": "BICHI METROPOLITAN",
+    "lineNumber": 162
+  },
+  {
+    "feeder": "KARAYE DANGORA",
+    "location": "KWANAR DANGORA, KIRU AND KARAYE TOWN.",
+    "lineNumber": 163
+  },
+  {
+    "feeder": "TUDUN WADA BRISCOE",
+    "location": "GAMA AND GAWAUNA AREA BRIGADE.",
+    "lineNumber": 185
+  },
+  {
+    "feeder": "BAGAUDA KUMBOTSO",
+    "location": "KUMBOTSO LGA, YANKUSA, DANGWAURO, KWANAR DAWAKI AND BUNKURE AREA.",
+    "lineNumber": 186
+  }
+]

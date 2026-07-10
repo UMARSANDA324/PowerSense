@@ -21,9 +21,33 @@ const powerStatusSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    estimatedNextOutage: {
+    expectedOutageTime: {
+        type: Date,
+        default: null
+    },
+    expectedRestoreTime: {
+        type: Date,
+        default: null
+    },
+    maintenanceStart: {
+        type: Date,
+        default: null
+    },
+    maintenanceEnd: {
+        type: Date,
+        default: null
+    },
+    reason: {
         type: String,
-        default: "TBD"
+        default: "Scheduled maintenance"
+    },
+    estimatedNextOutage: {
+        type: Date,
+        default: null
+    },
+    maintenanceReason: {
+        type: String,
+        default: "Scheduled maintenance"
     },
     updatedBy: {
         type: mongoose.Schema.Types.ObjectId,
