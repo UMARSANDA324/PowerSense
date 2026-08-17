@@ -18,9 +18,9 @@ const getBaseUrl = () => {
     resolvedUrl = `${rawUrl.trim().replace(/\/+$/, "")}/api/`;
   } else {
     // Fallback if VITE_API_URL is not set:
-    // In development, assume localhost:5000
+    // In development, assume localhost:5002
     // In production, assume same-domain relative path
-    resolvedUrl = import.meta.env.DEV ? "http://localhost:5000/api/" : "/api/";
+    resolvedUrl = import.meta.env.DEV ? "http://localhost:5002/api/" : "/api/";
   }
 
   console.log(`[API Config] Initializing Axios with baseURL: ${resolvedUrl}`);
@@ -30,10 +30,11 @@ const getBaseUrl = () => {
 // Configure Axios instance
 const api = axios.create({
   baseURL: getBaseUrl(),
+  timeout: 30000,
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: false, 
+  withCredentials: false,
 });
 
 // Add request interceptor: attach JWT token dynamically

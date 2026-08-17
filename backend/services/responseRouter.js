@@ -1,7 +1,7 @@
 import { templates } from "./responseTemplates.js";
 
 /**
- * PowerSense Response Routing Engine.
+ * Litha Response Routing Engine.
  * Selects the appropriate template builder based on intent and language, and runs it with context data.
  */
 export const routeResponse = ({ intent, context, isHausa }) => {

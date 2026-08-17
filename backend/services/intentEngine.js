@@ -1,5 +1,5 @@
 /**
- * PowerSense Deterministic Intent Detection Engine (Bilingual English/Hausa)
+ * Litha Deterministic Intent Detection Engine (Bilingual English/Hausa)
  */
 export const detectIntent = (query) => {
   const q = (query || "").toLowerCase().trim();

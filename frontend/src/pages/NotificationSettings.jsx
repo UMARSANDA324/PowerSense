@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Bell, Smartphone, Mail, X } from "lucide-react";
 import { getCurrentUser, updateProfile } from "../services/authService";
 import { useNavigate } from "react-router-dom";
+import CompanyBadge from "../components/CompanyBadge";
 
 const notificationOptions = [
   { value: "in-app", label: "In-App Notification", icon: <Bell className="text-blue-600" /> },
@@ -41,7 +42,8 @@ const NotificationSettings = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-blue-100 p-6">
-        <h2 className="text-2xl font-black text-blue-700 mb-6 text-center">Notification Settings</h2>
+        <h2 className="text-2xl font-black text-blue-700 mb-4 text-center">Notification Settings</h2>
+        <CompanyBadge prefix="Notifications from" variant="card" className="mb-6" />
         <div className="space-y-4 mb-8">
           {notificationOptions.map((option) => (
             <button

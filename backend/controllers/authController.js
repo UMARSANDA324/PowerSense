@@ -7,6 +7,16 @@ import crypto from "crypto";
 import Ward from "../models/Location/Ward.js";
 import Feeder from "../models/Location/Feeder.js";
 import mongoose from "mongoose";
+import { normalizeRole, getRoleDisplayInfo, getPermissionsForRole } from "../config/identityConfig.js";
+import { getDefaultCompany } from "../services/tenantResolver.js";
+import Platform from "../models/Platform.js";
+import Company from "../models/Company.js";
+import { publishPlatformEvent } from "../services/platformEventDispatcher.js";
+import { trackAnalyticsEvent } from "../services/analyticsTrackingService.js";
+import { tenantScopeStorage } from "../utils/tenantScope.js";
+import { isValidObjectId, toObjectId, parseResourceRef } from "../utils/objectIdUtils.js";
+import { applyReferralAttribution } from "../services/referralService.js";
+import { generateReferralCodeForUser } from "../utils/referralCodeGenerator.js";
 
 
 // @desc    Register a new user
@@ -16,7 +26,7 @@ export const registerUser = async (req, res) => {
   if (!req.body || Object.keys(req.body).length === 0) {
     return res.status(400).json({ message: "Request body is missing or empty" });
   }
-  let { fullName, email, password, phone, role, state, lga, ward, feeder } = req.body;
+  let { fullName, email, password, phone, role, country, state, lga, ward, feeder, referralCode } = req.body;
 
   if (!fullName || !email || !password) {
     return res.status(400).json({ message: "Please provide all required fields: fullName, email, password" });
@@ -44,6 +54,10 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User with this email already exists" });
     }
 
+    // Get default company for new user registration
+    const defaultCompany = await getDefaultCompany();
+    const companyId = defaultCompany ? defaultCompany._id : null;
+
     console.log(`[Register] Creating new user: ${email}`);
 
     const user = await User.create({
@@ -52,14 +66,49 @@ export const registerUser = async (req, res) => {
       password,
       phone,
       role: "user", // Enforce user role for public registration
+      country,
       state,
       lga,
       ward,
       feeder,
+      companyId: companyId // Associate with default company
     });
 
     if (user) {
       console.log(`[Register] ✅ Success: Created user ${user.email} (ID: ${user._id})`);
+
+      // Apply referral attribution if a code was provided
+      if (referralCode) {
+        try {
+          await applyReferralAttribution(user, referralCode);
+        } catch (attributionError) {
+          console.warn(`[Register] Referral attribution failed for ${user.email}:`, attributionError.message);
+        }
+      }
+
+      // Generate the user's own referral code so it's ready immediately
+      let newReferralCode = null;
+      try {
+        newReferralCode = await generateReferralCodeForUser(user._id);
+      } catch (genError) {
+        console.warn(`[Register] Failed to generate referral code for ${user.email}:`, genError.message);
+      }
+
+      publishPlatformEvent({
+        type: "user.created",
+        companyId: user.companyId,
+        data: { user: { _id: user._id, fullName: user.fullName, role: user.role } }
+      });
+
+      trackAnalyticsEvent({
+        eventName: "user_registered",
+        feature: "acquisition",
+        userId: user._id,
+        companyId: user.companyId,
+        role: user.role,
+        state: user.state,
+        metadata: { source: "public_registration" }
+      });
 
       // Return user data without sensitive information
       res.status(201).json({
@@ -70,12 +119,14 @@ export const registerUser = async (req, res) => {
           fullName: user.fullName,
           email: user.email,
           phone: user.phone,
+          country: user.country,
           state: user.state,
           lga: user.lga,
           ward: user.ward,
           feeder: user.feeder,
           role: user.role,
           notificationPreference: user.notificationPreference,
+          referralCode: newReferralCode
         },
         token: generateToken(user._id),
       });
@@ -99,20 +150,92 @@ export const registerUser = async (req, res) => {
 // @desc    Get user profile
 // @route   GET /api/auth/profile
 // @access  Private
-// Uses req.user already populated by protect middleware — no extra DB call needed.
 export const getUserProfile = async (req, res) => {
-  const user = req.user;
+  const user = await User.findById(req.user._id).select("-password").populate("assignedFeeders", "name _id");
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // Normalize role and get role info
+  const normalizedRole = normalizeRole(user.role);
+  const roleInfo = getRoleDisplayInfo(user.role);
+  const userPermissions = getPermissionsForRole(user.role);
+
+  let companyData = null;
+  if (normalizedRole !== "platform-owner" && user.companyId) {
+    companyData = await Company.findById(user.companyId).select("name shortName code logo").lean();
+  }
+  
+  // Platform metadata
+  let platformMetadata = null;
+  if (normalizedRole === 'platform-owner') {
+    try {
+      const platform = await Platform.getPlatform();
+      if (platform) {
+        platformMetadata = {
+          platformId: platform.platformId,
+          name: platform.name,
+          version: platform.version,
+          status: platform.status,
+          settings: platform.settings || {},
+          metadata: platform.metadata || {}
+        };
+      }
+    } catch (err) {
+      console.error("Error retrieving platform metadata in profile:", err);
+    }
+  }
+
+  // Add referral code to profile response
+  let referralCode = user.referralCode;
+  if (!referralCode) {
+    // Lazy generation for existing users without codes
+    try {
+      referralCode = await generateReferralCodeForUser(user._id);
+    } catch (err) {
+      console.warn("[Profile] Failed to lazy-generate referral code", err.message);
+    }
+  }
+
+  // Centralized navigation target calculation
+  let navigationTarget = "/";
+  if (normalizedRole === "platform-owner") {
+    navigationTarget = "/platform-owner";
+  } else if (normalizedRole === "company-super-admin" || normalizedRole === "super-admin") {
+    navigationTarget = "/super-admin-dashboard";
+  } else if (normalizedRole === "regional-admin" || normalizedRole === "admin") {
+    navigationTarget = "/admin-dashboard";
+  } else {
+    navigationTarget = "/dashboard";
+  }
+
   res.json({
     _id: user._id,
     fullName: user.fullName,
     email: user.email,
-    role: user.role,
+    role: user.role, // Original role for backward compatibility
+    normalizedRole: normalizedRole, // Normalized role for new systems
+    roleInfo: roleInfo, // Role metadata
+    permissions: userPermissions, // User permissions
     phone: user.phone || "",
     state: user.state || "",
     lga: user.lga || "",
     ward: user.ward || "",
     feeder: user.feeder || "",
+    assignedFeeders: user.assignedFeeders || [],
+    companyId: normalizedRole === "platform-owner" ? null : (user.companyId || null),
+    company: normalizedRole === "platform-owner" || !companyData ? null : {
+      _id: companyData._id,
+      name: companyData.name,
+      shortName: companyData.shortName,
+      code: companyData.code,
+      logo: companyData.logo || null
+    },
     notificationPreference: user.notificationPreference,
+    displayName: normalizedRole === "platform-owner" ? "Platform Owner" : user.fullName,
+    platformMetadata: platformMetadata || undefined,
+    navigationTarget,
+    referralCode
   });
 };
 
@@ -161,21 +284,57 @@ export const updateUserProfile = async (req, res) => {
         return res.status(404).json({ message: "User not found" });
       }
 
+      // Populate assignedFeeders for the response
+      const populatedUser = await User.findById(updatedUser._id).select("-password").populate("assignedFeeders", "name _id");
+      const normalizedRole = normalizeRole(populatedUser.role);
+      let platformMetadata = null;
+      if (normalizedRole === 'platform-owner') {
+        try {
+          const platform = await Platform.getPlatform();
+          if (platform) {
+            platformMetadata = {
+              platformId: platform.platformId,
+              name: platform.name,
+              version: platform.version,
+              status: platform.status,
+              settings: platform.settings || {},
+              metadata: platform.metadata || {}
+            };
+          }
+        } catch (err) {
+          console.error("Error retrieving platform metadata in fcm update:", err);
+        }
+      }
+      let navigationTarget = "/";
+      if (normalizedRole === "platform-owner") {
+        navigationTarget = "/platform-owner";
+      } else if (normalizedRole === "company-super-admin" || normalizedRole === "super-admin") {
+        navigationTarget = "/super-admin-dashboard";
+      } else if (normalizedRole === "regional-admin" || normalizedRole === "admin") {
+        navigationTarget = "/admin-dashboard";
+      } else {
+        navigationTarget = "/dashboard";
+      }
+
       return res.json({
-        _id: updatedUser._id,
-        fullName: updatedUser.fullName,
-        email: updatedUser.email,
-        role: updatedUser.role,
-        phone: updatedUser.phone || "",
-        state: updatedUser.state || "",
-        lga: updatedUser.lga || "",
-        ward: updatedUser.ward || "",
-        feeder: updatedUser.feeder || "",
-        notificationPreference: updatedUser.notificationPreference,
-        businessModeEnabled: updatedUser.businessModeEnabled || false,
-        businessType: updatedUser.businessType || "other",
-        businessRiskScore: updatedUser.businessRiskScore || 0,
-        token: generateToken(updatedUser._id),
+        _id: populatedUser._id,
+        fullName: populatedUser.fullName,
+        email: populatedUser.email,
+        role: populatedUser.role,
+        phone: populatedUser.phone || "",
+        state: populatedUser.state || "",
+        lga: populatedUser.lga || "",
+        ward: populatedUser.ward || "",
+        feeder: populatedUser.feeder || "",
+        assignedFeeders: populatedUser.assignedFeeders || [],
+        notificationPreference: populatedUser.notificationPreference,
+        businessModeEnabled: populatedUser.businessModeEnabled || false,
+        businessType: populatedUser.businessType || "other",
+        businessRiskScore: populatedUser.businessRiskScore || 0,
+        token: generateToken(populatedUser._id),
+        displayName: normalizedRole === "platform-owner" ? "Platform Owner" : populatedUser.fullName,
+        platformMetadata: platformMetadata || undefined,
+        navigationTarget
       });
     }
 
@@ -214,11 +373,22 @@ export const updateUserProfile = async (req, res) => {
 
     if (body.ward) {
       user.ward = body.ward;
-      // Automatically resolve feeder based on new ward
+      // Automatically resolve feeder based on new ward safely
       try {
-        const wardObj = await Ward.findOne({ name: body.ward });
+        const ref = parseResourceRef(body.ward);
+        const wardQuery = ref.isObjectId
+          ? { _id: ref.id }
+          : { $or: [{ name: ref.name }, { wardName: ref.name }, { id: ref.name }] };
+        const wardObj = await Ward.findOne(wardQuery);
         if (wardObj) {
-          const feederObj = await Feeder.findOne({ wards: wardObj._id });
+          const feederObj = await Feeder.findOne({
+            $or: [
+              { wards: wardObj._id },
+              { wardIds: wardObj._id },
+              { ward: wardObj._id },
+              { communityIds: wardObj._id }
+            ]
+          });
           if (feederObj) {
             user.feeder = feederObj.name;
             console.log(`Auto-updated feeder to: ${feederObj.name} for ward: ${body.ward}`);
@@ -242,21 +412,57 @@ export const updateUserProfile = async (req, res) => {
 
     const updatedUser = await user.save();
 
+    // Populate assignedFeeders for the response
+    const populatedUser = await User.findById(updatedUser._id).select("-password").populate("assignedFeeders", "name _id");
+    const normalizedRole = normalizeRole(populatedUser.role);
+    let platformMetadata = null;
+    if (normalizedRole === 'platform-owner') {
+      try {
+        const platform = await Platform.getPlatform();
+        if (platform) {
+          platformMetadata = {
+            platformId: platform.platformId,
+            name: platform.name,
+            version: platform.version,
+            status: platform.status,
+            settings: platform.settings || {},
+            metadata: platform.metadata || {}
+          };
+        }
+      } catch (err) {
+        console.error("Error retrieving platform metadata in full update:", err);
+      }
+    }
+    let navigationTarget = "/";
+    if (normalizedRole === "platform-owner") {
+      navigationTarget = "/platform-owner";
+    } else if (normalizedRole === "company-super-admin" || normalizedRole === "super-admin") {
+      navigationTarget = "/super-admin-dashboard";
+    } else if (normalizedRole === "regional-admin" || normalizedRole === "admin") {
+      navigationTarget = "/admin-dashboard";
+    } else {
+      navigationTarget = "/dashboard";
+    }
+
     res.json({
-      _id: updatedUser._id,
-      fullName: updatedUser.fullName,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      phone: updatedUser.phone || "",
-      state: updatedUser.state || "",
-      lga: updatedUser.lga || "",
-      ward: updatedUser.ward || "",
-      feeder: updatedUser.feeder || "",
-      notificationPreference: updatedUser.notificationPreference,
-      businessModeEnabled: updatedUser.businessModeEnabled || false,
-      businessType: updatedUser.businessType || "other",
-      businessRiskScore: updatedUser.businessRiskScore || 0,
-      token: generateToken(updatedUser._id),
+      _id: populatedUser._id,
+      fullName: populatedUser.fullName,
+      email: populatedUser.email,
+      role: populatedUser.role,
+      phone: populatedUser.phone || "",
+      state: populatedUser.state || "",
+      lga: populatedUser.lga || "",
+      ward: populatedUser.ward || "",
+      feeder: populatedUser.feeder || "",
+      assignedFeeders: populatedUser.assignedFeeders || [],
+      notificationPreference: populatedUser.notificationPreference,
+      businessModeEnabled: populatedUser.businessModeEnabled || false,
+      businessType: populatedUser.businessType || "other",
+      businessRiskScore: populatedUser.businessRiskScore || 0,
+      token: generateToken(populatedUser._id),
+      displayName: normalizedRole === "platform-owner" ? "Platform Owner" : populatedUser.fullName,
+      platformMetadata: platformMetadata || undefined,
+      navigationTarget
     });
   } catch (error) {
     console.error("updateUserProfile error:", error);
@@ -301,11 +507,9 @@ export const loginUser = async (req, res) => {
     }
 
     // Explicitly select password to ensure it's available for matchPassword
-    const user = await User.findOne({ email }).select("+password");
-    console.log(`[Login DB Debug] User.findOne() for ${email} returned: ${user ? 'FOUND (ID: ' + user._id + ')' : 'NULL'}`);
+    const user = await User.findOne({ email }).select("+password").populate("assignedFeeders", "name _id");
 
     if (!user) {
-      console.warn(`[Login] ❌ User not found: ${email}`);
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
@@ -314,7 +518,6 @@ export const loginUser = async (req, res) => {
     }
 
     if (!user.isActive) {
-      console.warn(`[Login] ❌ Account deactivated: ${email}`);
       return res.status(401).json({
         success: false,
         message: "Your account has been deactivated. Please contact support.",
@@ -322,9 +525,23 @@ export const loginUser = async (req, res) => {
       });
     }
 
+    // Task 5: Block Admin/SuperAdmin login for suspended companies
+    const adminRoles = ["admin", "super-admin", "company-super-admin", "regional-admin"];
+    if (adminRoles.includes(user.role) && user.companyId) {
+      const userCompanyDoc = await Company.findById(user.companyId).select("status name suspension");
+      if (userCompanyDoc && userCompanyDoc.status === "suspended") {
+        return res.status(403).json({
+          success: false,
+          message: `Access denied. Your company (${userCompanyDoc.name}) has been suspended. Please contact the Platform Owner.`,
+          code: "COMPANY_SUSPENDED",
+          suspensionReason: userCompanyDoc.suspension?.reason || "No reason provided",
+          suspendedAt: userCompanyDoc.suspension?.suspendedAt
+        });
+      }
+    }
+
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      console.warn(`[Login] ❌ Password mismatch for: ${email}`);
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
@@ -338,6 +555,83 @@ export const loginUser = async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
+    trackAnalyticsEvent({
+      eventName: "user_login",
+      feature: "retention",
+      userId: user._id,
+      companyId: user.companyId,
+      role: user.role,
+      state: user.state
+    });
+
+    // Normalize role for consistent response
+    const normalizedRole = normalizeRole(user.role);
+    const roleInfo = getRoleDisplayInfo(user.role);
+    const userPermissions = getPermissionsForRole(user.role);
+
+    // Development logging (Task 11)
+    if (normalizedRole === "platform-owner" && process.env.NODE_ENV !== "production") {
+      console.log(`Platform Owner Login: ${user.email}`);
+    }
+
+    // Platform metadata
+    let platformMetadata = null;
+    if (normalizedRole === 'platform-owner') {
+      try {
+        const platform = await Platform.getPlatform();
+        if (platform) {
+          platformMetadata = {
+            platformId: platform.platformId,
+            name: platform.name,
+            version: platform.version,
+            status: platform.status,
+            settings: platform.settings || {},
+            metadata: platform.metadata || {}
+          };
+        } else {
+          platformMetadata = {
+            platformId: 'LITHA_PLATFORM',
+            name: 'Nikola Platform',
+            version: '1.0.0',
+            status: 'active',
+            settings: {},
+            metadata: {}
+          };
+        }
+      } catch (err) {
+        console.error("Error retrieving platform metadata:", err);
+        platformMetadata = {
+          platformId: 'LITHA_PLATFORM',
+          name: 'Nikola Platform',
+          version: '1.0.0',
+          status: 'active',
+          settings: {},
+          metadata: {}
+        };
+      }
+    }
+
+    // Centralized navigation target calculation (Task 3)
+    let navigationTarget = "/";
+    if (normalizedRole === "platform-owner") {
+      navigationTarget = "/platform-owner";
+    } else if (normalizedRole === "company-super-admin" || normalizedRole === "super-admin") {
+      navigationTarget = "/super-admin-dashboard";
+    } else if (normalizedRole === "regional-admin" || normalizedRole === "admin") {
+      navigationTarget = "/admin-dashboard";
+    } else {
+      navigationTarget = "/dashboard";
+    }
+
+    let companyData = null;
+    if (normalizedRole !== "platform-owner" && user.companyId) {
+      try {
+        companyData = await Company.findById(user.companyId).select("name shortName code logo").lean();
+      } catch (e) {
+        console.warn(`[Login] Error finding company by ID (${user.companyId}):`, e.message);
+      }
+    }
+
     res.json({
       success: true,
       message: "Login successful",
@@ -349,12 +643,27 @@ export const loginUser = async (req, res) => {
         state: user.state,
         lga: user.lga,
         ward: user.ward,
-        role: user.role,
+        role: user.role, // Original role for backward compatibility
+        normalizedRole: normalizedRole, // Normalized role for new systems
+        roleInfo: roleInfo, // Role metadata
+        permissions: userPermissions, // User permissions
         feeder: user.feeder,
+        assignedFeeders: user.assignedFeeders || [],
+        companyId: user.companyId || companyData?._id,
+        company: companyData ? { _id: companyData._id, name: companyData.name, shortName: companyData.shortName, code: companyData.code, logo: companyData.logo || null } : null,
         notificationPreference: user.notificationPreference,
         lastLogin: user.lastLogin,
+        displayName: normalizedRole === "platform-owner" ? "Platform Owner" : user.fullName,
+        platformMetadata: platformMetadata || undefined,
+        navigationTarget
       },
       token: generateToken(user._id),
+      // Task 2 specific top-level fields
+      role: normalizedRole,
+      displayName: normalizedRole === "platform-owner" ? "Platform Owner" : (roleInfo.name || "Verified User"),
+      platformMetadata: platformMetadata || undefined,
+      permissions: userPermissions,
+      navigationTarget
     });
   } catch (error) {
     console.error(`[Login] Error for ${email}:`, error);
@@ -408,14 +717,14 @@ export const forgotPassword = async (req, res) => {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
         <h2 style="color: #2563eb; text-align: center;">Password Reset OTP</h2>
         <p>Hello <strong>${user.fullName}</strong>,</p>
-        <p>You requested a password reset for your PowerSense account. Your One-Time Password (OTP) is:</p>
+        <p>You requested a password reset for your Nikola account. Your One-Time Password (OTP) is:</p>
         <div style="text-align: center; margin: 30px 0;">
           <span style="display: inline-block; background-color: #f3f4f6; color: #2563eb; padding: 15px 30px; font-size: 24px; font-weight: bold; border-radius: 5px; letter-spacing: 5px; border: 1px dashed #2563eb;">${otp}</span>
         </div>
         <p>This OTP will expire in <strong>10 minutes</strong>. Do not share this code with anyone.</p>
         <p>If you did not request this, please ignore this email.</p>
         <hr style="border: none; border-top: 1px solid #eeeeee; margin: 20px 0;">
-        <p style="font-size: 12px; color: #666666; text-align: center;">PowerSense &copy; 2024</p>
+        <p style="font-size: 12px; color: #666666; text-align: center;">Nikola &copy; 2024</p>
       </div>
     `;
 
@@ -432,7 +741,7 @@ export const forgotPassword = async (req, res) => {
       console.log(`[ForgotPassword] Attempting to send OTP email to ${user.email}...`);
       await sendEmailWithTimeout({
         email: user.email,
-        subject: "PowerSense Password Reset OTP",
+        subject: "Nikola Password Reset OTP",
         html: message,
       });
       console.log(`[ForgotPassword] ✅ Email sent successfully to ${user.email}`);

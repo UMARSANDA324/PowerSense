@@ -20,7 +20,18 @@ export const runPredictions = asyncHandler(async (req, res) => {
 // @route   GET /api/predictions
 // @access  Protected
 export const listPredictions = asyncHandler(async (req, res) => {
-  const items = await Prediction.find().sort({ generatedAt: -1 }).limit(100);
+  // CRITICAL: Apply tenant filtering to prevent cross-tenant data leakage
+  const companyId = req.user?.companyId || null;
+  const filter = companyId ? { companyId } : {};
+  
+  // Platform owners can see all predictions, others only their company's
+  if (req.user?.role !== 'platform-owner') {
+    if (!companyId) {
+      return res.json({ success: true, items: [] });
+    }
+  }
+  
+  const items = await Prediction.find(filter).sort({ generatedAt: -1 }).limit(100);
   res.json({ success: true, items });
 });
 

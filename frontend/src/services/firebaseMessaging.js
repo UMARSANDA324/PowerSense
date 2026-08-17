@@ -25,31 +25,35 @@ if (isFirebaseConfigValid) {
 }
 
 export const requestNotificationPermission = async () => {
+  // If permission was previously denied, do not prompt again. The user must manually enable notifications via browser settings.
+  if (Notification.permission === "denied") {
+    console.warn("Notifications are blocked. Prompt the user to enable them via browser settings.");
+    return null;
+  }
+
   if (!isFirebaseConfigValid || !messaging) {
     console.warn("FCM: Firebase config is invalid or messaging not initialized.");
     return null;
   }
+
   try {
     console.log("Requesting notification permission...");
     const permission = await Notification.requestPermission();
     console.log("Notification permission state:", permission);
-    
+
     if (permission === "granted") {
       console.log("Permission granted. Registering service worker...");
-      if ('serviceWorker' in navigator) {
-        // Register or get existing service worker
-        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      if ("serviceWorker" in navigator) {
+        const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
         console.log("Service Worker active with scope:", registration.scope);
-      
         console.log("Fetching FCM token...");
         const token = await getToken(messaging, {
           vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
           serviceWorkerRegistration: registration
         });
-        
+
         if (token) {
           console.log("FCM Token generated successfully:", token);
-          // Send token to backend to associate with user profile
           try {
             await updateProfile({ fcmToken: token, deviceType: "web" });
             console.log("FCM Token synced with backend.");
@@ -63,7 +67,7 @@ export const requestNotificationPermission = async () => {
       } else {
         console.warn("Service workers are not supported in this browser.");
       }
-    } else {
+    } else if (permission === "denied") {
       console.warn("Notification permission denied/dismissed.");
     }
   } catch (error) {

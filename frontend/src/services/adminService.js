@@ -74,6 +74,11 @@ const adminService = {
     return response.data;
   },
 
+  promoteUserToAdmin: async (id, promotionData) => {
+    const response = await api.put(`admin/promote-to-admin/${id}`, promotionData);
+    return response.data;
+  },
+
   // Location Management
   createState: async (name) => {
     const response = await api.post("location/state", { name });
@@ -117,6 +122,22 @@ const adminService = {
 
   updateFeeder: async (id, feederData) => {
     const response = await api.put(`location/feeder/${id}`, feederData);
+    return response.data;
+  },
+  getInjectionSubstations: async () => {
+    const response = await api.get("location/injection-substations");
+    return response.data;
+  },
+  createInjectionSubstation: async (substationData) => {
+    const response = await api.post("location/injection-substation", substationData);
+    return response.data;
+  },
+  updateInjectionSubstation: async (id, substationData) => {
+    const response = await api.put(`location/injection-substation/${id}`, substationData);
+    return response.data;
+  },
+  deleteInjectionSubstation: async (id) => {
+    const response = await api.delete(`location/injection-substation/${id}`);
     return response.data;
   }
 };

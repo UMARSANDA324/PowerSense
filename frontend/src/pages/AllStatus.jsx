@@ -108,20 +108,17 @@ const AllStatus = () => {
 
     // Handle search/filter
     useEffect(() => {
-        if (!searchTerm.trim()) {
+        const cleanSearch = searchTerm.trim().replace(/\s+/g, " ").toLowerCase();
+        if (!cleanSearch) {
             setFilteredFeeders(feeders);
         } else {
-            const searchLower = searchTerm.toLowerCase();
             const filtered = feeders.filter((feeder) => {
-                // Support multiple wards per feeder
-                const wardNames = feeder.wards?.map(w => w.name?.toLowerCase() || "") || [];
-                const feederName = feeder.name?.toLowerCase() || "";
-                const lgaNames = feeder.wards?.map(w => w.lga?.name?.toLowerCase() || "") || [];
+                const wardNames = feeder.wards?.map(w => (w.name || "").trim().replace(/\s+/g, " ").toLowerCase()) || [];
+                const feederName = (feeder.name || "").trim().replace(/\s+/g, " ").toLowerCase();
 
                 return (
-                    wardNames.some(name => name.includes(searchLower)) ||
-                    feederName.includes(searchLower) ||
-                    lgaNames.some(name => name.includes(searchLower))
+                    feederName.includes(cleanSearch) ||
+                    wardNames.some(name => name.includes(cleanSearch))
                 );
             });
             setFilteredFeeders(filtered);
@@ -286,46 +283,44 @@ const AllStatus = () => {
                                         </h3>
 
                                         {/* Location Details */}
-                                        <div className="space-y-3 mb-6">
-                                            <div className="flex items-start gap-3">
-                                                <MapPin size={18} className="text-blue-600 mt-1 flex-shrink-0" />
-                                                <div>
-                                                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">
-                                                        Ward
-                                                    </p>
-                                                    <p className="text-gray-800 font-bold">
-                                                        {feeder.ward?.name || "Not specified"}
-                                                    </p>
-                                                </div>
+                                        <div className="space-y-4 mb-6">
+                                            <div>
+                                                <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">
+                                                    Official Band
+                                                </p>
+                                                <p className="text-gray-800 font-bold">
+                                                    Band {feeder.band || "N/A"}
+                                                </p>
                                             </div>
 
-                                            {feeder.ward?.lga && (
-                                                <div className="flex items-start gap-3">
-                                                    <MapPin size={18} className="text-blue-600 mt-1 flex-shrink-0" />
-                                                    <div>
-                                                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">
-                                                            LGA
-                                                        </p>
-                                                        <p className="text-gray-800 font-bold">
-                                                            {feeder.ward.lga.name}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {feeder.ward?.lga?.state && (
-                                                <div className="flex items-start gap-3">
-                                                    <MapPin size={18} className="text-blue-600 mt-1 flex-shrink-0" />
-                                                    <div>
-                                                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">
-                                                            State
-                                                        </p>
-                                                        <p className="text-gray-800 font-bold">
-                                                            {feeder.ward.lga.state.name}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
+                                            <div>
+                                                <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-2">
+                                                    Serving Wards
+                                                </p>
+                                                {(() => {
+                                                    const wardsList = feeder.wards && feeder.wards.length > 0 
+                                                        ? feeder.wards 
+                                                        : (feeder.ward ? [feeder.ward] : []);
+                                                    if (wardsList.length > 0) {
+                                                        return (
+                                                            <div className="space-y-1 text-sm font-semibold text-gray-700">
+                                                                {wardsList.map((ward) => (
+                                                                    <p key={ward._id || ward.name} className="flex items-center gap-1.5">
+                                                                        <span className="text-blue-500">•</span>
+                                                                        {ward.name}
+                                                                    </p>
+                                                                ))}
+                                                            </div>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <p className="text-sm font-medium text-gray-400 italic">
+                                                                No wards assigned yet.
+                                                            </p>
+                                                        );
+                                                    }
+                                                })()}
+                                            </div>
                                         </div>
 
                                         {/* User Area Indicator */}

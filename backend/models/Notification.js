@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../utils/tenantScope.js";
 
 const notificationSchema = new mongoose.Schema(
     {
@@ -38,8 +39,16 @@ const notificationSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        companyId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Company",
+            required: true,
+            index: true
+        }
     },
     { timestamps: true }
 );
+
+notificationSchema.plugin(tenantScopedSchema);
 
 export default mongoose.model("Notification", notificationSchema);

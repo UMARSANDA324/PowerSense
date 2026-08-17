@@ -9,7 +9,13 @@
     "dev": "nodemon server.js",
     "geocode:kano-wards": "node scripts/geocodeKanoWards.js",
     "import:kano-feeders": "node scripts/importKanoFeeders.js",
-    "test": "node test/testAuth.js"
+    "test": "node test/testAuth.js",
+    "smoke": "node scripts/smoke.js",
+    "health": "node scripts/health.js",
+    "doctor": "node scripts/doctor.js",
+    "verify": "node scripts/verify.js",
+    "prepare-release": "node scripts/prepare-release.js",
+    "migrate:tenant": "node scripts/migrateToTenant.js"
   },
   "keywords": [],
   "author": "",

@@ -168,7 +168,7 @@ if (!hasAccess) return res.status(403).json({ ... });
 {
   _id: ObjectId,
   fullName: "John Admin",
-  email: "john@powersense.com",
+  email: "john@LITHA.com",
   role: "admin",
   assignedFeeders: [
     ObjectId("feeder_sheka_id"),

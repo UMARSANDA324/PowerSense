@@ -1,7 +1,7 @@
-# PowerSense Role-Based Feeder Assignment Implementation
+# LITHA Role-Based Feeder Assignment Implementation
 
 ## Overview
-This document outlines the implementation of a comprehensive Role-Based Access Control (RBAC) system with Feeder-based Permission Control for the PowerSense platform.
+This document outlines the implementation of a comprehensive Role-Based Access Control (RBAC) system with Feeder-based Permission Control for the LITHA platform.
 
 ---
 

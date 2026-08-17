@@ -26,6 +26,8 @@ export const register = async (userData) => {
 export const logout = () => {
   localStorage.removeItem("user");
   localStorage.removeItem("token");
+  sessionStorage.clear();
+  window.dispatchEvent(new Event("tenant-logout"));
 };
 
 export const getCurrentUser = () => {
@@ -75,5 +77,15 @@ export const verifyOTP = async (email, otp) => {
 
 export const resetPassword = async (email, otp, password) => {
   const response = await api.post("auth/reset-password", { email, otp, password });
+  return response.data;
+};
+
+export const getMyReferralInfo = async () => {
+  const response = await api.get("referral/me");
+  return response.data;
+};
+
+export const resolveReferralCode = async (code) => {
+  const response = await api.get(`referral/resolve/${encodeURIComponent(code)}`);
   return response.data;
 };

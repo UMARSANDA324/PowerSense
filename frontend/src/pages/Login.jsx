@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Mail, Lock, AlertCircle } from "lucide-react";
-import { login } from "../services/authService";
+import nikolaLogo from "../assets/images/nikola.jpeg";
+import { login as serviceLogin } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
+  const { login: contextLogin } = useAuth();
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,9 +23,27 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      await login(email, password);
-      // Redirect to the intended page or Home
-      navigate(redirect, { replace: true });
+      const res = await serviceLogin(email, password);
+      contextLogin(res.user, res.token);
+
+      // Development logging (Task 11)
+      if (res.user?.role === "platform-owner" && import.meta.env.DEV) {
+        console.log("Platform Owner Login");
+      }
+
+      // Centralized redirection (Task 3)
+      let targetRoute = redirect;
+      if (res.user?.role === "platform-owner") {
+        targetRoute = "/platform-owner";
+      } else if (res.navigationTarget) {
+        targetRoute = res.navigationTarget;
+      } else if (res.user?.role === "super-admin" || res.user?.role === "company-super-admin") {
+        targetRoute = "/super-admin-dashboard";
+      } else if (res.user?.role === "admin" || res.user?.role === "regional-admin") {
+        targetRoute = "/admin-dashboard";
+      }
+
+      navigate(targetRoute, { replace: true });
     } catch (err) {
       const msg = err.response?.data?.message || "Login failed. Please check your credentials.";
       setError(msg);
@@ -40,9 +61,9 @@ const Login = () => {
       >
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">
-            Welcome Back <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+            Welcome Back <img src={nikolaLogo} alt="Nikola Logo" className="w-8 h-8 object-contain rounded-xl" />
           </h2>
-          <p className="text-gray-500">Login to your PowerSense account</p>
+          <p className="text-gray-500">Login to your Nikola account</p>
         </div>
 
         {/* Error Banner */}

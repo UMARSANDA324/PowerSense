@@ -42,10 +42,19 @@ export const hasFeederAccess = async (user, feederIdentifier) => {
  * @returns {Promise<Array>} - Array of feeder names
  */
 export const getAccessibleFeeders = async (user) => {
-  // Super admin has access to all feeders
-  if (user.role === "super-admin") {
-    const allFeeders = await Feeder.find();
-    return allFeeders.map(f => f.name);
+  // Platform owner has access to all feeders
+  if (user.role === "platform-owner" || user.role === "super-admin") {
+    // CRITICAL: Apply tenant filtering even for super-admin to prevent cross-tenant data leakage
+    // Platform owners can see all feeders, but company-super-admins should only see their company's feeders
+    if (user.role === "platform-owner") {
+      const allFeeders = await Feeder.find();
+      return allFeeders.map(f => f.name);
+    } else if (user.companyId) {
+      const companyFeeders = await Feeder.find({ companyId: user.companyId });
+      return companyFeeders.map(f => f.name);
+    } else {
+      return [];
+    }
   }
 
   // Regular admin gets only their assigned feeders
@@ -72,9 +81,17 @@ export const getAccessibleFeeders = async (user) => {
  * @returns {Promise<Object>} - MongoDB query object
  */
 export const getFeederQuery = async (user, fieldName = "feeder") => {
-  // Super admin: no filter
-  if (user.role === "super-admin") {
+  // Platform owner: no filter (global access)
+  if (user.role === "platform-owner") {
     return {};
+  }
+
+  // Super admin: filter by company to prevent cross-tenant data leakage
+  if (user.role === "super-admin") {
+    if (user.companyId) {
+      return { companyId: user.companyId };
+    }
+    return { _id: null }; // No company ID, no access
   }
 
   // Regular admin: filter by assigned feeders

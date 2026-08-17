@@ -1,5 +1,6 @@
 import { ArrowLeft, Shield, Info, MessageSquare, Bell, ScrollText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import nikolaLogo from "../assets/images/nikola.jpeg";
 
 const AboutUs = () => {
     const navigate = useNavigate();
@@ -15,7 +16,7 @@ const AboutUs = () => {
                     >
                         <ArrowLeft size={20} />
                     </button>
-                    <h1 className="text-2xl font-black text-gray-900">About PowerSense</h1>
+                    <h1 className="text-2xl font-black text-gray-900">About Nikola</h1>
                 </div>
             </div>
 
@@ -26,14 +27,14 @@ const AboutUs = () => {
                         <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
                             <Info size={24} />
                         </div>
-                        <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">What is PowerSense?</h2>
+                        <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">What is Nikola?</h2>
                     </div>
                     <p className="text-gray-600 leading-relaxed font-medium">
-                        PowerSense is a cutting-edge energy management and monitoring platform designed to empower communities with real-time electricity intelligence. Our system bridges the gap between power utility providers and consumers, providing transparency and actionable data to help you navigate everyday power needs.
+                        Nikola is a cutting-edge energy management and monitoring platform designed to empower communities with real-time electricity intelligence. Inspired by pioneer Nikola Tesla, our system bridges the gap between power utility providers and consumers, providing transparency and actionable data to help you navigate everyday power needs.
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="p-5 rounded-3xl bg-blue-50 border border-blue-100/50 space-y-3">
-                            <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" />
+                            <img src={nikolaLogo} alt="Nikola Logo" className="w-6 h-6 object-contain rounded-lg" />
                             <h3 className="font-bold text-gray-900">Live Status</h3>
                             <p className="text-sm text-gray-500 font-medium leading-relaxed">Instantly check if your grid is currently powered or experiencing an outage.</p>
                         </div>
@@ -55,7 +56,7 @@ const AboutUs = () => {
                     </div>
                     <div className="space-y-4">
                         <p className="text-gray-600 leading-relaxed font-medium">
-                            The primary purpose of PowerSense is to reduce the uncertainty associated with electricity supply. By providing a centralized hub for status tracking and reporting, we help users:
+                            The primary purpose of Nikola is to reduce the uncertainty associated with electricity supply. By providing a centralized hub for status tracking and reporting, we help users:
                         </p>
                         <ul className="space-y-4">
                             {[
@@ -90,14 +91,14 @@ const AboutUs = () => {
                         <div className="space-y-3">
                             <h4 className="font-black text-xs text-blue-600 uppercase tracking-widest">1. Proper Use of the Platform</h4>
                             <p className="text-sm text-gray-600 font-medium leading-relaxed">
-                                Users must use PowerSense solely for lawful purposes related to energy monitoring and reporting. Any attempt to disrupt the service, upload malicious content, or provide fraudulent reports is strictly prohibited.
+                                Users must use Nikola solely for lawful purposes related to energy monitoring and reporting. Any attempt to disrupt the service, upload malicious content, or provide fraudulent reports is strictly prohibited.
                             </p>
                         </div>
 
                         <div className="space-y-3">
                             <h4 className="font-black text-xs text-blue-600 uppercase tracking-widest">2. Accuracy of Information</h4>
                             <p className="text-sm text-gray-600 font-medium leading-relaxed">
-                                While we strive for 100% accuracy, electricity status data depends on community input and infrastructure feedback. PowerSense is not responsible for decisions made based on intermittent status delays.
+                                While we strive for 100% accuracy, electricity status data depends on community input and infrastructure feedback. Nikola is not responsible for decisions made based on intermittent status delays.
                             </p>
                         </div>
 
@@ -118,13 +119,13 @@ const AboutUs = () => {
                         <div className="space-y-3">
                             <h4 className="font-black text-xs text-blue-600 uppercase tracking-widest">5. Limitation of Liability</h4>
                             <p className="text-sm text-gray-600 font-medium leading-relaxed">
-                                PowerSense provides information as a service. We are not a power distribution company and are not liable for any physical damage or financial loss resulting from power outages or grid malfunctions.
+                                Nikola provides information as a service. We are not a power distribution company and are not liable for any physical damage or financial loss resulting from power outages or grid malfunctions.
                             </p>
                         </div>
                     </div>
                     
                     <p className="text-[10px] text-gray-400 font-bold text-center uppercase tracking-widest">
-                        Last Updated: March 2024 • PowerSense v1.0.4
+                        Last Updated: March 2024 • Nikola v1.0.4
                     </p>
                 </section>
             </main>

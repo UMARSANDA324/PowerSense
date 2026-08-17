@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../../utils/tenantScope.js";
 
 const coordinatesSchema = new mongoose.Schema({
   country: {
@@ -57,10 +58,19 @@ const coordinatesSchema = new mongoose.Schema({
   lastUpdated: {
     type: Date,
     default: Date.now
+  },
+  // CRITICAL: Company ownership for tenant isolation
+  companyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Company",
+    required: true,
+    index: true
   }
 }, { 
   timestamps: true 
 });
+
+coordinatesSchema.plugin(tenantScopedSchema);
 
 // Indexes
 coordinatesSchema.index({ communityName: 1 });

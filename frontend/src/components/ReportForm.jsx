@@ -1,13 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Map, ChevronDown, Loader2, AlertCircle, AlertTriangle, Smartphone, X, CheckCircle2, Lock } from "lucide-react";
 import { reportIssue } from "../services/reportService";
 import locationService from "../services/locationService";
 import { useAuth } from "../context/AuthContext";
+import { trackEvent } from "../services/analyticsService";
 
 const ReportForm = ({ onClose }) => {
     const navigate = useNavigate();
     const { user } = useAuth();
+    const hasStartedRef = useRef(false);
+
+    // Track report_viewed event on mount
+    useEffect(() => {
+        trackEvent("report_viewed");
+    }, []);
+
     // State for Area/Feeder selection
     const [locations, setLocations] = useState({ wards: [], feeders: [] });
     const [selectedArea, setSelectedArea] = useState("");
@@ -44,6 +52,13 @@ const ReportForm = ({ onClose }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState(false);
+
+    const markFormStarted = () => {
+        if (!hasStartedRef.current) {
+            hasStartedRef.current = true;
+            trackEvent("report_started");
+        }
+    };
 
     // Fetch locations on mount
     useEffect(() => {
@@ -87,6 +102,7 @@ const ReportForm = ({ onClose }) => {
     }, [selectedArea, locations]);
 
     const handlePhoneChange = (e) => {
+        markFormStarted();
         const value = e.target.value.replace(/\D/g, ""); // Accept numbers only
         if (value.length <= 11) {
             setFormData({ ...formData, phone: value });
@@ -100,6 +116,9 @@ const ReportForm = ({ onClose }) => {
         e.preventDefault();
         setError("");
         setSuccess(false);
+
+        // Track report_submitted
+        trackEvent("report_submitted");
 
         // Validate Area/Feeder
         if (!selectedArea || !feederName) {
@@ -314,7 +333,10 @@ const ReportForm = ({ onClose }) => {
                                     required
                                     className="w-full p-3 sm:p-4 bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl appearance-none focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-sm sm:text-base"
                                     value={formData.issueType}
-                                    onChange={(e) => setFormData({ ...formData, issueType: e.target.value })}
+                                    onChange={(e) => {
+                                        markFormStarted();
+                                        setFormData({ ...formData, issueType: e.target.value });
+                                    }}
                                 >
                                     <option value="">Select issue type</option>
                                     <option value="Power Outage">Power Outage</option>
@@ -335,7 +357,10 @@ const ReportForm = ({ onClose }) => {
                                 className="w-full p-3 sm:p-4 bg-gray-50 border border-gray-100 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium resize-none text-sm sm:text-base"
                                 placeholder="Describe the problem in detail..."
                                 value={formData.description}
-                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                onChange={(e) => {
+                                    markFormStarted();
+                                    setFormData({ ...formData, description: e.target.value });
+                                }}
                             ></textarea>
                         </div>
                     </div>

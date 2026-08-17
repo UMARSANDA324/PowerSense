@@ -1,7 +1,7 @@
-# PowerSense Authentication System Guide
+# LITHA Authentication System Guide
 
 ## Overview
-This guide covers the complete authentication system for PowerSense, including user registration, login, password management, and database seeding.
+This guide covers the complete authentication system for LITHA, including user registration, login, password management, and database seeding.
 
 ## Features
 - ✅ Secure user registration with email validation
@@ -97,7 +97,7 @@ Response (200):
 - **Role:** user
 
 ### Admin User
-- **Email:** admin@powersense.com
+- **Email:** admin@LITHA.com
 - **Password:** admin123
 - **Role:** admin
 
@@ -254,6 +254,59 @@ DEBUG=* npm run dev
 4. **Two-Factor Authentication**: Add 2FA for enhanced security
 5. **Session Management**: Implement refresh tokens
 6. **Audit Logging**: Track user actions for security
+
+## Voice Messaging System
+
+### Architecture Overview
+The Voice Messaging feature is built on top of Nikola's internal multi-tenant messaging system:
+```text
+Browser (MediaRecorder API) -> Base64 Audio -> POST /api/company-messages/voice
+                                                │
+                                                ├── Server-Side Auth & Tenant Resolution
+                                                ├── MIME & File Size Validation (Max 10MB)
+                                                ├── Local Disk Storage (backend/uploads/voice/)
+                                                ├── Mongo Save (CompanyMessage: messageType="voice")
+                                                └── Socket.IO Delivery (company.message.created)
+```
+
+### Endpoints
+
+#### 1. Upload Voice Message
+- **Route:** `POST /api/company-messages/voice`
+- **Auth:** Private (Bearer token required)
+- **Headers:** `Content-Type: application/json`
+- **Payload:**
+  ```json
+  {
+    "recipientId": "650...",
+    "recipientType": "direct",
+    "subject": "Voice Note",
+    "body": "[Voice Message]",
+    "audioData": "data:audio/webm;base64,...",
+    "audioDuration": 4.5,
+    "audioMimeType": "audio/webm",
+    "parentId": null
+  }
+  ```
+- **Validation Rules:**
+  - MIME types allowed: `audio/webm`, `audio/ogg`, `audio/mp4`, `audio/wav`, `audio/mpeg`, `audio/aac`, `audio/m4a`, `audio/3gpp`
+  - Max file size limit: 10 MB (returns HTTP 413 if exceeded)
+  - Missing audio payload returns HTTP 400 Bad Request
+  - Recipient tenant validation: Enforces multi-company tenant isolation (returns HTTP 403 if target recipient belongs to another company)
+
+#### 2. Stream Audio Resource
+- **Route:** `GET /api/company-messages/voice/audio/:filename`
+- **Auth:** Private (Header `Authorization: Bearer <token>` OR Query parameter `?token=<jwt>`)
+- **Security & Tenant Isolation:**
+  - Verifies JWT token and resolves user runtime context
+  - Checks if requesting user belongs to the owning company (or is platform-owner)
+  - Checks if requesting user is the sender, recipient, or authorized company admin (returns HTTP 403 if unauthorized)
+  - Supports HTTP Range requests (`Accept-Ranges: bytes`) for audio seeking in HTML5 players
+
+### Multi-Tenant Isolation
+Companies cannot access voice messages or audio files belonging to another company. Cross-tenant reads and audio stream requests are rejected at the backend authorization layer with HTTP 403 Forbidden.
+
+---
 
 ## Support
 

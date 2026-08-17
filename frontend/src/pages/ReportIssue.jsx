@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AlertCircle, MapPin, Clock, Send, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { reportIssue } from "../services/reportService";
 import { getCurrentUser } from "../services/authService";
 import { areaFeederMapping } from "../constants/areas";
+import CompanyBadge from "../components/CompanyBadge";
+import { trackEvent } from "../services/analyticsService";
 
 const ReportIssue = () => {
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ const ReportIssue = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
+  const hasStartedRef = useRef(false);
 
   const [formData, setFormData] = useState({
     issueType: "outage",
@@ -22,6 +25,9 @@ const ReportIssue = () => {
   });
 
   useEffect(() => {
+    // Track report_viewed event on mount
+    trackEvent("report_viewed");
+
     const user = getCurrentUser();
     if (user) {
       setCurrUser(user);
@@ -37,12 +43,19 @@ const ReportIssue = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (!hasStartedRef.current) {
+      hasStartedRef.current = true;
+      trackEvent("report_started");
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage({ text: "", type: "" });
+
+    // Track report_submitted event
+    trackEvent("report_submitted");
 
     try {
       // Map frontend issue types to backend enum values
@@ -118,15 +131,20 @@ const ReportIssue = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-3xl mx-auto p-6 pt-12">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 transition-colors">
-            <ArrowLeft size={20} />
-            <span className="font-semibold">Back</span>
-          </button>
-          <h1 className="text-3xl font-black text-gray-900 mb-2">Report a Power Issue</h1>
-          <p className="text-gray-500 font-medium italic">Help us resolve power problems in your area quickly</p>
+      {/* Sticky Header */}
+      <div className="sticky top-[72px] z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-200">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <div className="flex items-center gap-3">
+              <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors">
+                <ArrowLeft size={18} />
+                <span className="font-semibold text-xs sm:text-sm">Back</span>
+              </button>
+              <h1 className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">Report a Power Issue</h1>
+            </div>
+            <p className="text-gray-500 font-medium italic text-xs mt-0.5">Help us resolve power problems in your area quickly</p>
+          </div>
+          <CompanyBadge prefix="Reporting to" variant="header" className="!py-0" />
         </div>
       </div>
 
@@ -232,7 +250,6 @@ const ReportIssue = () => {
             {/* Feeder */}
             <div>
               <label htmlFor="feeder" className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain opacity-80" />
                 Assigned Feeder
               </label>
               <input

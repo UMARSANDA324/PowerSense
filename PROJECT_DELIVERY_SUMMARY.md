@@ -1,9 +1,9 @@
-# 🚀 PowerSense RBAC Implementation - COMPLETE DELIVERY
+# 🚀 LITHA RBAC Implementation - COMPLETE DELIVERY
 
 ## 📦 PROJECT COMPLETION SUMMARY
 
 ### What Started
-A request to implement role-based feeder assignment for the PowerSense platform so that:
+A request to implement role-based feeder assignment for the LITHA platform so that:
 - Super admins can assign feeders to regular admins
 - Admins can only see/manage data from their assigned feeders
 - Multiple feeders can be assigned to one admin

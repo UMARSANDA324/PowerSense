@@ -10,6 +10,7 @@ import Ward from "../models/Location/Ward.js";
 import State from "../models/Location/State.js";
 import LGA from "../models/Location/LGA.js";
 import Coordinates from "../models/Location/Coordinates.js";
+import Company from "../models/Company.js";
 
 // Services
 import { updateCoordinate, validateCoordinate } from "../services/coordinatesService.js";
@@ -109,6 +110,13 @@ const run = async () => {
     await mongoose.connect(mongoUri);
     console.log("✓ Connected to MongoDB");
 
+    // CRITICAL: Get default company for tenant isolation
+    const defaultCompany = await Company.findOne();
+    if (!defaultCompany) {
+      throw new Error('No company found in database. Cannot geocode without a default company.');
+    }
+    console.log(`📋 Using company: ${defaultCompany.name} (ID: ${defaultCompany._id})`);
+
     // Fetch Kano state
     const stateDoc = await State.findOne({ name: "Kano" });
     if (!stateDoc) {
@@ -127,7 +135,8 @@ const run = async () => {
     }
 
     // Load existing coordinates to check what can be skipped
-    const existingCoords = await Coordinates.find({}, "communityId");
+    // CRITICAL: Apply tenant filtering to prevent cross-tenant data leakage
+    const existingCoords = await Coordinates.find({ companyId: defaultCompany._id }, "communityId");
     const geocodedCommunityIds = new Set(existingCoords.map(c => c.communityId));
 
     console.log(`Skipped: ${geocodedCommunityIds.size} communities already geocoded.`);
@@ -207,7 +216,7 @@ const run = async () => {
           source: "Geoapify Geocoding API",
           accuracy: coordinateResult.accuracy,
           verified: true
-        });
+        }, defaultCompany._id); // CRITICAL: Pass companyId for tenant isolation
 
         // Link back to community/ward document (keep coordinates properties in sync for backward compatibility)
         comm.latitude = coordinateResult.latitude;

@@ -1,6 +1,6 @@
 {
-  "short_name": "PowerSense",
-  "name": "PowerSense Notification App",
+  "short_name": "Nikola",
+  "name": "Nikola",
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -17,7 +17,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#2563EB",
   "background_color": "#ffffff",
   "gcm_sender_id": "103953800507"
 }

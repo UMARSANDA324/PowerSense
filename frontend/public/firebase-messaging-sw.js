@@ -25,13 +25,13 @@ console.log('[firebase-messaging-sw.js] Firebase initialized in service worker')
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
   
-  const notificationTitle = payload.notification?.title || payload.data?.title || "PowerSense Alert";
+  const notificationTitle = payload.notification?.title || payload.data?.title || "Nikola Alert";
   const notificationOptions = {
     body: payload.notification?.body || payload.data?.body || "New update received",
-    icon: "/vite.svg", 
-    badge: "/vite.svg",
+    icon: "/icons/icon-192.png", 
+    badge: "/icons/icon-192.png",
     data: payload.data,
-    tag: payload.data?.tag || 'powersense-notification',
+    tag: payload.data?.tag || 'nikola-notification',
   };
 
   return self.registration.showNotification(notificationTitle, notificationOptions);

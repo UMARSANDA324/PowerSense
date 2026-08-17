@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { tenantScopedSchema } from "../utils/tenantScope.js";
 
 const userSchema = new mongoose.Schema(
     {
@@ -27,14 +28,53 @@ const userSchema = new mongoose.Schema(
 
         role: {
             type: String,
-            enum: ["super-admin", "admin", "user"],
+            enum: [
+                // New enterprise roles
+                "platform-owner",
+                "company-super-admin",
+                "regional-admin",
+                // Legacy roles for backward compatibility
+                "super-admin",
+                "admin",
+                "user"
+            ],
             default: "user",
         },
 
+        companyId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Company",
+            index: true
+        },
+
+        country: String,
         state: String,
         lga: String,
         ward: String,
         feeder: String,
+
+        // Referral System Fields
+        referralCode: {
+            type: String,
+            unique: true,
+            sparse: true,
+            uppercase: true,
+            trim: true,
+            index: true
+        },
+        referredBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: null
+        },
+        referralCodeUsed: {
+            type: String,
+            default: null
+        },
+        referralCapturedAt: {
+            type: Date,
+            default: null
+        },
 
         isActive: {
             type: Boolean,
@@ -91,6 +131,8 @@ const userSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+userSchema.plugin(tenantScopedSchema);
 
 // Match user entered password to hashed password in database
 userSchema.methods.matchPassword = async function (enteredPassword) {

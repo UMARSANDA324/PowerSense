@@ -9,35 +9,26 @@ export const seedDatabase = async () => {
     if (userCount === 0) {
       console.log("[Seed] Database is empty. Creating default users...");
       
-      // Create test user
-      const testUser = new User({
-        fullName: "Test User",
-        email: "test@example.com",
-        password: "123456",
+      // CRITICAL: Seed users WITHOUT companyId to prevent cross-tenant data leakage
+      // New companies must create their own users with proper companyId assignment
+      
+      // Create platform owner user (no companyId - belongs to platform)
+      const platformOwnerUser = new User({
+        fullName: "Platform Owner",
+        email: "platform@litha.com",
+        password: "platform123",
         phone: "+1234567890",
-        role: "user",
-        isActive: true,
-        notificationPreference: "push"
-      });
-      
-      await testUser.save();
-      console.log("[Seed] ✅ Created test user: test@example.com / 123456");
-      
-      // Create admin user
-      const adminUser = new User({
-        fullName: "System Administrator",
-        email: "admin@powersense.com",
-        password: "admin123",
-        phone: "+0987654321",
-        role: "admin",
+        role: "platform-owner",
         isActive: true,
         notificationPreference: "email"
+        // companyId is intentionally null for platform owner
       });
       
-      await adminUser.save();
-      console.log("[Seed] ✅ Created admin user: admin@powersense.com / admin123");
+      await platformOwnerUser.save();
+      console.log("[Seed] ✅ Created platform owner: platform@litha.com / platform123");
       
       console.log("[Seed] Database seeding completed successfully!");
+      console.log("[Seed] ⚠️  NOTE: Seeded users have no companyId. New companies must create their own users.");
       return true;
     } else {
       console.log(`[Seed] Database already has ${userCount} users. Skipping seeding.`);

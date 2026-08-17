@@ -1,7 +1,7 @@
 # All Status Page - Implementation Guide
 
 ## Overview
-The "All Status" page is a new feature in PowerSense that allows users to view the real-time electricity status of all feeders available in the system. It's designed with user experience in mind, providing a clean interface to browse feeder information and understand where they can report issues.
+The "All Status" page is a new feature in LITHA that allows users to view the real-time electricity status of all feeders available in the system. It's designed with user experience in mind, providing a clean interface to browse feeder information and understand where they can report issues.
 
 ---
 
@@ -116,7 +116,7 @@ const handleReportClick = (feeder) => {
 
 ## UI/UX Design
 
-### Color Scheme (PowerSense Blue & White)
+### Color Scheme (LITHA Blue & White)
 - **Primary Blue**: `#2563eb` - Buttons, active states, important elements
 - **White**: Cards and background
 - **Status Colors**:
@@ -357,4 +357,4 @@ Display in responsive grid
 ---
 
 ## Summary
-The "All Status" page provides a comprehensive view of all feeders in the PowerSense system. It combines information display with intelligent restrictions to ensure users can only report issues in their registered area, maintaining data integrity while remaining user-friendly. The search functionality enables quick discovery, and the warning modal guides users toward the proper workflow for changing their reporting area.
+The "All Status" page provides a comprehensive view of all feeders in the LITHA system. It combines information display with intelligent restrictions to ensure users can only report issues in their registered area, maintaining data integrity while remaining user-friendly. The search functionality enables quick discovery, and the warning modal guides users toward the proper workflow for changing their reporting area.

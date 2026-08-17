@@ -13,7 +13,21 @@ export const sendNotification = async (req, res) => {
             return res.status(400).json({ message: "Please provide title and message" });
         }
 
-        const users = await User.find({ notificationPreference: { $ne: "off" } }).select("_id");
+        // CRITICAL: Apply tenant filtering to prevent cross-tenant notifications
+        const companyId = req.user?.companyId;
+        const userFilter = { notificationPreference: { $ne: "off" } };
+        
+        // Only filter by companyId if user is not platform owner
+        if (req.user?.role !== 'platform-owner') {
+            if (companyId) {
+                userFilter.companyId = companyId;
+            } else {
+                // If no companyId and not platform owner, send to no one
+                userFilter.companyId = null;
+            }
+        }
+
+        const users = await User.find(userFilter).select("_id");
         const userIds = users.map(u => u._id);
 
         if (userIds.length > 0) {

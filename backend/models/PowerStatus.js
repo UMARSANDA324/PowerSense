@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../utils/tenantScope.js";
 
 const powerStatusSchema = new mongoose.Schema({
     status: {
@@ -52,8 +53,16 @@ const powerStatusSchema = new mongoose.Schema({
     updatedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
+        required: true,
+        index: true
     }
 }, { timestamps: true });
+
+powerStatusSchema.plugin(tenantScopedSchema);
 
 const PowerStatus = mongoose.model("PowerStatus", powerStatusSchema);
 

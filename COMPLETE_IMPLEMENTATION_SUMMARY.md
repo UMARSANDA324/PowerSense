@@ -349,7 +349,7 @@ User:
 
 ## ✨ Summary
 
-The PowerSense platform now has a complete Role-Based Access Control (RBAC) system with feeder-based permission control. Regular admins are restricted to only their assigned feeders, super admins manage all assignments, and the system prevents any data leakage between different feeder areas.
+The LITHA platform now has a complete Role-Based Access Control (RBAC) system with feeder-based permission control. Regular admins are restricted to only their assigned feeders, super admins manage all assignments, and the system prevents any data leakage between different feeder areas.
 
 **All code is tested, builds successfully, and ready for production deployment.**
 

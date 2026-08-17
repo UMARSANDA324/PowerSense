@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../../utils/tenantScope.js";
 
 const coordinatesSchema = new mongoose.Schema({
     latitude: { type: Number, default: null },
@@ -29,7 +30,21 @@ const feederSchema = new mongoose.Schema({
     status: { type: String, default: "active" },
     coordinates: { type: coordinatesSchema, default: null },
     isActive: { type: Boolean, default: true },
-    isAssigned: { type: Boolean, default: false }
+    isAssigned: { type: Boolean, default: false },
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
+        required: true,
+        index: true
+    }
 }, { timestamps: true });
+
+feederSchema.plugin(tenantScopedSchema);
+
+// Indexes for performance optimization
+feederSchema.index({ name: 1 });
+feederSchema.index({ band: 1 });
+feederSchema.index({ isActive: 1 });
+feederSchema.index({ injectionSubstationId: 1 });
 
 export default mongoose.model("Feeder", feederSchema);

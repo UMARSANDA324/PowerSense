@@ -1,5 +1,5 @@
 /**
- * PowerSense Deterministic Response Templates (Bilingual)
+ * Litha Deterministic Response Templates (Bilingual)
  */
 
 export const templates = {
@@ -243,11 +243,11 @@ export const templates = {
   GENERAL_CHAT: {
     en: (ctx) => {
       const status = ctx.feederStatus ? ctx.feederStatus.toUpperCase() : "ON";
-      return `Welcome to the PowerSense Grid Intelligence Assistant. Your location ${ctx.feeder || ctx.area || "resolved area"} is currently ${status}.\n\nI can assist you with active outages, scheduled maintenance, restoration times, voltage status, appliance safety, and grid health metrics.`;
+      return `Welcome to the Litha Grid Intelligence Assistant. Your location ${ctx.feeder || ctx.area || "resolved area"} is currently ${status}.\n\nI can assist you with active outages, scheduled maintenance, restoration times, voltage status, appliance safety, and grid health metrics.`;
     },
     ha: (ctx) => {
       const status = ctx.feederStatus ? ctx.feederStatus.toUpperCase() : "ON";
-      return `Barka da zuwa PowerSense AI Assistant. Yankinku na ${ctx.feeder || ctx.area || "resolved area"} yana (${status}).\n\nIna nan don taimaka muku da duk wani bayani game da outages, maintenance, voltage, aminci kayan gida, da lafiyar feeder.`;
+      return `Barka da zuwa Litha AI Assistant. Yankinku na ${ctx.feeder || ctx.area || "resolved area"} yana (${status}).\n\nIna nan don taimaka muku da duk wani bayani game da outages, maintenance, voltage, aminci kayan gida, da lafiyar feeder.`;
     }
   }
 };

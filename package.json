@@ -1,9 +1,12 @@
 {
-  "name": "powersense-root",
+  "name": "litha-root",
   "version": "1.0.0",
-  "description": "Production build scripts for PowerSense",
+  "description": "Production build scripts for Litha",
   "scripts": {
     "install-all": "npm install --prefix backend && npm install --prefix frontend",
+    "dev": "node dev.js",
+    "dev:client": "npm run dev --prefix frontend",
+    "dev:server": "npm run dev --prefix backend",
     "build": "npm run install-all && npm run build --prefix frontend",
     "start": "NODE_ENV=production node backend/server.js"
   }

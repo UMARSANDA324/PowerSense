@@ -1,7 +1,7 @@
-PowerSense Backend
+LITHA Backend
 ===================
 
-This folder contains the PowerSense backend services (Express + MongoDB).
+This folder contains the LITHA backend services (Express + MongoDB).
 
 Quick start
 
