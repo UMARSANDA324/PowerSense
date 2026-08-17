@@ -112,11 +112,76 @@ export const getTimeRemaining = (isoString) => {
   }
 };
 
+/**
+ * Format last updated time for display:
+ * - <1min: "Just Now"
+ * - Today: "Today • 2:15 PM"
+ * - Yesterday: "Yesterday • 7:42 PM"
+ * - Older: "13 Jul 2026 • 9:18 AM"
+ */
+export const formatLastUpdated = (isoString) => {
+    try {
+        if (!isoString) return "";
+        
+        const date = new Date(isoString);
+        if (isNaN(date.getTime())) return "";
+        
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        
+        // Less than 1 minute
+        if (diffMins < 1) {
+            return "Just Now";
+        }
+        
+        // Format time part (e.g., "2:15 PM")
+        const timePart = date.toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true
+        });
+        
+        // Check if date is today
+        const isToday = date.getDate() === now.getDate() &&
+            date.getMonth() === now.getMonth() &&
+            date.getFullYear() === now.getFullYear();
+        
+        if (isToday) {
+            return `Today • ${timePart}`;
+        }
+        
+        // Check if date is yesterday
+        const yesterday = new Date(now);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const isYesterday = date.getDate() === yesterday.getDate() &&
+            date.getMonth() === yesterday.getMonth() &&
+            date.getFullYear() === yesterday.getFullYear();
+        
+        if (isYesterday) {
+            return `Yesterday • ${timePart}`;
+        }
+        
+        // Older date: format like "13 Jul 2026 • 9:18 AM"
+        const datePart = date.toLocaleDateString([], {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        });
+        
+        return `${datePart} • ${timePart}`;
+    } catch (error) {
+        console.error("[DateConverter] Error formatting last updated:", error);
+        return "";
+    }
+};
+
 export default {
-  isoToDatetimeLocal,
-  datetimeLocalToIso,
-  isValidDatetimeLocal,
-  isValidISO,
-  formatISOForDisplay,
-  getTimeRemaining
+    isoToDatetimeLocal,
+    datetimeLocalToIso,
+    isValidDatetimeLocal,
+    isValidISO,
+    formatISOForDisplay,
+    getTimeRemaining,
+    formatLastUpdated
 };

@@ -241,7 +241,7 @@ const geocode = async (query) => {
   try {
     const res = await axios.get('https://nominatim.openstreetmap.org/search', {
       params: { q: query, format: 'json', limit: 1 },
-      headers: { 'User-Agent': 'PowerSense/1.0 (Kano_Import)' },
+      headers: { 'User-Agent': 'Litha/1.0 (Kano_Import)' },
       timeout: 5000
     });
     if (res.data && res.data.length > 0) {

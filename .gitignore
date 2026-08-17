@@ -1,6 +1,42 @@
+# Dependencies
 node_modules/
+*/node_modules/
+
+# Environment variables & secrets
 .env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Build & distribution outputs
 dist/
+dist-ssr/
 build/
-.DS_Store
+coverage/
+
+# Uploads and temporary data
+uploads/
+backend/uploads/
+backend/cache/
+
+# Logs
 *.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

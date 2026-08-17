@@ -108,7 +108,7 @@ export const generatePredictions = async ({ limit = 10 } = {}) => {
 - Incident Breakdown: ${JSON.stringify(issueCounts)}
 - Common issue descriptions reported by residents: ${recentDescriptions.join("; ")}
 
-You are "PowerSense AI Predictive Maintenance Engine". Generate a high-fidelity prediction of failure risk.
+You are "Litha AI Predictive Maintenance Engine". Generate a high-fidelity prediction of failure risk.
 You MUST return a raw, valid JSON object matching this exact schema:
 {
   "prediction": "Deep, detailed failure narrative (under 30 words) outlining exactly what component is at risk and why.",

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../utils/tenantScope.js";
 
 const reminderSchema = new mongoose.Schema({
     feeder: {
@@ -25,8 +26,16 @@ const reminderSchema = new mongoose.Schema({
     isCancelled: {
         type: Boolean,
         default: false
+    },
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
+        required: true,
+        index: true
     }
 }, { timestamps: true });
+
+reminderSchema.plugin(tenantScopedSchema);
 
 reminderSchema.index({ feeder: 1, isSent: 1, isCancelled: 1 });
 

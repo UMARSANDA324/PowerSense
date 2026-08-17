@@ -4,7 +4,6 @@ import { AlertTriangle, CheckCircle, ShieldAlert } from 'lucide-react';
 const FeederHealthCard = ({ feeder }) => {
   const isRed = feeder.status === 'Red';
   const isYellow = feeder.status === 'Yellow';
-  const isGreen = feeder.status === 'Green';
 
   let bgClass = "bg-green-50 border-green-200";
   let textClass = "text-green-800";
@@ -41,21 +40,37 @@ const FeederHealthCard = ({ feeder }) => {
       </div>
 
       <div className="space-y-2">
-        <div className="flex justify-between text-sm">
-          <span className="font-medium text-gray-600">Risk Score</span>
-          <span className={`font-bold ${textClass}`}>{feeder.riskScore}%</span>
-        </div>
-        <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-          <div 
-            className={`h-full ${barClass} transition-all duration-1000 ease-out`} 
-            style={{ width: `${feeder.riskScore}%` }}
-          />
-        </div>
-      </div>
+                <div className="flex justify-between text-sm">
+                    <span className="font-medium text-gray-600">Health Score</span>
+                    <span className={`font-bold ${textClass}`}>{feeder.healthScore}%</span>
+                </div>
+                <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                        className={`h-full ${barClass} transition-all duration-1000 ease-out`} 
+                        style={{ width: `${feeder.healthScore}%` }}
+                    />
+                </div>
+                <div className="flex justify-between text-sm">
+                    <span className="font-medium text-gray-600">Rating</span>
+                    <span className={`font-bold ${textClass}`}>{feeder.rating}</span>
+                </div>
+                <div className="pt-2 border-t border-gray-100 mt-2">
+                    <div className="flex justify-between text-sm">
+                        <span className="font-medium text-gray-600">AI Confidence</span>
+                        <span className="font-bold text-blue-600">{feeder.aiConfidence}%</span>
+                    </div>
+                    <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden mt-1">
+                        <div 
+                            className="h-full bg-blue-600 transition-all duration-1000 ease-out" 
+                            style={{ width: `${feeder.aiConfidence}%` }}
+                        />
+                    </div>
+                </div>
+            </div>
 
       {isRed && (
         <div className="mt-4 text-xs font-medium bg-red-100 text-red-700 px-3 py-2 rounded-lg inline-block">
-          Immediate Maintenance Recommended
+          Needs Attention
         </div>
       )}
       {isYellow && (

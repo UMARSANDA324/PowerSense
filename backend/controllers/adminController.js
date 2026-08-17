@@ -8,6 +8,9 @@ import LGA from "../models/Location/LGA.js";
 import State from "../models/Location/State.js";
 import mongoose from "mongoose";
 import { getAccessibleFeeders, getFeederQuery } from "../utils/feederAccess.js";
+import { normalizeRole, hasHigherOrEqualPrivilege, getManageableRoles, validateRoleAssignment } from "../config/identityConfig.js";
+import { getDefaultCompany } from "../services/tenantResolver.js";
+import { publishPlatformEvent } from "../services/platformEventDispatcher.js";
 
 // @desc    Admin test route
 // @route   GET /api/admin/test
@@ -106,15 +109,35 @@ export const updateUser = async (req, res) => {
         const user = await User.findById(req.params.id);
 
         if (user) {
-            user.role = req.body.role || user.role;
+            // Validate role assignment if role is being changed
+            if (req.body.role && req.body.role !== user.role) {
+                const validation = validateRoleAssignment(req.user.role, req.body.role);
+                if (!validation.valid) {
+                    return res.status(403).json({ 
+                        message: validation.reason,
+                        code: 'ROLE_ASSIGNMENT_INVALID'
+                    });
+                }
+                user.role = req.body.role;
+            }
+            
             user.isActive = req.body.isActive !== undefined ? req.body.isActive : user.isActive;
 
             const updatedUser = await user.save();
+            const normalizedRole = normalizeRole(updatedUser.role);
+
+            publishPlatformEvent({
+                type: "user.updated",
+                companyId: updatedUser.companyId,
+                data: { user: { _id: updatedUser._id, role: updatedUser.role, isActive: updatedUser.isActive } }
+            });
+            
             res.json({
                 _id: updatedUser._id,
                 fullName: updatedUser.fullName,
                 email: updatedUser.email,
                 role: updatedUser.role,
+                normalizedRole: normalizedRole,
                 isActive: updatedUser.isActive,
             });
         } else {
@@ -134,9 +157,26 @@ export const deleteUser = async (req, res) => {
         const user = await User.findById(req.params.id);
 
         if (user) {
-            if (user.role === "super-admin") {
+            const normalizedRole = normalizeRole(user.role);
+            const requesterNormalizedRole = normalizeRole(req.user.role);
+            
+            // Check if user can be deleted based on role hierarchy
+            if (!hasHigherOrEqualPrivilege(requesterNormalizedRole, normalizedRole)) {
+                return res.status(403).json({ 
+                    message: "Cannot delete user with equal or higher privilege" 
+                });
+            }
+            
+            // Prevent deletion of platform-owner and company-super-admin by lower roles
+            if (normalizedRole === 'platform-owner' && requesterNormalizedRole !== 'platform-owner') {
+                return res.status(400).json({ message: "Cannot delete platform owner" });
+            }
+            
+            // Legacy check for backward compatibility
+            if (user.role === "super-admin" && req.user.role !== "super-admin") {
                 return res.status(400).json({ message: "Cannot delete super-admin" });
             }
+            
             // Clear assigned status on feeders if they exist
             if (user.assignedFeeders && user.assignedFeeders.length > 0) {
                 await Feeder.updateMany(
@@ -145,6 +185,11 @@ export const deleteUser = async (req, res) => {
                 );
             }
             await user.deleteOne();
+            publishPlatformEvent({
+                type: "user.deleted",
+                companyId: user.companyId,
+                data: { user: { _id: user._id, role: user.role } }
+            });
             res.json({ message: "User removed and associated grid permissions released" });
         } else {
             res.status(404).json({ message: "User not found" });
@@ -157,7 +202,7 @@ export const deleteUser = async (req, res) => {
 // Create Admin (SuperAdmin only)
 export const createAdmin = async (req, res) => {
     try {
-        const { fullName, email, password, state, lga, ward } = req.body;
+        const { fullName, email, password, state, lga, ward, assignedFeederId, role } = req.body;
 
         const adminExists = await User.findOne({ email });
 
@@ -165,15 +210,67 @@ export const createAdmin = async (req, res) => {
             return res.status(400).json({ message: "Admin already exists" });
         }
 
+        // Validate role assignment if provided
+        const userRole = role || "admin"; // Default to admin for backward compatibility
+        const validation = validateRoleAssignment(req.user.role, userRole);
+        if (!validation.valid) {
+            return res.status(403).json({ 
+                message: validation.reason,
+                code: 'ROLE_ASSIGNMENT_INVALID'
+            });
+        }
+
+        const companyId = req.user.role === "platform-owner"
+            ? req.body.companyId
+            : req.user.companyId;
+        if (!companyId) {
+            return res.status(400).json({ message: "Company context is required" });
+        }
+
+        // Validate state against company coverage
+        if (req.user.role !== "platform-owner" && state) {
+            const allowedStates = req.coverageStateNames || [];
+            if (allowedStates.length > 0 && !allowedStates.includes(String(state).trim())) {
+                return res.status(403).json({
+                    message: `State '${state}' is outside your company's coverage area.`
+                });
+            }
+        }
+
+        // Fetch the feeder to set the feeder string for backwards compatibility
+        let feederName = "";
+        if (assignedFeederId) {
+            const feederObj = await Feeder.findById(assignedFeederId);
+            if (feederObj) {
+                feederName = feederObj.name;
+            }
+        }
+
         const admin = await User.create({
             fullName,
             email,
             password,
-            role: "admin",
+            role: userRole,
             state,
             lga,
-            ward
+            ward,
+            feeder: feederName,
+            assignedFeeders: assignedFeederId ? [assignedFeederId] : [],
+            companyId: companyId
         });
+
+        // If we assigned a feeder, update Feeder.isAssigned
+        if (assignedFeederId) {
+            await Feeder.findByIdAndUpdate(assignedFeederId, { isAssigned: true });
+        }
+
+        publishPlatformEvent({
+            type: userRole === "company-super-admin" || userRole === "super-admin" ? "superadmin.created" : "admin.created",
+            companyId: admin.companyId,
+            data: { user: { _id: admin._id, fullName: admin.fullName, role: admin.role } }
+        });
+
+        const normalizedRole = normalizeRole(admin.role);
 
         res.status(201).json({
             message: "Admin created successfully",
@@ -181,7 +278,10 @@ export const createAdmin = async (req, res) => {
                 _id: admin._id,
                 fullName: admin.fullName,
                 email: admin.email,
-                role: admin.role
+                role: admin.role,
+                normalizedRole: normalizedRole,
+                feeder: admin.feeder,
+                assignedFeeders: admin.assignedFeeders
             },
         });
     } catch (error) {
@@ -194,7 +294,20 @@ export const createAdmin = async (req, res) => {
 // @access  Private/SuperAdmin
 export const getAllAdmins = async (req, res) => {
     try {
-        const admins = await User.find({ role: "admin" })
+        // CRITICAL: Apply tenant filtering to prevent cross-tenant data leakage
+        const filter = { role: "admin" };
+        
+        // Only filter by companyId if user is not platform owner
+        if (req.user?.role !== 'platform-owner') {
+            if (req.user?.companyId) {
+                filter.companyId = req.user.companyId;
+            } else {
+                // If no companyId and not platform owner, return empty
+                filter.companyId = null;
+            }
+        }
+        
+        const admins = await User.find(filter)
             .select("-password")
             .populate({
                 path: 'assignedFeeders',
@@ -217,7 +330,20 @@ export const getAllAdmins = async (req, res) => {
 export const getAllFeeders = async (req, res) => {
     try {
         console.log("Fetching all feeders...");
-        const feeders = await Feeder.find({ isActive: { $ne: false } })
+        
+        // CRITICAL: Apply tenant filtering to prevent cross-tenant data leakage
+        const filter = { isActive: { $ne: false } };
+        
+        // Only filter by companyId if user is not platform owner
+        if (req.user?.role !== 'platform-owner') {
+            if (req.user?.companyId) {
+                filter.companyId = req.user.companyId;
+            } else {
+                filter.companyId = null;
+            }
+        }
+        
+        const feeders = await Feeder.find(filter)
             .select('name _id isAssigned') // Only select what frontend needs
             .sort({ name: 1 })
             .lean(); // Lean makes it faster
@@ -248,10 +374,22 @@ export const assignFeedersToAdmin = async (req, res) => {
         }
 
         // Strict validation: Check if any of these feeders are already assigned to OTHER admins
-        const conflictingUsers = await User.find({
+        // CRITICAL: Apply tenant filtering to prevent cross-tenant data leakage
+        const conflictFilter = {
             _id: { $ne: adminId },
             assignedFeeders: { $in: feederIds }
-        }).select("fullName assignedFeeders");
+        };
+        
+        // Only filter by companyId if user is not platform owner
+        if (req.user?.role !== 'platform-owner') {
+            if (req.user?.companyId) {
+                conflictFilter.companyId = req.user.companyId;
+            } else {
+                conflictFilter.companyId = null;
+            }
+        }
+        
+        const conflictingUsers = await User.find(conflictFilter).select("fullName assignedFeeders");
 
         if (conflictingUsers.length > 0) {
             const conflictDetails = conflictingUsers.map(u => ({
@@ -270,6 +408,17 @@ export const assignFeedersToAdmin = async (req, res) => {
 
         // Apply new assignments
         admin.assignedFeeders = feederIds;
+
+        // Update the feeder string for backwards compatibility (use first feeder if exists)
+        if (feederIds && feederIds.length > 0) {
+            const firstFeeder = await Feeder.findById(feederIds[0]);
+            if (firstFeeder) {
+                admin.feeder = firstFeeder.name;
+            }
+        } else {
+            admin.feeder = "";
+        }
+
         await admin.save();
 
         // Sync with Feeder model: Update isAssigned status
@@ -349,6 +498,90 @@ export const getProfile = async (req, res) => {
     }
 };
 
+// @desc    Promote a User to Admin with substation and feeder assignment
+// @route   PUT /api/admin/promote-to-admin/:id
+// @access  Private/SuperAdmin
+export const promoteUserToAdmin = async (req, res) => {
+    try {
+        const { injectionSubstationId, feederId, role } = req.body;
+        const userId = req.params.id;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const normalizedCurrentRole = normalizeRole(user.role);
+        const targetRole = role || "admin"; // Default to admin for backward compatibility
+        const normalizedTargetRole = normalizeRole(targetRole);
+
+        // Validate role assignment
+        const validation = validateRoleAssignment(req.user.role, targetRole);
+        if (!validation.valid) {
+            return res.status(403).json({ 
+                message: validation.reason,
+                code: 'ROLE_ASSIGNMENT_INVALID'
+            });
+        }
+
+        // Legacy checks for backward compatibility
+        if (user.role === "super-admin") {
+            return res.status(400).json({ message: "Cannot promote super-admin" });
+        }
+
+        if (normalizedCurrentRole === 'admin' || normalizedCurrentRole === 'company-super-admin' || normalizedCurrentRole === 'platform-owner') {
+            return res.status(400).json({ message: "User is already an admin or higher" });
+        }
+
+        // Validate feeder belongs to selected injection substation
+        if (feederId && injectionSubstationId) {
+            const feeder = await Feeder.findById(feederId);
+            if (!feeder) {
+                return res.status(404).json({ message: "Feeder not found" });
+            }
+            
+            if (feeder.injectionSubstationId?.toString() !== injectionSubstationId.toString()) {
+                return res.status(400).json({ message: "Selected feeder does not belong to the selected injection substation" });
+            }
+        }
+
+        // Update user role and assignments
+        user.role = targetRole;
+        
+        if (feederId) {
+            user.assignedFeeders = [feederId];
+            const feeder = await Feeder.findById(feederId);
+            if (feeder) {
+                user.feeder = feeder.name;
+            }
+            // Mark feeder as assigned
+            await Feeder.findByIdAndUpdate(feederId, { isAssigned: true });
+        }
+
+        await user.save();
+
+        // Populate and return updated user
+        const updatedUser = await User.findById(userId)
+            .populate({
+                path: 'assignedFeeders',
+                match: { isActive: { $ne: false } },
+                select: 'name _id'
+            })
+            .select("-password");
+
+        res.json({
+            message: "User promoted successfully",
+            user: updatedUser
+        });
+    } catch (error) {
+        console.error("Error in promoteUserToAdmin:", error);
+        res.status(500).json({
+            message: "Error promoting user",
+            error: error.message
+        });
+    }
+};
+
 // @desc    Get all injection substations with associated feeders
 // @route   GET /api/admin/injection-substations
 // @access  Private/Admin
@@ -362,8 +595,9 @@ export const getInjectionSubstations = async (req, res) => {
 
         // Get accessible feeder IDs based on user role
         let accessibleFeederIds = [];
-        if (req.user.role === "super-admin") {
-            // Super admin can see all feeders
+        const hasGlobalAccess = ["super-admin", "platform-owner", "company-super-admin"].includes(req.user.role);
+        if (hasGlobalAccess) {
+            // Super admin & platform owner can see all feeders
             const allFeeders = await Feeder.find({ isActive: { $ne: false } }).select("_id").lean();
             accessibleFeederIds = allFeeders.map(f => f._id.toString());
         } else if (req.user.role === "admin" && req.user.assignedFeeders?.length > 0) {
@@ -376,9 +610,18 @@ export const getInjectionSubstations = async (req, res) => {
         // Find relevant injection substations
         let substations = [];
 
-        if (req.user.role === "super-admin") {
-            // Super admin gets all substations
+        if (req.user.role === "platform-owner") {
+            // Platform owner gets all substations
             substations = await InjectionSubstation.find({ status: { $ne: "inactive" } })
+                .sort({ name: 1 })
+                .lean();
+        } else if (req.user.role === "super-admin" || req.user.role === "company-super-admin") {
+            // Super admin gets substations in their company
+            const query = { status: { $ne: "inactive" } };
+            if (req.user.companyId) {
+                query.companyId = req.user.companyId;
+            }
+            substations = await InjectionSubstation.find(query)
                 .sort({ name: 1 })
                 .lean();
         } else {
@@ -420,3 +663,4 @@ export const getInjectionSubstations = async (req, res) => {
     }
 };
 
+export default { adminTest, getSystemStats, getAllUsers, updateUser, deleteUser, createAdmin, getAllAdmins, getAllFeeders, assignFeedersToAdmin, getProfile, promoteUserToAdmin, getInjectionSubstations };

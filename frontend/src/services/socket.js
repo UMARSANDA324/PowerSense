@@ -24,10 +24,10 @@ const getSocketUrl = () => {
 const SOCKET_URL = getSocketUrl();
 
 const socket = io(SOCKET_URL, {
+  auth: (cb) => cb({ token: localStorage.getItem("token") }),
   withCredentials: true,
-  // Start disconnected — App.jsx calls socket.emit("join") only when a user is logged in.
-  // This prevents anonymous socket connections on public pages.
-  autoConnect: true,
+  // App.jsx connects only after a logged-in user provides the JWT.
+  autoConnect: false,
   // Transport order: try WebSocket first, fall back to polling.
   // Matching the server config avoids upgrade negotiation failures.
   transports: ["websocket", "polling"],

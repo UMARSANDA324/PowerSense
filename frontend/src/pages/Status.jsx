@@ -1,17 +1,19 @@
 import { useState, useEffect, useMemo } from "react";
-import { Activity, Clock, CheckCircle2, AlertCircle, ChevronRight, MapPin, ReceiptText, Bell, TrendingDown, TrendingUp, Lock, Trophy, AlertTriangle, Star, Heart } from "lucide-react";
+import { Activity, Clock, CheckCircle2, AlertCircle, MapPin, ReceiptText, Bell, TrendingDown, TrendingUp, Lock, Trophy, AlertTriangle, Heart } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useDashboard } from "../context/DashboardProvider.jsx";
 import PowerCountdown from "../components/PowerCountdown.jsx";
 import { Link } from "react-router-dom";
+import CompanyBadge from "../components/CompanyBadge.jsx";
 import notificationService from "../services/notificationService.js";
-import { getReports } from "../services/reportService.js";
+import { getReports, getAllReports } from "../services/reportService.js";
 import api from "../services/api";
 import socket from "../services/socket";
 
 const Status = () => {
     const { user } = useAuth();
-    const userFeeder = user?.feeder;
+    const userFeeder = user?.assignedFeeders?.[0]?.name || user?.feeder;
+    const userFeederId = user?.assignedFeeders?.[0]?._id?.toString?.() || "";
     const {
         powerStatus,
         dashboardData,
@@ -23,7 +25,20 @@ const Status = () => {
     const [reportHistory, setReportHistory] = useState([]);
     const [allReports, setAllReports] = useState([]);
     const [notificationHistory, setNotificationHistory] = useState([]);
+    const [rankingData, setRankingData] = useState(null);
+    const [historyAnalyticsData, setHistoryAnalyticsData] = useState(null);
+    const [isRankingLoading, setIsRankingLoading] = useState(true);
+    const [showFullLeaderboard, setShowFullLeaderboard] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [userFeederBand, setUserFeederBand] = useState(null);
+
+    const getRatingLabel = (score) => {
+        if (score >= 90) return "Excellent";
+        if (score >= 75) return "Very Good";
+        if (score >= 60) return "Good";
+        if (score >= 40) return "Fair";
+        return "Needs Attention";
+    };
 
     // Fetch data on component mount
     useEffect(() => {
@@ -35,9 +50,12 @@ const Status = () => {
 
             try {
                 setLoading(true);
+                setIsRankingLoading(true);
 
-                // Fetch user reports
-                const reportsData = await getReports();
+                // Fetch reports - admins get all reports from their assigned feeders, users get their own
+                const reportsData = user.role === "admin" || user.role === "super-admin" || user.role === "company-super-admin" || user.role === "regional-admin"
+                    ? await getAllReports()
+                    : await getReports();
                 
                 // Active = everything not Resolved
                 const active = reportsData.filter(r => r.status !== "Resolved");
@@ -67,33 +85,68 @@ const Status = () => {
 
                 // Fetch real power history
                 const historyResponse = await api.get("/power/history");
-                const formattedHistory = historyResponse.data.map(log => ({
-                    date: new Date(log.timestamp),
-                    event: log.status ? "Restored" : "Disconnected",
-                    time: new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    feeder: log.feederName
-                }));
-                setMonthlyHistory(formattedHistory);
+                setMonthlyHistory(historyResponse.data);
+
+                // Fetch user's feeder band
+                try {
+                    if (userFeederId) {
+                        const feederResponse = await api.get(`/location/feeders/${userFeederId}`);
+                        setUserFeederBand(feederResponse.data?.band || null);
+                    }
+                } catch (feederError) {
+                    console.error("Failed to fetch feeder band:", feederError);
+                    setUserFeederBand(null);
+                }
+
+                // Fetch history analytics for the current reporting period
+                try {
+                    const historyAnalyticsResponse = await api.get("/ai/analytics?range=month");
+                    setHistoryAnalyticsData(historyAnalyticsResponse.data?.success ? historyAnalyticsResponse.data.data : null);
+                } catch (historyAnalyticsError) {
+                    console.error("Failed to fetch history analytics:", historyAnalyticsError);
+                    setHistoryAnalyticsData(null);
+                }
                 
+                // Fetch feeder ranking
+                try {
+                    const rankingResponse = await api.get("/power/feeder-ranking");
+                    setRankingData(rankingResponse.data);
+                } catch (rankingError) {
+                    console.error("Failed to fetch feeder ranking:", rankingError);
+                } finally {
+                    setIsRankingLoading(false);
+                }
+
                 setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch data:", error);
                 setLoading(false);
+                setIsRankingLoading(false);
             }
         };
 
         fetchData();
 
         // Listen for power status updates to refresh history
-        const handlePowerUpdate = () => {
-            fetchData();
+        const handlePowerUpdate = (update) => {
+            const isSuperAdmin = user?.role === "super-admin" || user?.role === "company-super-admin";
+            const normalizedUpdateFeederId = update?.feederId?.toString?.() || "";
+            const normalizedUpdateFeederName = update?.feederName?.toLowerCase?.().trim?.() || "";
+            const normalizedUserFeederName = userFeeder?.toLowerCase?.().trim?.() || "";
+            const isRelevantFeeder =
+                normalizedUpdateFeederId === userFeederId ||
+                normalizedUpdateFeederName === normalizedUserFeederName;
+
+            if (isSuperAdmin || isRelevantFeeder) {
+                fetchData();
+            }
         };
         socket.on("powerStatusUpdated", handlePowerUpdate);
 
         return () => {
             socket.off("powerStatusUpdated", handlePowerUpdate);
         };
-    }, [user]);
+    }, [user, userFeeder, userFeederId]);
 
 
     const activeCount = allReports.filter(r => r.status !== "Resolved").length;
@@ -101,72 +154,31 @@ const Status = () => {
     const pendingCount = allReports.filter(r => r.status === "Pending").length;
 
     // ===== ANALYTICS DERIVATIONS =====
-    // Best Performing Area (highest uptime, lowest risk)
+    // Best Performing Area (highest health score, highest uptime) - Band-based
     const bestPerforming = useMemo(() => {
-        if (!dashboardData?.feederHealth || dashboardData.feederHealth.length === 0) return null;
-        return [...dashboardData.feederHealth].sort((a, b) => {
+        if (!historyAnalyticsData?.feederHealth || historyAnalyticsData.feederHealth.length === 0) return null;
+        return [...historyAnalyticsData.feederHealth].sort((a, b) => {
+            const healthA = a.healthScore || 0;
+            const healthB = b.healthScore || 0;
             const uptimeA = a.uptimePercent || 0;
             const uptimeB = b.uptimePercent || 0;
-            const riskA = a.riskScore || 100;
-            const riskB = b.riskScore || 100;
-            if (uptimeA !== uptimeB) return uptimeB - uptimeA;
-            return riskA - riskB;
+            if (healthA !== healthB) return healthB - healthA;
+            return uptimeB - uptimeA;
         })[0];
-    }, [dashboardData]);
+    }, [historyAnalyticsData]);
 
-    // Most Affected Area (most incidents, highest risk)
+    // Most Affected Area (most incidents, lowest health score) - Band-based
     const mostAffected = useMemo(() => {
-        if (!dashboardData?.feederHealth || dashboardData.feederHealth.length === 0) return null;
-        return [...dashboardData.feederHealth].sort((a, b) => {
-            const incidentsA = a.incidents || 0;
-            const incidentsB = b.incidents || 0;
-            const riskA = a.riskScore || 0;
-            const riskB = b.riskScore || 0;
-            if (incidentsA !== incidentsB) return incidentsB - incidentsA;
-            return riskB - riskA;
+        if (!historyAnalyticsData?.feederHealth || historyAnalyticsData.feederHealth.length === 0) return null;
+        return [...historyAnalyticsData.feederHealth].sort((a, b) => {
+            const outagesA = a.activeOutages || a.incidents || 0;
+            const outagesB = b.activeOutages || b.incidents || 0;
+            const healthA = a.healthScore || 100;
+            const healthB = b.healthScore || 100;
+            if (outagesA !== outagesB) return outagesB - outagesA;
+            return healthA - healthB;
         })[0];
-    }, [dashboardData]);
-
-    // Reliability Rating (for user's feeder or global)
-    const userFeederHealth = useMemo(() => {
-        if (!dashboardData || !userFeeder) return null;
-        return dashboardData.feederHealth?.find(
-            (f) => f.feeder?.toLowerCase() === userFeeder.toLowerCase() || 
-                   f.feederId?.toString() === userFeeder?.toString()
-        );
-    }, [dashboardData, userFeeder]);
-
-    const reliabilityScore = useMemo(() => {
-        if (userFeederHealth && userFeederHealth.riskScore !== undefined) {
-            return Math.max(0, 100 - userFeederHealth.riskScore);
-        }
-        return Math.max(0, 100 - (dashboardData?.globalRiskScore || 15));
-    }, [userFeederHealth, dashboardData]);
-
-    const reliabilityRating = useMemo(() => {
-        // Convert 0-100 score to 0-5 stars
-        const stars = Math.max(1, Math.min(5, Math.round((reliabilityScore / 100) * 5)));
-        
-        let label, description;
-        if (stars === 5) {
-            label = "Excellent";
-            description = "Your feeder is performing exceptionally well with minimal interruptions.";
-        } else if (stars === 4) {
-            label = "Good";
-            description = "Your feeder is operating reliably with only occasional issues.";
-        } else if (stars === 3) {
-            label = "Fair";
-            description = "Your feeder has some stability issues, monitor closely.";
-        } else if (stars === 2) {
-            label = "Poor";
-            description = "Your feeder has frequent issues, consider reporting problems.";
-        } else {
-            label = "Critical";
-            description = "Your feeder is experiencing severe stability problems.";
-        }
-        
-        return { stars, label, description };
-    }, [reliabilityScore]);
+    }, [historyAnalyticsData]);
 
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString('en-US', {
@@ -194,6 +206,7 @@ const Status = () => {
                     <div>
                         <h1 className="text-3xl font-black text-gray-800">History</h1>
                         <p className="text-gray-500 mt-2 font-medium">Track your requests, reports, and notifications</p>
+                        <CompanyBadge prefix="Your Electricity Provider" variant="card" className="mt-4 max-w-sm" />
                     </div>
 
                     {/* Quick Stats */}
@@ -242,16 +255,28 @@ const Status = () => {
                     </div>
                 ) : (
             <>
+                <div className="bg-white border border-slate-100 rounded-[2rem] p-5 shadow-md">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">
+                        Analysis Period
+                    </span>
+                    <span className="text-lg font-black text-slate-900">This Month</span>
+                    {userFeederBand && (
+                        <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block mt-1">
+                            Band {userFeederBand} Analysis
+                        </span>
+                    )}
+                </div>
+
                 {/* Best Performing & Most Affected Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Best Performing Area */}
+                    {/* Best Performing Feeder */}
                     <div className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-md">
                         <div className="flex items-center gap-2 mb-4">
                             <div className="bg-green-50 p-2 rounded-xl">
                                 <Trophy size={20} className="text-green-600" />
                             </div>
                             <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">
-                                Best Performing Area
+                                Best Performing Feeder
                             </h3>
                         </div>
                         {bestPerforming ? (
@@ -259,15 +284,16 @@ const Status = () => {
                                 <h4 className="text-xl font-black text-slate-900 mb-2">
                                     {bestPerforming.feeder || "No Feeder Name"}
                                 </h4>
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="flex flex-col gap-1 mb-3">
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                        Health Score
+                                    </span>
                                     <span className="text-2xl font-black text-green-600">
-                                        {bestPerforming.uptimePercent !== undefined && bestPerforming.uptimePercent !== null 
-                                            ? `${bestPerforming.uptimePercent}%` 
-                                            : "92%"} Availability
+                                        {Math.round(bestPerforming.healthScore ?? 0)}%
                                     </span>
                                 </div>
                                 <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700">
-                                    Very Stable
+                                    {bestPerforming.rating || getRatingLabel(Math.round(bestPerforming.healthScore ?? 0))}
                                 </span>
                             </>
                         ) : (
@@ -275,14 +301,14 @@ const Status = () => {
                         )}
                     </div>
 
-                    {/* Most Affected Area */}
+                    {/* Most Affected Feeder */}
                     <div className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-md">
                         <div className="flex items-center gap-2 mb-4">
                             <div className="bg-red-50 p-2 rounded-xl">
                                 <AlertTriangle size={20} className="text-red-600" />
                             </div>
                             <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">
-                                Most Affected Area
+                                Most Affected Feeder
                             </h3>
                         </div>
                         {mostAffected ? (
@@ -292,11 +318,11 @@ const Status = () => {
                                 </h4>
                                 <div className="flex items-center gap-2 mb-2">
                                     <span className="text-2xl font-black text-red-600">
-                                        {mostAffected.incidents || 0} outages this month
+                                        {mostAffected.activeOutages || mostAffected.incidents || 0} outages this month
                                     </span>
                                 </div>
                                 <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700">
-                                    Needs Attention
+                                    {mostAffected.rating || getRatingLabel(Math.round(mostAffected.healthScore ?? 0))}
                                 </span>
                             </>
                         ) : (
@@ -305,44 +331,6 @@ const Status = () => {
                     </div>
                 </div>
 
-                {/* Reliability Rating */}
-                <div className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-md">
-                    <div className="flex items-center gap-2 mb-4">
-                        <div className="bg-yellow-50 p-2 rounded-xl">
-                            <Star size={20} className="text-yellow-600 fill-yellow-600" />
-                        </div>
-                        <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">
-                            Reliability Rating
-                        </h3>
-                    </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                        <div>
-                            <div className="flex items-center gap-1 mb-2">
-                                {[...Array(5)].map((_, i) => (
-                                    <Star
-                                        key={i}
-                                        size={24}
-                                        className={`${i < reliabilityRating.stars ? "text-yellow-500 fill-yellow-500" : "text-slate-200"}`}
-                                    />
-                                ))}
-                            </div>
-                            <h4 className="text-xl font-black text-slate-900 mb-1">
-                                {reliabilityRating.stars}/5 - {reliabilityRating.label}
-                            </h4>
-                            <p className="text-sm text-slate-500 font-medium">
-                                {reliabilityRating.description}
-                            </p>
-                        </div>
-                        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100/50 text-center sm:text-left">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
-                                Reliability Score
-                            </span>
-                            <span className="text-2xl font-black text-slate-900">
-                                {reliabilityScore}%
-                            </span>
-                        </div>
-                    </div>
-                </div>
 
                 {/* Active Requests Section */}
                 {activeRequests.length > 0 && (
@@ -371,9 +359,6 @@ const Status = () => {
                                             <span>{ticket.area} • {ticket.feeder}</span>
                                         </div>
                                     </div>
-                                    <button className="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-3 shadow-lg shadow-gray-200 hover:bg-gray-900 active:scale-95 submit-btn">
-                                        TRACK PROGRESS <ChevronRight size={18} />
-                                    </button>
                                 </div>
 
                                 {/* Status Badge */}
@@ -391,10 +376,151 @@ const Status = () => {
                     </section>
                 )}
 
+                {/* Feeder Ranking Section */}
+                {rankingData && (
+                    <section>
+                        <div className="flex items-center gap-2 mb-4">
+                            <Activity size={20} className="text-blue-600" />
+                            <h2 className="text-xl font-bold text-gray-800">Feeder Ranking</h2>
+                        </div>
+
+                        <div className="bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-blue-50/50 p-6 sm:p-8 mb-8">
+                            {rankingData.insufficientData ? (
+                                <p className="text-slate-500 font-medium text-center py-4">
+                                    Not enough operational history to generate a reliable ranking.
+                                </p>
+                            ) : (
+                                <div className="space-y-6">
+                                    {/* Top stats */}
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-100">
+                                        <div>
+                                            <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 mb-2">
+                                                Band {rankingData.band}
+                                            </span>
+                                            <h3 className="text-2xl font-black text-gray-800">
+                                                {rankingData.feederName || userFeeder}
+                                            </h3>
+                                        </div>
+                                        <div className="text-left sm:text-right">
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
+                                                Performance Rank
+                                            </span>
+                                            <span className="text-3xl font-black text-blue-600">
+                                                #{rankingData.rank} <span className="text-sm font-bold text-slate-400">of {rankingData.totalFeeders} Feeders</span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Percentile and Progress Bar */}
+                                    <div>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="text-sm font-bold text-gray-700">Rank Percentile</span>
+                                            <span className="text-sm font-black text-blue-600">{rankingData.percentile}th Percentile</span>
+                                        </div>
+                                        <div className="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
+                                            <div 
+                                                className="bg-blue-600 h-full rounded-full transition-all duration-1000" 
+                                                style={{ width: `${rankingData.percentile}%` }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* AI Insight */}
+                                    {rankingData.aiInsight && (
+                                        <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                                                AI Insight
+                                            </p>
+                                            <p className="text-sm font-medium text-slate-700 italic">
+                                                "{rankingData.aiInsight}"
+                                            </p>
+                                        </div>
+                                    )}
+                                    {/* Leaderboard Section */}
+                                    {rankingData.leaderboard && rankingData.leaderboard.length > 0 && (
+                                        <div className="pt-6 border-t border-gray-100">
+                                            <h4 className="text-sm font-bold text-gray-800 mb-4 uppercase tracking-wider">
+                                                Band {rankingData.band} Leaderboard
+                                            </h4>
+                                            <div className="space-y-2">
+                                                {(showFullLeaderboard 
+                                                    ? rankingData.leaderboard 
+                                                    : rankingData.leaderboard.slice(0, 10)
+                                                ).map((item) => {
+                                                    const isUserFeeder =
+                                                        (item.feederId && userFeederId && item.feederId.toString() === userFeederId) ||
+                                                        item.name?.toLowerCase().trim() === userFeeder?.toLowerCase().trim();
+                                                    
+                                                    // Medal emojis for top 3
+                                                    let medal = "";
+                                                    if (item.rank === 1) medal = "🥇 ";
+                                                    else if (item.rank === 2) medal = "🥈 ";
+                                                    else if (item.rank === 3) medal = "🥉 ";
+
+                                                    // Movement indicator
+                                                    let movementIndicator = null;
+                                                    if (item.movement !== null && item.movement !== undefined) {
+                                                        if (item.movement > 0) {
+                                                            movementIndicator = <span className="text-green-600 font-bold text-xs ml-2">⬆ +{item.movement}</span>;
+                                                        } else if (item.movement < 0) {
+                                                            movementIndicator = <span className="text-red-600 font-bold text-xs ml-2">⬇ {item.movement}</span>;
+                                                        } else {
+                                                            movementIndicator = <span className="text-gray-400 font-bold text-xs ml-2">➖</span>;
+                                                        }
+                                                    }
+
+                                                    return (
+                                                        <div
+                                                            key={item.feederId || item.name}
+                                                            className={`p-4 rounded-2xl flex items-center justify-between border transition-all ${
+                                                                isUserFeeder
+                                                                    ? "bg-blue-50/50 border-blue-500 shadow-sm"
+                                                                    : "bg-gray-50 border-gray-100 hover:bg-gray-100"
+                                                            }`}
+                                                        >
+                                                            <div className="flex items-center gap-3">
+                                                                <span className="text-sm font-black text-gray-400 w-6 text-center">
+                                                                    {medal || `${item.rank}.`}
+                                                                </span>
+                                                                <div>
+                                                                    <p className="font-bold text-gray-800">
+                                                                        {item.name}
+                                                                        {movementIndicator}
+                                                                        {isUserFeeder && (
+                                                                            <span className="ml-2 bg-blue-100 text-blue-700 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                                                                                YOUR FEEDER
+                                                                            </span>
+                                                                        )}
+                                                                    </p>
+                                                                    <p className="text-xs text-gray-500 font-semibold">
+                                                                        Reliability {item.reliabilityScore}%
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+
+                                            {rankingData.leaderboard.length > 10 && (
+                                                <button
+                                                    onClick={() => setShowFullLeaderboard(!showFullLeaderboard)}
+                                                    className="w-full mt-4 py-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl font-bold transition flex items-center justify-center gap-2 border border-gray-200"
+                                                >
+                                                    {showFullLeaderboard ? "Show Less ▲" : "Show More ▼"}
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </section>
+                )}
+
                 {/* Monthly Electricity History Section */}
                 <section>
                     <div className="flex items-center gap-2 mb-4">
-                        <img src="/logo.png" alt="Logo" className="w-5 h-5 object-contain" />
                         <h2 className="text-xl font-bold text-gray-800">Monthly Electricity History</h2>
                     </div>
 

@@ -14,10 +14,22 @@ function App() {
 
   useEffect(() => {
     if (user) {
+      socket.auth = { token: localStorage.getItem("token") };
+      if (!socket.connected) socket.connect();
+      const assignedFeederNames = (user.assignedFeeders || [])
+        .map((feederItem) => (typeof feederItem === "string" ? feederItem : feederItem?.name))
+        .filter(Boolean);
+      const assignedFeederIds = (user.assignedFeeders || [])
+        .map((feederItem) => (typeof feederItem === "string" ? null : feederItem?._id))
+        .filter(Boolean);
+
       // Join rooms for real-time notifications
       socket.emit("join", {
         userId: user._id,
+        role: user.role,
         feeder: user.feeder,
+        feeders: assignedFeederNames,
+        feederIds: assignedFeederIds,
         ward: user.ward,
         lga: user.lga,
         state: user.state,
@@ -59,15 +71,21 @@ function App() {
         if (unsubscribeFCM) unsubscribeFCM();
       };
     }
+
+    if (socket.connected) socket.disconnect();
   }, [user]);
 
   const removeNotification = (id) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
+  const isPlatformRoute = window.location.pathname.startsWith("/platform-owner");
+  const isPlatformOwner = user && user.role === "platform-owner";
+  const hideGlobalNav = isPlatformOwner || isPlatformRoute;
+
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      {!hideGlobalNav && <Navbar />}
 
       {/* Notifications overlay */}
       <div className="fixed top-0 right-0 p-4 z-50 pointer-events-none space-y-2">
@@ -82,13 +100,13 @@ function App() {
         ))}
       </div>
 
-      <div className="flex-1 pt-[72px] pb-20">
+      <div className={hideGlobalNav ? "flex-1" : "flex-1 pt-[72px] pb-20"}>
         <DashboardProvider>
           <AppRoutes />
         </DashboardProvider>
       </div>
       
-      <BottomNav />
+      {!hideGlobalNav && <BottomNav />}
     </div>
   );
 }

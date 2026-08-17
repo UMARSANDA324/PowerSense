@@ -11,7 +11,7 @@ async function run() {
     console.log("Connecting to database...");
     await mongoose.connect(uri);
     console.log("Connected. Finding admin user...");
-    const admin = await User.findOne({ email: "admin@powersense.com" });
+    const admin = await User.findOne({ email: "admin@litha.com" });
     
     // Set a custom chat session ID to simulate session memory
     const context = {

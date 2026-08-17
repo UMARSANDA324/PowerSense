@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../../utils/tenantScope.js";
 
 const feederCoverageSchema = new mongoose.Schema({
     feederId: {
@@ -41,6 +42,13 @@ const feederCoverageSchema = new mongoose.Schema({
         type: String,
         enum: ["active", "inactive", "archived"],
         default: "active"
+    },
+    // CRITICAL: Company ownership for tenant isolation
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
+        required: true,
+        index: true
     }
 }, { timestamps: true });
 
@@ -49,5 +57,7 @@ feederCoverageSchema.index({ feederId: 1, communityId: 1 }, { unique: true, spar
 feederCoverageSchema.index({ feederId: 1, wardId: 1 }, { unique: true, sparse: true });
 feederCoverageSchema.index({ lgaId: 1 });
 feederCoverageSchema.index({ substationId: 1 });
+feederCoverageSchema.index({ companyId: 1 }); // CRITICAL: Tenant isolation index
+feederCoverageSchema.plugin(tenantScopedSchema);
 
 export default mongoose.model("FeederCoverage", feederCoverageSchema);

@@ -1,4 +1,4 @@
-# PowerSense Production Deployment Guide 🚀
+# LITHA Production Deployment Guide 🚀
 
 This document summarizes the changes made during the Audit and prep phase to ensure the system is ready for real users.
 

@@ -7,6 +7,7 @@ import Ward from "../models/Location/Ward.js";
 import LGA from "../models/Location/LGA.js";
 import State from "../models/Location/State.js";
 import mongoose from "mongoose";
+import { publishPlatformEvent } from "../services/platformEventDispatcher.js";
 
 /**
  * Helper to check if a string is a valid MongoDB ObjectId
@@ -28,6 +29,8 @@ export const sendBulkNotifications = async ({
     userIds,
     title,
     message,
+    adminTitle,
+    adminMessage,
     io,
     sender,
     targetArea,
@@ -35,11 +38,6 @@ export const sendBulkNotifications = async ({
 }) => {
     try {
         const users = await User.find({ _id: { $in: userIds } });
-
-        // Format message if it's a custom admin message
-        const formattedMessage = isCustom 
-            ? `PowerSense Notification:\nWe would like to inform you that:\n${message}`
-            : message;
 
         const notificationPromises = users.map(async (user) => {
             let preference = user.notificationPreference || "in-app";
@@ -50,15 +48,31 @@ export const sendBulkNotifications = async ({
 
             if (preference === "off") return null;
 
+            const isAdmin = user.role === "admin" || user.role === "super-admin";
+            const userTitle = isAdmin && adminTitle ? adminTitle : title;
+            const userMessage = isAdmin && adminMessage ? adminMessage : message;
+
+            // Format message if it's a custom admin message
+            const formattedMessage = isCustom 
+                ? `Litha Notification:\nWe would like to inform you that:\n${userMessage}`
+                : userMessage;
+
             // Create notification record in database
             const notification = await Notification.create({
                 user: user._id,
-                title,
+                title: userTitle,
                 message: formattedMessage,
                 method: preference,
                 sender,
+                companyId: user.companyId,
                 targetArea,
                 isCustom
+            });
+
+            publishPlatformEvent({
+                type: "notification.created",
+                companyId: notification.companyId,
+                data: { notification: { _id: notification._id, title: notification.title, method: notification.method } }
             });
 
             // Handle real-time delivery via Socket.io
@@ -72,7 +86,7 @@ export const sendBulkNotifications = async ({
                 try {
                     await sendEmail({
                         email: user.email,
-                        subject: title,
+                        subject: userTitle,
                         message: formattedMessage
                     });
                 } catch (err) {
@@ -85,7 +99,7 @@ export const sendBulkNotifications = async ({
                 try {
                     const tokens = user.deviceTokens.map(dt => dt.token);
                     await sendPushNotification(tokens, {
-                        title: title,
+                        title: userTitle,
                         body: formattedMessage,
                         data: {
                             notificationId: notification._id.toString(),
@@ -117,6 +131,8 @@ export const notifyArea = async ({
     feeder,
     title,
     message,
+    adminTitle,
+    adminMessage,
     io,
     sender,
     isCustom = false
@@ -181,6 +197,8 @@ export const notifyArea = async ({
             userIds,
             title,
             message,
+            adminTitle,
+            adminMessage,
             io,
             sender,
             targetArea: { 

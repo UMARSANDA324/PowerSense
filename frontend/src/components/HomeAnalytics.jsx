@@ -16,10 +16,10 @@ const HomeAnalytics = ({ user, userFeeder }) => {
   }, [dashboardData, userFeeder]);
 
   const healthScore = useMemo(() => {
-    if (userFeederHealth && userFeederHealth.riskScore !== undefined) {
-      return Math.max(0, 100 - userFeederHealth.riskScore);
+    if (userFeederHealth && userFeederHealth.healthScore !== undefined) {
+      return userFeederHealth.healthScore;
     }
-    return Math.max(0, 100 - (dashboardData?.globalRiskScore || 15));
+    return dashboardData?.globalRiskScore || 90;
   }, [userFeederHealth, dashboardData]);
 
   const healthStatus = useMemo(() => {
@@ -120,7 +120,7 @@ const HomeAnalytics = ({ user, userFeeder }) => {
             <span className="text-xl font-black text-slate-900 capitalize">
               {dashboardData?.userPrediction 
                 ? `${dashboardData.userPrediction.riskLevel} (${(dashboardData.userPrediction.confidence * 100).toFixed(0)}%)` 
-                : (userFeederHealth ? `${userFeederHealth.riskScore}%` : `${dashboardData?.globalRiskScore || 15}%`)}
+                : (userFeederHealth ? `${userFeederHealth.aiConfidence}% AI Confidence` : `${dashboardData?.globalRiskScore || 90}% Global Health`)}
             </span>
           </div>
         </div>
@@ -139,20 +139,6 @@ const HomeAnalytics = ({ user, userFeeder }) => {
         </div>
       </div>
 
-      {/* AI INSIGHT CARD */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-[2rem] p-6 shadow-xl shadow-blue-200">
-        <div className="flex items-start gap-4">
-          <div className="bg-white/20 p-3 rounded-2xl mt-0.5 shrink-0">
-            <Zap size={22} className="text-yellow-300 fill-yellow-300" />
-          </div>
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-widest opacity-80 block">AI Grid Assistant Insight</span>
-            <p className="text-sm font-bold leading-relaxed">
-              "{aiInsight}"
-            </p>
-          </div>
-        </div>
-      </div>
     </>
   );
 };

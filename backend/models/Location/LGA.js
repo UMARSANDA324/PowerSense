@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../../utils/tenantScope.js";
 
 const lgaSchema = new mongoose.Schema({
     name: {
@@ -37,8 +38,16 @@ const lgaSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
+    },
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
+        required: true,
+        index: true
     }
 }, { timestamps: true });
+
+lgaSchema.plugin(tenantScopedSchema);
 
 lgaSchema.index({ name: 1, state: 1 }, { unique: true });
 lgaSchema.index({ lgaId: 1 }, { unique: true, sparse: true });

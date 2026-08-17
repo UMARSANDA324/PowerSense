@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../../utils/tenantScope.js";
 
 const coordinatesSchema = new mongoose.Schema({
     latitude: {
@@ -97,8 +98,16 @@ const wardSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
+    },
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
+        required: true,
+        index: true
     }
 }, { timestamps: true });
+
+wardSchema.plugin(tenantScopedSchema);
 
 wardSchema.index({ name: 1, lga: 1 }, { unique: true });
 wardSchema.index({ lga: 1, slug: 1 }, { unique: true, sparse: true });

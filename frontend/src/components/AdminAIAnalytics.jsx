@@ -9,7 +9,7 @@ const AdminAIAnalytics = ({ range = 'week' }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!user || (user.role !== 'admin' && user.role !== 'super-admin')) return;
+    if (!user || (user.role !== 'admin' && user.role !== 'super-admin' && user.role !== 'company-super-admin' && user.role !== 'regional-admin')) return;
     const fetchAnalytics = async () => {
       setLoading(true);
       try {
@@ -28,7 +28,7 @@ const AdminAIAnalytics = ({ range = 'week' }) => {
   }, [user, range]);
 
   if (!user) return null;
-  if (user.role !== 'admin' && user.role !== 'super-admin') return <div className="p-4 bg-yellow-50 text-yellow-800 rounded">You do not have permission to view analytics.</div>;
+  if (user.role !== 'admin' && user.role !== 'super-admin' && user.role !== 'company-super-admin' && user.role !== 'regional-admin') return <div className="p-4 bg-yellow-50 text-yellow-800 rounded">You do not have permission to view analytics.</div>;
 
   if (loading) return <div className="p-4">Loading analytics...</div>;
   if (error) return <div className="p-4 text-red-600">Error: {error}</div>;

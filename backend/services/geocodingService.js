@@ -1,5 +1,5 @@
 const NOMINATIM_BASE_URL = "https://nominatim.openstreetmap.org/search";
-const DEFAULT_USER_AGENT = "PowerSenseGeocoder/1.0 (admin@powersense.local)";
+const DEFAULT_USER_AGENT = "LithaGeocoder/1.0 (admin@litha.local)";
 
 export const isValidCoordinate = (latitude, longitude) => {
   if (latitude === null || latitude === undefined || longitude === null || longitude === undefined) {
@@ -26,7 +26,7 @@ export const geocodeWithNominatim = async (query) => {
   url.searchParams.set("countrycodes", "ng");
 
   const userAgent = process.env.OSM_USER_AGENT || DEFAULT_USER_AGENT;
-  const referer = process.env.OSM_REFERER || "https://powersense.local";
+  const referer = process.env.OSM_REFERER || "https://litha.local";
 
   const response = await fetch(url.toString(), {
     method: "GET",

@@ -12,10 +12,12 @@ import {
     getAllFeeders,
     assignFeedersToAdmin,
     getProfile,
+    promoteUserToAdmin,
     getInjectionSubstations
 } from "../controllers/adminController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { authorize } from "../middleware/rolemiddleware.js";
+import { authorizeEnhanced } from "../middleware/identityMiddleware.js";
 import PowerStatus from "../models/PowerStatus.js";
 import { hasFeederAccess } from "../utils/feederAccess.js";
 import Feeder from "../models/Location/Feeder.js";
@@ -28,20 +30,22 @@ const router = express.Router();
 // All admin routes are protected
 router.use(protect);
 
-router.get("/test", authorize("super-admin", "admin"), adminTest);
+// Use enhanced authorize middleware for better role support (backward compatible)
+router.get("/test", authorizeEnhanced("super-admin", "admin", "company-super-admin", "regional-admin"), adminTest);
 router.get("/profile", getProfile);
-router.get("/injection-substations", authorize("super-admin", "admin"), getInjectionSubstations);
-router.get("/stats", authorize("super-admin", "admin"), getSystemStats);
-router.get("/users", authorize("super-admin", "admin"), getAllUsers);
-router.get("/admins", authorize("super-admin"), getAllAdmins);
-router.get("/all-feeders", authorize("super-admin", "admin"), getAllFeeders);
-router.put("/users/:id", authorize("super-admin"), updateUser);
-router.put("/assign-feeders/:id", authorize("super-admin"), assignFeedersToAdmin);
-router.delete("/users/:id", authorize("super-admin"), deleteUser);
-router.post("/create-admin", authorize("super-admin"), createAdmin);
+router.get("/injection-substations", authorizeEnhanced("super-admin", "admin", "company-super-admin", "regional-admin"), getInjectionSubstations);
+router.get("/stats", authorizeEnhanced("super-admin", "admin", "company-super-admin", "regional-admin"), getSystemStats);
+router.get("/users", authorizeEnhanced("super-admin", "admin", "company-super-admin", "regional-admin"), getAllUsers);
+router.get("/admins", authorizeEnhanced("super-admin", "company-super-admin"), getAllAdmins);
+router.get("/all-feeders", authorizeEnhanced("super-admin", "admin", "company-super-admin", "regional-admin"), getAllFeeders);
+router.put("/users/:id", authorizeEnhanced("super-admin", "company-super-admin"), updateUser);
+router.put("/assign-feeders/:id", authorizeEnhanced("super-admin", "company-super-admin"), assignFeedersToAdmin);
+router.put("/promote-to-admin/:id", authorizeEnhanced("super-admin", "company-super-admin"), promoteUserToAdmin);
+router.delete("/users/:id", authorizeEnhanced("super-admin", "company-super-admin"), deleteUser);
+router.post("/create-admin", authorizeEnhanced("super-admin", "company-super-admin"), createAdmin);
 
 // Route for Admin Dashboard to toggle power status for one or more feeders
-router.post("/power-status", authorize("super-admin", "admin"), async (req, res) => {
+router.post("/power-status", authorizeEnhanced("super-admin", "admin", "company-super-admin", "regional-admin"), async (req, res) => {
     const {
         status,
         isActive: legacyIsActive,
@@ -235,7 +239,7 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
             await log.save();
 
             if (req.io) {
-                req.io.emit("powerStatusUpdated", {
+                const powerStatusPayload = {
                     feederId: id,
                     feederName: feeder.name,
                     status: finalStatus,
@@ -247,6 +251,16 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
                     reason: statusDoc.reason,
                     updatedBy: statusDoc.updatedBy,
                     lastUpdated: statusDoc.lastUpdated
+                };
+
+                const targetRooms = new Set([
+                    "role_super-admin",
+                    `feeder_${id.toString()}`,
+                    `feeder_${feeder.name}`
+                ]);
+
+                targetRooms.forEach((room) => {
+                    req.io.to(room).emit("powerStatusUpdated", powerStatusPayload);
                 });
             }
 
@@ -288,7 +302,7 @@ router.post("/power-status", authorize("super-admin", "admin"), async (req, res)
 });
 
 // Route for Admin/Super Admin to send custom notifications
-router.post("/send-notification", authorize("super-admin", "admin"), async (req, res) => {
+router.post("/send-notification", authorizeEnhanced("super-admin", "admin", "company-super-admin", "regional-admin"), async (req, res) => {
     const { message, state, lga, ward, feeder } = req.body;
 
     if (!message) {

@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Bell, MapPin, Menu, X, Home, FileText, Activity, AlertTriangle, User, LogOut, AlertCircle, Shield, Clock, CheckCircle2, Gauge, BrainCircuit } from "lucide-react";
 import { logout, getCurrentUser } from "../services/authService";
 import notificationService from "../services/notificationService";
 import socket from "../services/socket";
+import nikolaLogo from "../assets/images/nikola.jpeg";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -15,24 +16,37 @@ const Navbar = () => {
   const notificationRef = useRef(null);
   const locationRef = useRef(null);
 
-  useEffect(() => {
-    // Only fetch notifications if user is logged in
+  const fetchNotifications = useCallback(async () => {
     const user = getCurrentUser();
-    if (user) {
-      fetchNotifications();
-      
-      // Listen for real-time notifications
-      const handleNewNotification = (notification) => {
-        setNotifications(prev => [notification, ...prev]);
-      };
-      
-      socket.on("newNotification", handleNewNotification);
-      
-      return () => {
-        socket.off("newNotification", handleNewNotification);
-      };
+    if (!user) return; // Skip if no user logged in
+
+    try {
+      const data = await notificationService.getUserNotifications();
+      setNotifications(data);
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
     }
   }, []);
+
+  useEffect(() => {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const timer = setTimeout(() => {
+      void fetchNotifications();
+    }, 0);
+
+    const handleNewNotification = (notification) => {
+      setNotifications(prev => [notification, ...prev]);
+    };
+
+    socket.on("newNotification", handleNewNotification);
+
+    return () => {
+      clearTimeout(timer);
+      socket.off("newNotification", handleNewNotification);
+    };
+  }, [fetchNotifications]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -46,18 +60,6 @@ const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [notificationRef]);
-
-  const fetchNotifications = async () => {
-    const user = getCurrentUser();
-    if (!user) return; // Skip if no user logged in
-
-    try {
-      const data = await notificationService.getUserNotifications();
-      setNotifications(data);
-    } catch (error) {
-      console.error("Failed to fetch notifications:", error);
-    }
-  };
 
   const handleNotificationClick = async (notif) => {
     if (!notif.read) {
@@ -82,7 +84,7 @@ const Navbar = () => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const user = getCurrentUser();
-  const isAdmin = user && (user.role === "admin" || user.role === "super-admin");
+  const isAdmin = user && (user.role === "admin" || user.role === "super-admin" || user.role === "company-super-admin" || user.role === "regional-admin");
 
   const sidebarLinks = [];
   // sidebarLinks.push({ path: "/map", icon: <MapPin size={20} />, label: "Map" }); // Temporarily hidden for MVP
@@ -91,7 +93,7 @@ const Navbar = () => {
     sidebarLinks.push({ path: "/ai-dashboard", icon: <BrainCircuit size={20} />, label: "AI Dashboard" });
   }
 
-  if (user && user.role === "super-admin") {
+  if (user && (user.role === "super-admin" || user.role === "company-super-admin")) {
     sidebarLinks.push({ path: "/super-admin-dashboard", icon: <img src="/logo.png" alt="Logo" className="w-5 h-5 object-contain" />, label: "Super Admin" });
   }
 
@@ -120,8 +122,8 @@ const Navbar = () => {
               </button>
             )}
             <Link to="/" className="flex items-center gap-2.5 text-2xl font-bold text-blue-600 transition-transform active:scale-95 flex-shrink-0">
-              <img src="/logo.png" alt="PowerSense Logo" className="w-10 h-10 object-contain" />
-              <span className="tracking-tight sm:inline">PowerSense</span>
+              <img src={nikolaLogo} alt="Nikola Logo" className="w-10 h-10 object-contain rounded-xl flex-shrink-0" />
+              <span className="tracking-tight sm:inline">Nikola</span>
             </Link>
           </div>
 
@@ -179,7 +181,7 @@ const Navbar = () => {
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0">
                   <div>
                     <h3 className="text-xl font-black text-gray-800 tracking-tight">Notifications</h3>
-                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mt-0.5">Stay updated with PowerSense</p>
+                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mt-0.5">Stay updated with Nikola</p>
                   </div>
                   <button
                     onClick={() => setShowNotifications(false)}
@@ -329,8 +331,8 @@ const Navbar = () => {
         <div className="p-6 h-full flex flex-col">
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="PowerSense Logo" className="w-8 h-8 object-contain" />
-              <span className="text-xl font-black text-blue-600 tracking-tight">PowerSense</span>
+              <img src={nikolaLogo} alt="Nikola Logo" className="w-8 h-8 object-contain rounded-xl flex-shrink-0" />
+              <span className="text-xl font-black text-blue-600 tracking-tight">Nikola</span>
             </div>
             <button
               onClick={toggleMenu}

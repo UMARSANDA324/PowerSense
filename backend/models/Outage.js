@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../utils/tenantScope.js";
 
 const OutageSchema = new mongoose.Schema(
   {
@@ -9,9 +10,17 @@ const OutageSchema = new mongoose.Schema(
     estimatedRestoreTime: { type: Date },
     active: { type: Boolean, default: true },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
+      required: true,
+        index: true
+    }
   },
   { timestamps: true }
 );
+
+OutageSchema.plugin(tenantScopedSchema);
 
 OutageSchema.index({ active: 1, createdAt: -1 });
 OutageSchema.index({ feeder: 1, createdAt: -1 });

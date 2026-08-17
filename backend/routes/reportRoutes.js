@@ -16,8 +16,8 @@ router.get("/dev-list/all", async (req, res) => {
     }
 });
 
-// Public — anyone can submit a report (softProtect to catch user if logged in)
-router.post("/", softProtect, createReport);
+// Reports are tenant-owned operational records and require an authenticated company context.
+router.post("/", protect, createReport);
 
 // Private — logged-in user's own reports
 router.get("/my", protect, getMyReports);

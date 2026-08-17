@@ -3,7 +3,7 @@
 ## System Overview
 ```
 ┌──────────────────────────────────────────────────────────┐
-│              PowerSense RBAC System v2.0                 │
+│              LITHA RBAC System v2.0                 │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
 │  ROLE: Super Admin        ROLE: Admin        ROLE: User │

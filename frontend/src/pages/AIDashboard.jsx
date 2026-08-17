@@ -1,45 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import FeederHealthCard from '../components/FeederHealthCard';
 import { useAuth } from '../context/AuthContext';
+import { useDashboard } from '../context/DashboardProvider';
 import { BrainCircuit, Activity, Zap, ShieldAlert, BarChart3, Loader2 } from 'lucide-react';
-import socket from '../services/socket';
 
 const AIDashboard = () => {
   const { user } = useAuth();
-  const [analytics, setAnalytics] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { dashboardData, isDashboardLoading, refreshDashboardData } = useDashboard();
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const fetchAnalytics = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/ai/analytics`, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      if (response.data.success) {
-        setAnalytics(response.data.data);
-      }
-    } catch (error) {
-      console.error("Failed to load AI analytics", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Use shared dashboard data instead of duplicate API call
+  const analytics = dashboardData;
+  const loading = isDashboardLoading;
 
-  useEffect(() => {
-    if (user?.token) {
-      fetchAnalytics();
-    }
-    
-    socket.on("powerStatusUpdated", () => {
-      if (user?.token) fetchAnalytics();
+  // Filter feeders based on search term (memoized to prevent re-renders)
+  const filteredFeeders = React.useMemo(() => {
+    if (!analytics?.feederHealth) return [];
+    return analytics.feederHealth.filter(feeder => {
+      if (!searchTerm) return true;
+      const normalizedSearch = searchTerm.trim().toLowerCase().replace(/\s+/g, ' ');
+      const normalizedFeeder = feeder.feeder.trim().toLowerCase().replace(/\s+/g, ' ');
+      return normalizedFeeder.includes(normalizedSearch);
     });
-    
-    return () => {
-      socket.off("powerStatusUpdated");
-    };
-  }, [user]);
+  }, [analytics?.feederHealth, searchTerm]);
 
   if (loading) {
     return (
@@ -51,7 +34,7 @@ const AIDashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="mb-8 flex items-center justify-between bg-gradient-to-r from-blue-900 to-indigo-800 p-6 rounded-2xl shadow-xl text-white">
+      <div className="mb-8 flex flex-col md:flex-row items-center justify-between bg-gradient-to-r from-blue-900 to-indigo-800 p-6 rounded-2xl shadow-xl text-white gap-4">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <BrainCircuit className="w-8 h-8 text-blue-300" />
@@ -59,7 +42,7 @@ const AIDashboard = () => {
           </h1>
           <p className="mt-2 text-blue-100 opacity-90">Real-time predictive analytics and grid health monitoring</p>
         </div>
-        <div className="hidden md:flex items-center gap-4">
+        <div className="flex items-center gap-4">
           <div className="text-center px-4 border-r border-blue-500/30">
             <p className="text-sm text-blue-200">Active Outages</p>
             <p className="text-2xl font-bold">{analytics?.activeOutagesCount || 0}</p>
@@ -120,18 +103,44 @@ const AIDashboard = () => {
         {/* Right Column: Feeder Health */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 h-full">
-            <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 text-gray-800">
-              <Zap className="w-5 h-5 text-yellow-500" />
-              Feeder Health & Prediction
-            </h2>
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2 text-gray-800">
+                <Zap className="w-5 h-5 text-yellow-500" />
+                Feeder Health & Prediction
+              </h2>
+              <div className="relative w-full md:w-64">
+                <input
+                  type="text"
+                  placeholder="Search feeders..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {analytics?.feederHealth?.map((feeder, index) => (
-                <FeederHealthCard key={index} feeder={feeder} />
+              {filteredFeeders?.map((feeder, index) => (
+                <FeederHealthCard key={feeder.feederId || index} feeder={feeder} />
               ))}
-              {(!analytics?.feederHealth || analytics.feederHealth.length === 0) && (
+              {(!filteredFeeders || filteredFeeders.length === 0) && (
                 <div className="col-span-full py-12 text-center text-gray-500">
                   <Activity className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <p>No active feeder data available.</p>
+                  <p>{searchTerm ? 'No matching feeders found.' : 'No active feeder data available.'}</p>
                 </div>
               )}
             </div>

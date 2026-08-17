@@ -10,7 +10,8 @@ const DASHBOARD_REQUEST_TIMEOUT_MS = 30000;
 
 export const DashboardProvider = ({ children }) => {
   const { user } = useAuth();
-  const userFeeder = user?.feeder;
+  const userFeeder = user?.assignedFeeders?.[0]?.name || user?.feeder;
+  const userFeederId = user?.assignedFeeders?.[0]?._id;
 
   // --- STATE ---
   const [powerStatus, setPowerStatus] = useState({
@@ -42,6 +43,14 @@ export const DashboardProvider = ({ children }) => {
   useEffect(() => {
     dashboardDataRef.current = dashboardData;
   }, [dashboardData]);
+
+  useEffect(() => {
+    setDashboardData(null);
+    setPowerStatus((current) => ({ ...current, lastUpdated: "Fetching..." }));
+    lastDashboardRefreshRef.current = 0;
+    if (abortControllerRef.current) abortControllerRef.current.abort();
+    if (dashboardAbortControllerRef.current) dashboardAbortControllerRef.current.abort();
+  }, [user?.companyId]);
 
   // --- REFRESH POWER STATUS ---
   const refreshPowerStatus = useCallback(async () => {
@@ -77,7 +86,7 @@ export const DashboardProvider = ({ children }) => {
       isFetchingPowerRef.current = false;
       setIsLoading(false);
     }
-  }, [userFeeder]);
+  }, [userFeeder, userFeederId]);
 
   // --- REFRESH DASHBOARD DATA ---
   const refreshDashboardData = useCallback(async ({ force = false, background = false } = {}) => {
@@ -151,8 +160,8 @@ export const DashboardProvider = ({ children }) => {
   // --- REAL-TIME SOCKET LISTENER ---
   useEffect(() => {
     const handleStatusUpdate = (update) => {
-      const isSuperAdmin = user?.role === "super-admin";
-      const isTargetFeeder = !user?.feeder || update.feederId === user.feeder || update.feederName === user.feeder;
+      const isSuperAdmin = user?.role === "super-admin" || user?.role === "company-super-admin";
+      const isTargetFeeder = !userFeeder || update.feederId === userFeederId || update.feederId === user.feeder || update.feederName === userFeeder;
 
       if (isSuperAdmin || isTargetFeeder) {
         setPowerStatus((prev) => ({
@@ -169,7 +178,7 @@ export const DashboardProvider = ({ children }) => {
 
     socket.on("powerStatusUpdated", handleStatusUpdate);
     return () => socket.off("powerStatusUpdated", handleStatusUpdate);
-  }, [scheduleDashboardRefresh, user?.role, user?.feeder]);
+  }, [scheduleDashboardRefresh, user?.role, userFeeder, userFeederId, user?.feeder]);
 
   // --- CLEANUP ---
   useEffect(() => {

@@ -3,14 +3,14 @@ import axios from "axios";
 const BASE_URL = "http://localhost:5002";
 
 async function runTest() {
-  console.log("🚀 Testing PowerSense AI Assistant Endpoints");
+  console.log("🚀 Testing litha AI Assistant Endpoints");
   console.log("==================================================");
 
   try {
     // 1. Login to get token
     console.log("🔑 Logging in as Admin...");
     const loginRes = await axios.post(`${BASE_URL}/api/auth/login`, {
-      email: "admin@powersense.com",
+      email: "admin@litha.com",
       password: "admin123"
     });
 

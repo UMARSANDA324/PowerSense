@@ -311,23 +311,31 @@ async function importFeederCoverage() {
         await connectDB();
         console.log("✅ Connected to MongoDB");
         
-        // Clear existing coverage to start fresh
-        await FeederCoverage.deleteMany({});
+        // CRITICAL: Get default company for tenant isolation
+        const defaultCompany = await Company.findOne();
+        if (!defaultCompany) {
+            throw new Error('No company found in database. Cannot import without a default company.');
+        }
+        console.log(`📋 Using company: ${defaultCompany.name} (ID: ${defaultCompany._id})`);
         
-        // Get all Kano feeders
-        const feeders = await Feeder.find().lean();
+        // Clear existing coverage to start fresh
+        // CRITICAL: Only delete coverage for this company to prevent cross-tenant data deletion
+        await FeederCoverage.deleteMany({ companyId: defaultCompany._id });
+        
+        // Get all Kano feeders for this company
+        const feeders = await Feeder.find({ companyId: defaultCompany._id }).lean();
         console.log(`✅ Found ${feeders.length} feeders in database`);
         
-        // Get all Kano wards for easy lookup
-        const wards = await Ward.find().lean();
+        // Get all Kano wards for this company for easy lookup
+        const wards = await Ward.find({ companyId: defaultCompany._id }).lean();
         const wardMap = new Map();
         wards.forEach(w => {
             if (w.id) wardMap.set(w.id, w);
             if (w.slug) wardMap.set(w.slug, w);
         });
         
-        // Get all LGAs
-        const lgas = await LGA.find().lean();
+        // Get all LGAs for this company
+        const lgas = await LGA.find({ companyId: defaultCompany._id }).lean();
         const lgaMap = new Map();
         lgas.forEach(l => {
             lgaMap.set(l.name, l);
@@ -378,7 +386,8 @@ async function importFeederCoverage() {
                                 lgaId: lga?._id || null,
                                 substationId: dbFeeder.injectionSubstationId || null,
                                 source: "KEDCO Master Schedule",
-                                status: "active"
+                                status: "active",
+                                companyId: defaultCompany._id // CRITICAL: Tenant isolation
                             }
                         },
                         { upsert: true, new: true }
@@ -398,7 +407,8 @@ async function importFeederCoverage() {
                                     lgaId: ward.lga,
                                     substationId: dbFeeder.injectionSubstationId || null,
                                     source: "KEDCO Master Schedule",
-                                    status: "active"
+                                    status: "active",
+                                    companyId: defaultCompany._id // CRITICAL: Tenant isolation
                                 }
                             },
                             { upsert: true, new: true }
@@ -413,7 +423,8 @@ async function importFeederCoverage() {
                     const existing = await FeederCoverage.findOne({
                         feederId: dbFeeder._id,
                         communityId: null,
-                        wardId: null
+                        wardId: null,
+                        companyId: defaultCompany._id // CRITICAL: Tenant isolation
                     });
                     
                     if (!existing) {
@@ -424,7 +435,8 @@ async function importFeederCoverage() {
                             lgaId: null,
                             substationId: dbFeeder.injectionSubstationId || null,
                             source: "KEDCO Master Schedule",
-                            status: "active"
+                            status: "active",
+                            companyId: defaultCompany._id // CRITICAL: Tenant isolation
                         });
                         
                         await coverage.save();
@@ -478,12 +490,13 @@ async function generateKanoPowerNetwork() {
     console.log("\n📦 Generating kanoPowerNetwork.json...");
     
     // Load all data
+    // CRITICAL: Apply tenant filtering to prevent cross-tenant data leakage
     const state = await State.findOne({ name: "Kano" }).lean();
-    const lgas = await LGA.find({ state: state._id }).lean();
-    const wards = await Ward.find({ state: state._id }).lean();
-    const substations = await InjectionSubstation.find({ stateId: state._id }).lean();
-    const feeders = await Feeder.find().lean();
-    const coverage = await FeederCoverage.find().lean();
+    const lgas = await LGA.find({ state: state._id, companyId: defaultCompany._id }).lean();
+    const wards = await Ward.find({ state: state._id, companyId: defaultCompany._id }).lean();
+    const substations = await InjectionSubstation.find({ stateId: state._id, companyId: defaultCompany._id }).lean();
+    const feeders = await Feeder.find({ companyId: defaultCompany._id }).lean();
+    const coverage = await FeederCoverage.find({ companyId: defaultCompany._id }).lean();
     
     // Build structure
     const networkData = {

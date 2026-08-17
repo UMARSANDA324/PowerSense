@@ -2,41 +2,42 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { 
     Eye, EyeOff, Loader2, User, Mail, Lock, ShieldCheck, 
-    CheckCircle2, AlertCircle, MapPin, Globe, Activity 
+    CheckCircle2, AlertCircle, MapPin, Globe, Activity, UserPlus 
 } from "lucide-react";
 import { register } from "../services/authService";
 import locationService from "../services/locationService";
+import api from "../services/api";
+import nikolaLogo from "../assets/images/nikola.jpeg";
 
 const Register = () => {
     const navigate = useNavigate();
-    const [locations, setLocations] = useState({ states: [], lgas: [], wards: [], feeders: [] });
+    const [locations, setLocations] = useState({ countries: [], states: [], lgas: [], wards: [], feeders: [] });
     const [isLocLoading, setIsLocLoading] = useState(true);
+    const [referralInfo, setReferralInfo] = useState(null);
 
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
         phone: "",
-        state: "Kano",
+        country: "",
+        state: "",
         lga: "",
         ward: "",
         password: "",
         confirmPassword: "",
     });
 
-    // Fetch locations
     useEffect(() => {
         const fetchLocs = async () => {
             try {
                 const data = await locationService.getAll();
-                setLocations(data);
-                
-                // Set default LGA if Kano is the default state
-                const kanoState = data.states.find(s => s.name === "Kano");
-                if (kanoState) {
-                    const firstLGA = data.lgas.find(l => l.state?._id === kanoState._id);
-                    if (firstLGA) {
-                        setFormData(prev => ({ ...prev, lga: firstLGA.name }));
-                    }
+                const activeCountries = (data.countries || []).filter((country) => country.isActive !== false);
+                const activeStates = (data.states || []).filter((state) => state.isActive !== false);
+                setLocations({ ...data, countries: activeCountries, states: activeStates });
+
+                // If only 1 country exists in system, preselect it
+                if (activeCountries.length === 1) {
+                    setFormData(prev => ({ ...prev, country: activeCountries[0].name }));
                 }
             } catch (err) {
                 console.error("Failed to fetch locations", err);
@@ -50,6 +51,21 @@ const Register = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+
+    useEffect(() => {
+        const storedCode = localStorage.getItem("nikola_referral_code");
+        if (storedCode) {
+            setReferralInfo({ code: storedCode });
+            // Optionally resolve the referrer name
+            api.get(`referral/resolve/${encodeURIComponent(storedCode)}`)
+                .then(res => {
+                    if (res.data?.valid) {
+                        setReferralInfo({ code: storedCode, referrerName: res.data.referrerName });
+                    }
+                })
+                .catch(() => {}); // fail-soft
+        }
+    }, []);
 
     const normalizePhoneInput = (input) => {
         let digits = (input || "").toString().replace(/\D/g, "");
@@ -73,23 +89,25 @@ const Register = () => {
 
         if (name === "phone") {
             const onlyNumbers = value.replace(/\D/g, "");
-            // Allow up to 11 digits to handle users typing the full number
             const trimmed = onlyNumbers.slice(0, 11);
             setFormData(prev => ({ ...prev, [name]: trimmed }));
+        } else if (name === "country") {
+            setFormData(prev => ({
+                ...prev,
+                country: value,
+                state: "",
+                lga: "",
+                ward: "",
+            }));
         } else if (name === "state") {
-            // Only allow Kano for now
-            if (value !== "Kano") {
-                setError("⚠️ System currently supports Kano State only. Please select Kano.");
-                setFormData(prev => ({ ...prev, [name]: "Kano" }));
-                return;
-            }
-            setFormData(prev => ({ ...prev, [name]: value }));
-            if (error.includes("System currently supports")) setError("");
+            setFormData(prev => ({ ...prev, state: value, lga: "", ward: "" }));
+        } else if (name === "lga") {
+            setFormData(prev => ({ ...prev, lga: value, ward: "" }));
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
 
-        if (error && !error.includes("System currently supports")) setError("");
+        if (error) setError("");
     };
 
     const handleSubmit = async (e) => {
@@ -114,8 +132,12 @@ const Register = () => {
             return;
         }
 
-        if (formData.state !== "Kano") {
-            setError("⚠️ System currently supports Kano State only.");
+        if (!formData.country) {
+            setError("Please select a country.");
+            return;
+        }
+        if (!formData.state) {
+            setError("Please select a valid active state.");
             return;
         }
         if (!formData.lga) {
@@ -152,13 +174,16 @@ const Register = () => {
                 fullName: formData.fullName,
                 email: formData.email,
                 phone: phoneToSend,
+                country: formData.country,
                 state: formData.state,
                 lga: formData.lga,
                 ward: formData.ward,
                 feeder: detectedFeeder,
                 password: formData.password,
+                referralCode: referralInfo?.code || undefined
             });
 
+            localStorage.removeItem("nikola_referral_code");
             setSuccess("Account created successfully! Redirecting...");
             // Redirect to home page as the user is already logged in by the register service
             setTimeout(() => navigate("/"), 1500);
@@ -178,10 +203,19 @@ const Register = () => {
             >
                 <div className="text-center mb-6">
                     <h2 className="text-3xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">
-                        Join PowerSense <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+                        Join Nikola <img src={nikolaLogo} alt="Nikola Logo" className="w-8 h-8 object-contain rounded-xl" />
                     </h2>
                     <p className="text-gray-500 text-sm">Create an account to start reporting issues</p>
                 </div>
+
+                {referralInfo?.referrerName && (
+                    <div className="mb-6 flex items-center gap-2 px-4 py-3 bg-green-50 border border-green-100 rounded-2xl">
+                        <UserPlus size={16} className="text-green-600 shrink-0" />
+                        <span className="text-xs font-bold text-green-700">
+                            Invited by {referralInfo.referrerName}
+                        </span>
+                    </div>
+                )}
 
                 {/* Error Banner */}
                 {error && (
@@ -262,7 +296,27 @@ const Register = () => {
                         </div>
                     </div>
 
-                    {/* State Selection */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                        <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                <Globe size={18} />
+                            </span>
+                            <select
+                                name="country"
+                                value={formData.country}
+                                onChange={handleChange}
+                                disabled={isLocLoading || locations.countries.length === 0}
+                                className="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                            >
+                                <option value="">Select your country</option>
+                                {locations.countries.map((country) => (
+                                    <option key={country._id} value={country.name}>{country.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
                         <div className="relative">
@@ -273,12 +327,16 @@ const Register = () => {
                                 name="state"
                                 value={formData.state}
                                 onChange={handleChange}
-                                disabled
-                                className="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-gray-50 cursor-not-allowed"
+                                disabled={isLocLoading || !formData.country || !locations.states.some((s) => s.countryName === formData.country || s.country === locations.countries.find((c) => c.name === formData.country)?._id)}
+                                className="w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                             >
-                                <option value="Kano">Kano (Current Support)</option>
+                                <option value="">Select your state</option>
+                                {locations.states
+                                    .filter((state) => state.countryName === formData.country || state.country === locations.countries.find((c) => c.name === formData.country)?._id)
+                                    .map((state) => (
+                                        <option key={state._id} value={state.name}>{state.name}</option>
+                                    ))}
                             </select>
-                            <p className="text-xs text-gray-400 mt-1 ml-1">System currently supports Kano State</p>
                         </div>
                     </div>
 

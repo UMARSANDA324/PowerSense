@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../utils/tenantScope.js";
 
 const PredictionSchema = new mongoose.Schema(
   {
@@ -9,9 +10,17 @@ const PredictionSchema = new mongoose.Schema(
     riskLevel: { type: String, enum: ["low", "medium", "high", "critical"], default: "low" },
     metadata: { type: mongoose.Schema.Types.Mixed },
     generatedAt: { type: Date, default: Date.now },
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
+      required: true,
+        index: true
+    }
   },
   { timestamps: true }
 );
+
+PredictionSchema.plugin(tenantScopedSchema);
 
 PredictionSchema.index({ feeder: 1, createdAt: -1 });
 

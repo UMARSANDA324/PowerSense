@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     Send, AlertTriangle, Info, CheckCircle2,
     Loader2, Users, FileText, Activity, Shield, Trash2,
     Search, RefreshCw, ChevronRight, Menu, X, Clock, MapPin, Lock,
-    ChevronDown, ChevronUp, Package
+    ChevronDown, ChevronUp, Package, Zap, MessageSquare
 } from "lucide-react";
 import adminService from "../services/adminService";
 import { getAllReports } from "../services/reportService";
 import { getCurrentUser } from "../services/authService";
 import api from "../services/api";
 import { isoToDatetimeLocal, datetimeLocalToIso } from "../utils/dateConverter";
+import CompanyMessagingModule from "../components/CompanyMessagingModule";
+import { getUnreadCount } from "../services/companyMessageService";
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -22,6 +24,7 @@ const AdminDashboard = () => {
     const [feederStatuses, setFeederStatuses] = useState({});
     const [selectedFeeder, setSelectedFeeder] = useState(null);
     const [hasLoaded, setHasLoaded] = useState(false);
+    const [msgUnreadCount, setMsgUnreadCount] = useState(0);
     
     // Helper function to clean feeder name
     const cleanFeederName = (name) => {
@@ -42,12 +45,13 @@ const AdminDashboard = () => {
 
     // Auth Check & Initial Data Loading
     useEffect(() => {
-        if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "super-admin")) {
+        if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "super-admin" && currentUser.role !== "company-super-admin" && currentUser.role !== "regional-admin")) {
             navigate("/");
             return;
         }
         
         // Only load if we haven't loaded yet
+        getUnreadCount().then(r => setMsgUnreadCount(r?.count || 0)).catch(() => {});
         if (!hasLoaded) {
             loadAdminFeeders();
             setHasLoaded(true);
@@ -56,44 +60,72 @@ const AdminDashboard = () => {
 
     const loadAdminFeeders = async () => {
         try {
-            // Get fresh profile data from backend to get latest feeder assignments
-            const profileData = await adminService.getProfile();
-            const substationData = await api.get('/admin/injection-substations');
-            setSubstations(substationData.data);
+            const [profileResult, substationResult, statusResult] = await Promise.allSettled([
+                adminService.getProfile().catch((err) => {
+                    console.warn("Admin profile load skipped", err?.response?.status || err?.message);
+                    return null;
+                }),
+                api.get('/admin/injection-substations').catch((err) => {
+                    console.warn("Injection substations load skipped", err?.response?.status || err?.message);
+                    return { data: [] };
+                }),
+                api.get('/power/all-status').catch((err) => {
+                    console.warn("Power status load skipped", err?.response?.status || err?.message);
+                    return { data: [] };
+                })
+            ]);
 
-            // Collect all available feeders from substations
+            const profileData = profileResult.status === "fulfilled" ? profileResult.value : null;
+            const substationPayload = substationResult.status === "fulfilled" ? substationResult.value : null;
+            const substationData = Array.isArray(substationPayload?.data)
+                ? substationPayload.data
+                : Array.isArray(substationPayload)
+                    ? substationPayload
+                    : [];
+
+            setSubstations(substationData);
+
             let feedersToLoad = [];
-            substationData.data.forEach(substation => {
-                if (substation.feeders) {
+            substationData.forEach((substation) => {
+                if (substation?.feeders) {
                     feedersToLoad.push(...substation.feeders);
                 }
             });
+
+            if (feedersToLoad.length === 0 && Array.isArray(profileData?.assignedFeeders)) {
+                feedersToLoad = profileData.assignedFeeders;
+            }
+
+            if (feedersToLoad.length === 0 && Array.isArray(currentUser?.assignedFeeders)) {
+                feedersToLoad = currentUser.assignedFeeders;
+            }
+
             setAssignedFeeders(feedersToLoad);
 
             if (feedersToLoad.length > 0) {
                 setSelectedFeeder(feedersToLoad[0]._id || feedersToLoad[0]);
             }
 
-            // Fetch initial statuses for all assigned feeders
-            if (feedersToLoad.length > 0) {
-                const statusResponse = await api.get('/power/all-status');
+            const statusPayload = statusResult.status === "fulfilled" ? statusResult.value : null;
+            const statusData = Array.isArray(statusPayload?.data)
+                ? statusPayload.data
+                : [];
+
+            if (feedersToLoad.length > 0 && statusData.length > 0) {
                 const statusMap = {};
-                if (statusResponse.data && Array.isArray(statusResponse.data)) {
-                    statusResponse.data.forEach(s => {
-                        if (s && s.feeder) {
-                            const fId = s.feeder._id || s.feeder;
-                            const fName = s.feeder.name || s.feederName;
-                            const status = s.status || (s.isActive ? "on" : "off");
-                            statusMap[fId] = status;
-                            if (fName) statusMap[fName] = status;
-                        }
-                    });
-                }
+                statusData.forEach((s) => {
+                    if (s && s.feeder) {
+                        const fId = s.feeder._id || s.feeder;
+                        const fName = s.feeder.name || s.feederName;
+                        const status = s.status || (s.isActive ? "on" : "off");
+                        statusMap[fId] = status;
+                        if (fName) statusMap[fName] = status;
+                    }
+                });
                 setFeederStatuses(statusMap);
             }
         } catch (err) {
             console.error("Failed to load admin feeders", err);
-            // Fallback to currentUser data
             if (currentUser?.assignedFeeders && currentUser.assignedFeeders[0]) {
                 setAssignedFeeders(currentUser.assignedFeeders);
                 setSelectedFeeder(currentUser.assignedFeeders[0]._id || currentUser.assignedFeeders[0]);
@@ -360,24 +392,30 @@ const AdminDashboard = () => {
                     <div className="p-2 bg-blue-600 rounded-xl text-white">
                         <Shield size={24} />
                     </div>
-                    <h2 className="font-black text-xl text-gray-900 tracking-tight">AdminPanel</h2>
+                    <h2 className="font-black text-xl text-blue-600 tracking-tight">AdminPanel</h2>
                 </div>
 
                 <nav className="space-y-2">
                     {[
                         { id: "overview", icon: <Activity size={18} />, label: "Overview" },
-                        { id: "control", icon: <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" />, label: "Power Control" },
+                        { id: "control", icon: <Zap size={18} />, label: "Power Control" },
                         { id: "reports", icon: <FileText size={18} />, label: "Reports" },
                         { id: "users", icon: <Users size={18} />, label: "User Management" },
-                        { id: "notifs", icon: <Send size={18} />, label: "Messaging" }
+                        { id: "notifs", icon: <Send size={18} />, label: "Global Alerts" },
+                        { id: "internal-messages", icon: <MessageSquare size={18} />, label: "Internal Messages", badge: msgUnreadCount }
                     ].map(item => (
                         <button
                             key={item.id}
-                            onClick={() => setActiveTab(item.id)}
-                            className={`w-full flex items-center gap-3 p-4 rounded-2xl font-bold transition-all ${activeTab === item.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'text-gray-500 hover:bg-gray-50'}`}
+                            onClick={() => { setActiveTab(item.id); if (item.id === "internal-messages") { getUnreadCount().then(r => setMsgUnreadCount(r?.count || 0)).catch(() => {}); } }}
+                            className={`w-full flex items-center gap-3 p-4 rounded-2xl font-bold transition-all ${activeTab === item.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'text-blue-600 hover:bg-blue-50'}`}
                         >
-                            {item.icon}
-                            {item.label}
+                            {React.cloneElement(item.icon, { className: activeTab === item.id ? "text-white" : "text-blue-600" })}
+                            <span className="flex-1 text-left">{item.label}</span>
+                            {item.badge > 0 && (
+                                <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[9px] font-black flex items-center justify-center">
+                                    {item.badge > 99 ? "99+" : item.badge}
+                                </span>
+                            )}
                         </button>
                     ))}
                 </nav>
@@ -386,7 +424,7 @@ const AdminDashboard = () => {
                 {assignedFeeders.length > 0 && (
                     <div className="pt-8 border-t border-gray-100">
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">
-                            {currentUser?.role === "super-admin" ? "All Grid Feeders" : "Assigned Feeders"}
+                            {(currentUser?.role === "super-admin" || currentUser?.role === "company-super-admin") ? "All Grid Feeders" : "Assigned Feeders"}
                         </p>
                         <div className="mb-3 relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
@@ -421,7 +459,7 @@ const AdminDashboard = () => {
                         <div className="flex items-center gap-2">
                             <Lock size={14} className="text-blue-600" />
                             <span className="text-xs font-bold text-gray-700 font-mono">
-                                {currentUser?.role === "super-admin" ? "FULL ACCESS" : `${assignedFeeders.length} FEEDER${assignedFeeders.length !== 1 ? 'S' : ''}`}
+                                {(currentUser?.role === "super-admin" || currentUser?.role === "company-super-admin") ? "FULL ACCESS" : `${assignedFeeders.length} FEEDER${assignedFeeders.length !== 1 ? 'S' : ''}`}
                             </span>
                         </div>
                     </div>
@@ -432,7 +470,7 @@ const AdminDashboard = () => {
             <div className="md:hidden bg-white p-4 border-b border-gray-100 flex items-center justify-between sticky top-0 z-20">
                 <div className="flex items-center gap-2">
                     <Shield className="text-blue-600" size={24} />
-                    <span className="font-black">AdminPanel</span>
+                    <span className="font-black text-blue-600">AdminPanel</span>
                 </div>
                 <div className="flex gap-2">
                     <select
@@ -460,7 +498,7 @@ const AdminDashboard = () => {
                         <p className="text-gray-500 font-medium">Welcome back, {currentUser?.fullName}</p>
                         {assignedFeeders.length > 0 && (
                             <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-2">
-                                <Lock size={12} className="inline mr-1" /> {currentUser?.role === "super-admin" ? "Super Admin" : "Admin"} | {currentUser?.role === "super-admin" ? "Managing All Grid Feeders" : `Managing ${assignedFeeders.length} Feeder${assignedFeeders.length !== 1 ? 's' : ''}`}
+                                <Lock size={12} className="inline mr-1" /> {(currentUser?.role === "super-admin" || currentUser?.role === "company-super-admin") ? "Super Admin" : "Admin"} | {(currentUser?.role === "super-admin" || currentUser?.role === "company-super-admin") ? "Managing All Grid Feeders" : `Managing ${assignedFeeders.length} Feeder${assignedFeeders.length !== 1 ? 's' : ''}`}
                             </p>
                         )}
                     </div>
@@ -495,22 +533,22 @@ const AdminDashboard = () => {
                     <div className="space-y-8">
                         {/* Feeder Access Info Card */}
                         {assignedFeeders.length > 0 && (
-                            <div className={`rounded-[2.5rem] p-8 border shadow-sm ${currentUser?.role === "super-admin" ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-100' : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100'}`}>
+                            <div className={`rounded-[2.5rem] p-8 border shadow-sm ${(currentUser?.role === "super-admin" || currentUser?.role === "company-super-admin") ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-100' : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100'}`}>
                                 <div className="flex items-start justify-between mb-6">
                                     <div className="flex items-center gap-4">
-                                        <div className={`w-14 h-14 bg-white rounded-2xl border flex items-center justify-center shadow-sm ${currentUser?.role === "super-admin" ? 'border-indigo-200' : 'border-blue-200'}`}>
-                                            {currentUser?.role === "super-admin" ? <Shield className="text-indigo-600" size={28} /> : <MapPin className="text-blue-600" size={28} />}
+                                        <div className={`w-14 h-14 bg-white rounded-2xl border flex items-center justify-center shadow-sm ${(currentUser?.role === "super-admin" || currentUser?.role === "company-super-admin") ? 'border-indigo-200' : 'border-blue-200'}`}>
+                                            {(currentUser?.role === "super-admin" || currentUser?.role === "company-super-admin") ? <Shield className="text-indigo-600" size={28} /> : <MapPin className="text-blue-600" size={28} />}
                                         </div>
                                         <div>
                                             <h3 className="text-lg font-black text-gray-900 tracking-tight">
-                                                {currentUser?.role === "super-admin" ? "Global Grid Management" : "Assigned Feeders"}
+                                                {(currentUser?.role === "super-admin" || currentUser?.role === "company-super-admin") ? "Global Grid Management" : "Assigned Feeders"}
                                             </h3>
                                             <p className="text-sm text-gray-600 font-medium">
-                                                {currentUser?.role === "super-admin" ? "You have full control over all grid feeders" : `You have access to ${assignedFeeders.length} feeder${assignedFeeders.length !== 1 ? 's' : ''}`}
+                                                {(currentUser?.role === "super-admin" || currentUser?.role === "company-super-admin") ? "You have full control over all grid feeders" : `You have access to ${assignedFeeders.length} feeder${assignedFeeders.length !== 1 ? 's' : ''}`}
                                             </p>
                                         </div>
                                     </div>
-                                    <Shield className={`${currentUser?.role === "super-admin" ? 'text-indigo-600' : 'text-blue-600'} opacity-20`} size={48} />
+                                    <Shield className={`${(currentUser?.role === "super-admin" || currentUser?.role === "company-super-admin") ? 'text-indigo-600' : 'text-blue-600'} opacity-20`} size={48} />
                                 </div>
                                 <div className="mb-4 relative">
                                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
@@ -543,7 +581,7 @@ const AdminDashboard = () => {
                                     ))}
                                 </div>
                                 <p className="text-xs text-gray-600 font-medium mt-6 pt-6 border-t border-blue-100">
-                                    {currentUser?.role === "super-admin" 
+                                    {(currentUser?.role === "super-admin" || currentUser?.role === "company-super-admin") 
                                         ? "💡 As a Super Admin, you can toggle power status for any feeder in the system. Click on a feeder card to manage it directly."
                                         : "💡 All data shown on this dashboard is filtered to only include reports and users from these feeders. For multi-feeder assignments, contact your Super Admin."
                                     }
@@ -560,7 +598,7 @@ const AdminDashboard = () => {
                                 { 
                                     label: selectedFeeder ? `Feeder: ${cleanFeederName(assignedFeeders.find(f => (f._id || f) === selectedFeeder)?.name || 'Selected')}` : "Global Grid", 
                                     val: (feederStatuses[selectedFeeder] === "on" || (!feederStatuses[selectedFeeder] && powerForm.status === "on")) ? "ONLINE" : (feederStatuses[selectedFeeder] === "maintenance" ? "MAINTENANCE" : "OFFLINE"), 
-                                    icon: <img src="/logo.png" alt="Logo" className={`w-7 h-7 object-contain ${ (feederStatuses[selectedFeeder] === "on" || (!feederStatuses[selectedFeeder] && powerForm.status === "on")) ? "" : (feederStatuses[selectedFeeder] === "maintenance" ? "sepia-[.5] hue-rotate-[320deg]" : "grayscale brightness-50")}`} />, 
+                                    icon: <Zap className={(feederStatuses[selectedFeeder] === "on" || (!feederStatuses[selectedFeeder] && powerForm.status === "on")) ? "text-green-600" : (feederStatuses[selectedFeeder] === "maintenance" ? "text-yellow-600" : "text-red-600")} />, 
                                     bg: (feederStatuses[selectedFeeder] === "on" || (!feederStatuses[selectedFeeder] && powerForm.status === "on")) ? "bg-green-50" : (feederStatuses[selectedFeeder] === "maintenance" ? "bg-red-50" : "bg-gray-100") 
                                 },
                             ].map((stat, i) => (
@@ -732,7 +770,6 @@ const AdminDashboard = () => {
                     <div className="max-w-2xl bg-white rounded-[2.5rem] p-8 sm:p-12 border border-gray-100 shadow-sm">
                         <header className="mb-10 text-center sm:text-left">
                             <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3 justify-center sm:justify-start">
-                                <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
                                 Infrastructure Control
                             </h2>
                             <p className="text-gray-500 font-medium mt-2">Adjust live grid status and maintenance schedules</p>
@@ -843,21 +880,21 @@ const AdminDashboard = () => {
                                         onClick={() => setPowerForm({ ...powerForm, status: "on", isActive: true })}
                                         className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.status === "on" ? 'bg-green-600 text-white border-green-700 shadow-xl shadow-green-200' : 'bg-green-50 text-green-600 border-green-100'}`}
                                     >
-                                        <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" /> POWER ON
+                                        POWER ON
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setPowerForm({ ...powerForm, status: "off", isActive: false })}
                                         className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.status === "off" ? 'bg-black text-white border-black shadow-xl shadow-gray-400' : 'bg-gray-100 text-gray-400 border-gray-100 hover:border-gray-200'}`}
                                     >
-                                        <img src="/logo.png" alt="Logo" className={`w-6 h-6 object-contain ${powerForm.status === "off" ? "" : "grayscale brightness-50"}`} /> POWER OFF
+                                        POWER OFF
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setPowerForm({ ...powerForm, status: "maintenance", isActive: false })}
                                         className={`flex-1 p-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-3 border transition-all ${powerForm.status === "maintenance" ? 'bg-red-600 text-white border-red-700 shadow-xl shadow-red-200' : 'bg-red-50 text-red-600 border-red-100'}`}
                                     >
-                                        <img src="/logo.png" alt="Logo" className={`w-6 h-6 object-contain ${powerForm.status === "maintenance" ? "" : "grayscale brightness-50"}`} /> MAINTENANCE
+                                        MAINTENANCE
                                     </button>
                                 </div>
                             </div>
@@ -1169,6 +1206,11 @@ const AdminDashboard = () => {
                             </div>
                         </form>
                     </div>
+                )}
+
+                {/* TAB: INTERNAL MESSAGES */}
+                {activeTab === "internal-messages" && (
+                    <CompanyMessagingModule currentUser={currentUser} />
                 )}
             </main>
         </div>

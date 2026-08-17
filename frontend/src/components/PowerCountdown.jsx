@@ -46,7 +46,7 @@ const getModeLabel = (mode) => {
         title: "Power Available",
         statusText: "🟢 Current Status",
         detail: "Expected Outage",
-        empty: "No planned outage scheduled",
+        empty: "There are currently no confirmed ON/OFF or maintenance schedules for your feeder.",
       };
     case "outage":
       return {
@@ -67,7 +67,7 @@ const getModeLabel = (mode) => {
         title: "Current Status",
         statusText: "Current Status",
         detail: "No schedule available",
-        empty: "No scheduled outage has been announced.",
+        empty: "Nikola is actively monitoring your assigned feeder for upcoming operator updates.",
       };
   }
 };
@@ -127,11 +127,7 @@ const PowerCountdownInner = ({
           <div>
             <p className="font-bold uppercase tracking-wider text-[10px] text-amber-800 mb-1">Operational Update Delay</p>
             <p>
-              {mode === "outage" || mode === "maintenance"
-                ? "Power restoration is taking longer than expected. The utility may still be performing maintenance or fault clearance. We'll update this status automatically when new information becomes available."
-                : mode === "available"
-                ? "Power is still available. The planned outage may have been delayed, cancelled, or rescheduled."
-                : "No confirmed operational update has been received. The displayed schedule is based on the latest available information."}
+              The scheduled operation time has passed. Our monitoring system is awaiting confirmation from field operators. Nikola will automatically update this status as soon as operator confirmation is received.
             </p>
           </div>
         </div>

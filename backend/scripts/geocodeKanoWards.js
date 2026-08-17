@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import Ward from "../models/Location/Ward.js";
 import Feeder from "../models/Location/Feeder.js";
 import State from "../models/Location/State.js";
+import Company from "../models/Company.js";
 import { geocodeWithNominatim, isValidCoordinate, sleep } from "../services/geocodingService.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,12 +39,19 @@ const run = async () => {
     await mongoose.connect(uri);
     console.log("✓ Connected to MongoDB");
 
+    // CRITICAL: Get default company for tenant isolation
+    const defaultCompany = await Company.findOne();
+    if (!defaultCompany) {
+      throw new Error('No company found in database. Cannot geocode without a default company.');
+    }
+    console.log(`📋 Using company: ${defaultCompany.name} (ID: ${defaultCompany._id})`);
+
     const kanoState = await State.findOne({ name: "Kano" });
     if (!kanoState) {
       throw new Error("State 'Kano' was not found in the database.");
     }
 
-    const wards = await Ward.find({ state: kanoState._id, isActive: { $ne: false } }).populate("lga");
+    const wards = await Ward.find({ state: kanoState._id, isActive: { $ne: false }, companyId: defaultCompany._id }).populate("lga");
     if (!wards.length) {
       console.log("No Kano wards were found to geocode.");
       process.exit(0);
@@ -100,7 +108,7 @@ const run = async () => {
       failedWards.forEach((name) => console.log(`  - ${name}`));
     }
 
-    const feeders = await Feeder.find({ isActive: { $ne: false } }).populate({
+    const feeders = await Feeder.find({ isActive: { $ne: false }, companyId: defaultCompany._id }).populate({
       path: "wards",
       match: { state: kanoState._id },
       select: "latitude longitude coordinates",

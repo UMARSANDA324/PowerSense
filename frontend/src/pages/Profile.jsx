@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { User, Settings, Shield, Bell, HelpCircle, LogOut, ChevronRight, MapPin, Smartphone, Mail, Edit3, X, Loader2, CheckCircle2, Briefcase } from "lucide-react";
-import { getCurrentUser, logout, updateProfile, getCurrentUserFromApi } from "../services/authService";
+import { User, Settings, Shield, Bell, HelpCircle, LogOut, ChevronRight, MapPin, Smartphone, Mail, Edit3, X, Loader2, CheckCircle2, Briefcase, Copy, Share2, Users, MousePointerClick, UserCheck, UserPlus } from "lucide-react";
+import { getCurrentUser, logout, updateProfile, getCurrentUserFromApi, getMyReferralInfo } from "../services/authService";
 import { useNavigate } from "react-router-dom";
+import CompanyBadge from "../components/CompanyBadge";
 import locationService from "../services/locationService";
 
 const Profile = () => {
@@ -11,6 +12,8 @@ const Profile = () => {
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [locations, setLocations] = useState({ states: [], lgas: [], wards: [], feeders: [] });
     const [isLocLoading, setIsLocLoading] = useState(true);
+    const [referralInfo, setReferralInfo] = useState(null);
+    const [copySuccess, setCopySuccess] = useState(false);
 
     const normalizePhoneInput = (input) => {
         const digits = (input || "").toString().replace(/\D/g, "");
@@ -74,6 +77,18 @@ const Profile = () => {
         fetchProfile();
     }, []);
 
+    useEffect(() => {
+        const fetchReferralInfo = async () => {
+            try {
+                const data = await getMyReferralInfo();
+                setReferralInfo(data);
+            } catch (err) {
+                console.warn("Failed to load referral info", err);
+            }
+        };
+        fetchReferralInfo();
+    }, []);
+
     // Fetch locations
     useEffect(() => {
         const fetchLocs = async () => {
@@ -100,6 +115,44 @@ const Profile = () => {
     const confirmLogout = () => {
         logout();
         navigate("/login");
+    };
+
+    const handleCopyReferralLink = async () => {
+        if (!referralInfo?.referralPath) return;
+        const fullLink = `${window.location.origin}${referralInfo.referralPath}`;
+        try {
+            await navigator.clipboard.writeText(fullLink);
+            setCopySuccess(true);
+            setTimeout(() => setCopySuccess(false), 2000);
+        } catch {
+            // Fallback
+            const textarea = document.createElement("textarea");
+            textarea.value = fullLink;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+            setCopySuccess(true);
+            setTimeout(() => setCopySuccess(false), 2000);
+        }
+    };
+
+    const handleShareReferralLink = async () => {
+        if (!referralInfo?.referralPath) return;
+        const fullLink = `${window.location.origin}${referralInfo.referralPath}`;
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: "Join Nikola",
+                    text: "Track your power supply with Nikola! Join using my referral link:",
+                    url: fullLink
+                });
+            } catch (err) {
+                if (err.name !== "AbortError") handleCopyReferralLink();
+            }
+        } else {
+            handleCopyReferralLink();
+        }
     };
 
     // Helper to get initials (e.g., "Abba Adamu" -> "AA")
@@ -219,7 +272,7 @@ const Profile = () => {
             category: "ACCOUNT",
             items: [
                 { icon: <Bell size={20} className="text-blue-600" />, label: "Notifications", desc: "Outage alerts, report updates" },
-                { icon: <Shield size={20} className="text-blue-600" />, label: "About Us", desc: "Information about PowerSense & T&C" },
+                { icon: <Shield size={20} className="text-blue-600" />, label: "About Us", desc: "Information about Nikola & T&C" },
             ]
         }
     ];
@@ -244,11 +297,14 @@ const Profile = () => {
                     </div>
                     <div>
                         <h1 className="text-2xl font-black text-gray-900 leading-tight">{user?.fullName || "Guest User"}</h1>
-                        <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mt-0.5">{user ? "Verified User" : "Not Logged In"}</p>
-                        {(user?.role === "admin" || user?.role === "super-admin") && (
+                        <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mt-0.5">
+                            {user ? (user.role === "platform-owner" ? "Platform Owner" : "Verified User") : "Not Logged In"}
+                        </p>
+                        {user && <CompanyBadge prefix="Electricity Provider" variant="card" className="mt-3" />}
+                        {(user?.role === "admin" || user?.role === "super-admin" || user?.role === "company-super-admin" || user?.role === "platform-owner") && (
                             <div className="flex items-center justify-center gap-3 mt-3">
                                 <span className="flex items-center gap-1 text-[11px] font-black text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase tracking-tighter">
-                                    ROLE: {user?.role}
+                                    ROLE: {user?.role === "platform-owner" ? "Platform Owner" : user?.role === "company-super-admin" ? "Company Super Admin" : user?.role}
                                 </span>
                             </div>
                         )}
@@ -288,32 +344,94 @@ const Profile = () => {
                              <p className="text-sm font-bold text-gray-700">{user?.ward || "No area set"}, {user?.lga || "No LGA set"}, {user?.state || "State not set"}</p>
                         </div>
                     </div>
-                    {user?.feeder && (
-                        <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
-                            <div className="text-blue-600">
-                                <img src="/logo.png" alt="Logo" className="w-5 h-5 object-contain" />
+                    {(user?.assignedFeeders?.length > 0 || user?.feeder) && (() => {
+                        const feederName = user?.assignedFeeders?.[0]?.name || user?.feeder;
+                        const matchedFeeder = locations.feeders?.find(
+                            f => f.name?.toLowerCase().trim() === feederName?.toLowerCase().trim()
+                        );
+                        const bandInfo = matchedFeeder?.band ? ` • Band ${matchedFeeder.band}` : "";
+                        return (
+                            <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
+                                <div className="text-blue-600">
+                                    <span className="w-5 h-5 bg-blue-600 text-white rounded-md flex items-center justify-center font-black text-xs leading-none">L</span>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Assigned Feeder</p>
+                                    <p className="text-sm font-bold text-blue-700">
+                                        {feederName}{bandInfo}
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Assigned Feeder</p>
-                                <p className="text-sm font-bold text-blue-700">{user.feeder}</p>
+                        );
+                    })()}
+
+                </div>
+
+                {/* Referral Section */}
+                {referralInfo?.referralCode && (
+                    <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="p-6">
+                            <div className="flex items-center gap-3 mb-5">
+                                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                                    <Users size={20} className="text-blue-600" />
+                                </div>
+                                <div>
+                                    <h3 className="font-black text-gray-900 text-sm">Invite Friends</h3>
+                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Share & Grow</p>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                    <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-4 text-center">
-                        <div className="text-blue-600">
-                            <Briefcase size={20} />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Business Mode</p>
-                            <p className="text-sm font-bold text-blue-700">
-                                {user?.businessModeEnabled ? `Enabled for ${user.businessType || 'business'}` : "Disabled"}
-                            </p>
-                            <p className="text-xs text-slate-400 mt-1">
-                                {user?.businessModeEnabled ? "Receive tailored energy continuity guidance." : "Enable Business Mode in profile settings."}
-                            </p>
+
+                            {/* Referral Link Display */}
+                            <div className="bg-gray-50 rounded-2xl p-4 mb-4">
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Your Referral Link</p>
+                                <p className="text-sm font-mono font-bold text-gray-700 break-all">
+                                    {window.location.origin}{referralInfo?.referralPath}
+                                </p>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex gap-3 mb-5">
+                                <button
+                                    onClick={handleCopyReferralLink}
+                                    className="flex-1 py-3 bg-gray-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-gray-800 transition-all"
+                                >
+                                    {copySuccess ? (
+                                        <><CheckCircle2 size={14} /> Copied!</>
+                                    ) : (
+                                        <><Copy size={14} /> Copy Link</>
+                                    )}
+                                </button>
+                                <button
+                                    onClick={handleShareReferralLink}
+                                    className="flex-1 py-3 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-blue-500 transition-all"
+                                >
+                                    <Share2 size={14} /> Share
+                                </button>
+                            </div>
+
+                            {/* Stats */}
+                            {referralInfo.stats && (
+                                <div className="grid grid-cols-3 gap-3">
+                                    <div className="bg-gray-50 rounded-xl p-3 text-center">
+                                        <MousePointerClick size={16} className="text-gray-400 mx-auto mb-1" />
+                                        <p className="text-lg font-black text-gray-900">{referralInfo.stats.clicks || 0}</p>
+                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Clicks</p>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-xl p-3 text-center">
+                                        <UserPlus size={16} className="text-blue-400 mx-auto mb-1" />
+                                        <p className="text-lg font-black text-gray-900">{referralInfo.stats.signups || 0}</p>
+                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Signups</p>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-xl p-3 text-center">
+                                        <UserCheck size={16} className="text-green-400 mx-auto mb-1" />
+                                        <p className="text-lg font-black text-gray-900">{referralInfo.stats.activations || 0}</p>
+                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Activated</p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
-                </div>
+                )}
 
                 {/* Settings Menu Sections */}
                 {menuItems.map((section) => (
@@ -355,7 +473,7 @@ const Profile = () => {
                 </button>
 
                 <div className="text-center">
-                    <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">PowerSense v1.0.4 (Beta)</p>
+                    <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Nikola v1.0.4 (Beta)</p>
                 </div>
             </main>
 
@@ -445,43 +563,7 @@ const Profile = () => {
                                     />
                                 </div>
 
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between gap-3">
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Business Mode</label>
-                                            <p className="text-xs text-gray-400">Enable smarter alerts and continuity insights for your business.</p>
-                                        </div>
-                                        <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-                                            <input
-                                                type="checkbox"
-                                                name="businessModeEnabled"
-                                                checked={formData.businessModeEnabled}
-                                                onChange={handleChange}
-                                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                            />
-                                            <span className="text-sm font-semibold text-slate-700">{formData.businessModeEnabled ? "Enabled" : "Disabled"}</span>
-                                        </label>
-                                    </div>
 
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Business Type</label>
-                                        <select
-                                            name="businessType"
-                                            value={formData.businessType}
-                                            onChange={handleChange}
-                                            disabled={!formData.businessModeEnabled}
-                                            className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
-                                        >
-                                            <option value="retail">Retail Business</option>
-                                            <option value="manufacturing">Manufacturing</option>
-                                            <option value="hospitality">Hospitality</option>
-                                            <option value="office">Office / Services</option>
-                                            <option value="agriculture">Agriculture</option>
-                                            <option value="services">Local Services</option>
-                                            <option value="other">Other Business</option>
-                                        </select>
-                                    </div>
-                                </div>
 
                                 <div>
                                     <label className="block text-xs font-bold text-gray-600 mb-1 ml-1">Notification Preference</label>
@@ -584,7 +666,7 @@ const Profile = () => {
                             </button>
                             <button
                                 onClick={() => setShowLogoutConfirm(false)}
-                                className="w-full py-4 rounded-2xl font-black !bg-black !text-white hover:!bg-gray-900 active:scale-[0.98] transition-all shadow-lg shadow-gray-200"
+                                className="w-full py-4 rounded-2xl font-black primary-btn active:scale-[0.98] transition-all shadow-lg shadow-gray-200"
                             >
                                 No, Stay Logged In
                             </button>

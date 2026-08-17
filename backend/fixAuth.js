@@ -39,14 +39,14 @@ async function fixAuthentication() {
       // Create admin user
       const adminUser = new User({
         fullName: "System Administrator", 
-        email: "admin@powersense.com",
+        email: "admin@litha.com",
         password: "admin123", // Will be hashed by pre-save hook
         phone: "+0987654321",
         role: "admin"
       });
       
       await adminUser.save();
-      console.log("✅ Created admin user: admin@powersense.com / admin123");
+      console.log("✅ Created admin user: admin@litha.com / admin123");
       
     } else {
       console.log("✅ Users already exist in database");
@@ -65,7 +65,7 @@ async function fixAuthentication() {
         }
       }
       
-      const adminUser = await User.findOne({ email: "admin@powersense.com" });
+      const adminUser = await User.findOne({ email: "admin@litha.com" });
       if (adminUser) {
         const isMatch = await adminUser.matchPassword("admin123");
         console.log(`🔐 Admin user auth: ${isMatch ? 'SUCCESS' : 'FAILED'}`);

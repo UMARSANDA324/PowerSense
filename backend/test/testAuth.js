@@ -13,7 +13,7 @@ const TEST_USER = {
 
 const ADMIN_USER = {
   fullName: "Admin User",
-  email: "admin@powersense.com",
+  email: "admin@litha.com",
   password: "admin123"
 };
 

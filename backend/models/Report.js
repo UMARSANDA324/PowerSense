@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../utils/tenantScope.js";
 
 const reportSchema = new mongoose.Schema({
     user: {
@@ -48,8 +49,16 @@ const reportSchema = new mongoose.Schema({
     aiSummary: {
         type: String,
         default: ""
+    },
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
+        required: true,
+        index: true
     }
 }, { timestamps: true });
+
+reportSchema.plugin(tenantScopedSchema);
 
 reportSchema.index({ state: 1 });
 reportSchema.index({ lga: 1 });

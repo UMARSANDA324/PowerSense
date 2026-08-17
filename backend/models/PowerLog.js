@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tenantScopedSchema } from "../utils/tenantScope.js";
 
 const powerLogSchema = new mongoose.Schema({
     feeder: {
@@ -28,8 +29,16 @@ const powerLogSchema = new mongoose.Schema({
     updatedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
+        required: true,
+        index: true
     }
 }, { timestamps: true });
+
+powerLogSchema.plugin(tenantScopedSchema);
 
 powerLogSchema.index({ feeder: 1, timestamp: 1 });
 
